@@ -9,6 +9,11 @@ export interface SceneGlowProps {
    */
   color?: MantineColor;
 
+  /** Mantine color shade (0-9)
+   *  @default undefined
+   */
+  shade?: number;
+
   /** Size of the blob in px
    *  @default 400
    */
@@ -39,10 +44,20 @@ export interface SceneGlowProps {
    */
   animate?: boolean;
 
+  /** Animation type variant
+   *  @default 'float'
+   */
+  animationType?: 'float' | 'pulse' | 'breathe';
+
   /** Animation duration in seconds
    *  @default 8
    */
   duration?: number;
+
+  /** Animation delay in seconds
+   *  @default 0
+   */
+  delay?: number;
 
   /** Horizontal drift distance (CSS value)
    *  @default '30px'
@@ -63,13 +78,16 @@ export interface SceneGlowProps {
 
 export function SceneGlow({
   color = 'violet',
+  shade,
   size = 400,
   blur = 120,
   opacity = 0.5,
   top = '10%',
   left = '50%',
   animate = true,
+  animationType = 'float',
   duration = 8,
+  delay = 0,
   driftX = '30px',
   driftY = '20px',
   className,
@@ -77,7 +95,8 @@ export function SceneGlow({
 }: SceneGlowProps) {
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
-  const resolvedColor = getThemeColor(color, theme);
+  const resolvedColor =
+    shade !== undefined ? getThemeColor(`${color}.${shade}`, theme) : getThemeColor(color, theme);
 
   return (
     <Box
@@ -89,15 +108,18 @@ export function SceneGlow({
           '--scene-glow-blur': `${blur}px`,
           '--scene-glow-opacity': String(opacity),
           '--scene-glow-duration': `${duration}s`,
+          '--scene-glow-delay': `${delay}s`,
           '--scene-glow-drift-x': driftX,
           '--scene-glow-drift-y': driftY,
           top,
           left,
-          transform: 'translate(-50%, -50%)',
+          marginTop: `${-size / 2}px`,
+          marginLeft: `${-size / 2}px`,
           background: `radial-gradient(circle, ${resolvedColor} 0%, transparent 70%)`,
           ...style,
-        },
+        } as React.CSSProperties,
       })}
+      data-animation-type={animate ? animationType : undefined}
     />
   );
 }

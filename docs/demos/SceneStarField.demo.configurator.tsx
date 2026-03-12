@@ -11,7 +11,7 @@ function Demo() {
   return (
     <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
-        <Scene.DotGrid{{props}} />
+        <Scene.StarField{{props}} />
       </Scene>
     </Box>
   );
@@ -30,74 +30,73 @@ function Wrapper(props: any) {
       }}
     >
       <Scene>
-        <Scene.DotGrid {...props} />
+        <Scene.StarField {...props} />
       </Scene>
     </Box>
   );
 }
 
-export const dotGridConfigurator: MantineDemo = {
+export const starFieldConfigurator: MantineDemo = {
   type: 'configurator',
   component: Wrapper,
   code,
   controls: [
     {
+      type: 'number',
+      prop: 'count',
+      initialValue: 100,
+      libraryValue: 100,
+      step: 10,
+      min: 10,
+      max: 300,
+    },
+    {
       type: 'color',
       prop: 'color',
-      initialValue: 'gray',
-      libraryValue: 'gray',
+      initialValue: 'white',
+      libraryValue: 'white',
     },
     {
       type: 'number',
-      prop: 'dotSize',
+      prop: 'minSize',
       initialValue: 1,
       libraryValue: 1,
+      step: 0.5,
+      min: 0.5,
+      max: 5,
+    },
+    {
+      type: 'number',
+      prop: 'maxSize',
+      initialValue: 3,
+      libraryValue: 3,
+      step: 0.5,
+      min: 1,
+      max: 8,
+    },
+    {
+      type: 'boolean',
+      prop: 'twinkle',
+      initialValue: true,
+      libraryValue: true,
+    },
+    {
+      type: 'number',
+      prop: 'duration',
+      initialValue: 3,
+      libraryValue: 3,
       step: 0.5,
       min: 0.5,
       max: 10,
     },
     {
       type: 'number',
-      prop: 'spacing',
-      initialValue: 24,
-      libraryValue: 24,
-      step: 2,
-      min: 4,
-      max: 80,
-    },
-    {
-      type: 'boolean',
-      prop: 'stagger',
-      initialValue: false,
-      libraryValue: false,
-    },
-    {
-      type: 'select',
-      prop: 'fade',
-      initialValue: 'none',
-      libraryValue: 'none',
-      data: [
-        { value: 'none', label: 'None' },
-        { value: 'radial', label: 'Radial' },
-        { value: 'top', label: 'Top' },
-        { value: 'bottom', label: 'Bottom' },
-        { value: 'edges', label: 'Edges' },
-      ],
-    },
-    {
-      type: 'boolean',
-      prop: 'animate',
-      initialValue: false,
-      libraryValue: false,
-    },
-    {
-      type: 'number',
-      prop: 'duration',
-      initialValue: 4,
-      libraryValue: 4,
+      prop: 'seed',
+      initialValue: 42,
+      libraryValue: 42,
       step: 1,
-      min: 1,
-      max: 20,
+      min: 0,
+      max: 200,
     },
     {
       type: 'number',

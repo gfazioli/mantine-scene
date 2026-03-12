@@ -9,6 +9,10 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     glow: 'Glow blob layer element (Scene.Glow)',
     mesh: 'Mesh gradient layer element (Scene.Mesh)',
     noise: 'Noise texture layer element (Scene.Noise)',
+    starField: 'Star field layer element (Scene.StarField)',
+    shootingStar: 'Shooting star layer element (Scene.ShootingStar)',
+    snow: 'Snow layer element (Scene.Snow)',
+    aurora: 'Aurora layer element (Scene.Aurora)',
   },
 
   vars: {
@@ -22,6 +26,11 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
       modifier: 'data-fullscreen',
       selector: 'root',
       condition: '`fullscreen` prop is true',
+    },
+    {
+      modifier: 'data-reduced-motion',
+      selector: 'root',
+      condition: '`reducedMotion` prop value (`auto`, `always`, or `never`)',
     },
   ],
 };

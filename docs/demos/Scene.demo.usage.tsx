@@ -9,15 +9,11 @@ import { Scene } from '@gfazioli/mantine-scene';
 
 function Demo() {
   return (
-    <Box pos="relative" h={300} bg="dark.9" style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}>
+    <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
-        <Scene.Gradient
-          type="radial"
-          position="center top"
-          colors={['rgba(120, 0, 255, 0.15) 0%', 'rgba(255, 0, 128, 0.08) 50%', 'transparent 70%']}
-        />
-        <Scene.Glow color="rgba(120, 0, 255, 0.2)" size={400} blur={120} top="20%" left="30%" />
-        <Scene.DotGrid color="rgba(255, 255, 255, 0.06)" spacing={24} />
+        <Scene.Gradient from="violet" fromOpacity={0.15}{{props}} />
+        <Scene.Glow color="violet" size={400} blur={120} opacity={0.3} top="20%" left="30%" />
+        <Scene.DotGrid color="gray" opacity={0.3} spacing={24} />
         <Scene.Noise opacity={0.025} />
       </Scene>
       <Box pos="relative" style={{ zIndex: 1 }} p="xl">
@@ -29,23 +25,24 @@ function Demo() {
 }
 `;
 
-function Demo() {
+function Wrapper({ showGlow, showDotGrid, showNoise, ...props }: any) {
   return (
     <Box
       pos="relative"
       h={300}
-      bg="dark.9"
-      style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        overflow: 'hidden',
+        background: 'var(--mantine-color-body)',
+      }}
     >
       <Scene>
-        <Scene.Gradient
-          type="radial"
-          position="center top"
-          colors={['rgba(120, 0, 255, 0.15) 0%', 'rgba(255, 0, 128, 0.08) 50%', 'transparent 70%']}
-        />
-        <Scene.Glow color="rgba(120, 0, 255, 0.2)" size={400} blur={120} top="20%" left="30%" />
-        <Scene.DotGrid color="rgba(255, 255, 255, 0.06)" spacing={24} />
-        <Scene.Noise opacity={0.025} />
+        <Scene.Gradient from="violet" fromOpacity={0.15} {...props} />
+        {showGlow && (
+          <Scene.Glow color="violet" size={400} blur={120} opacity={0.3} top="20%" left="30%" />
+        )}
+        {showDotGrid && <Scene.DotGrid color="gray" opacity={0.3} spacing={24} />}
+        {showNoise && <Scene.Noise opacity={0.025} />}
       </Scene>
       <Box pos="relative" style={{ zIndex: 1 }} p="xl">
         <Text size="xl" fw={700} c="white">
@@ -60,8 +57,33 @@ function Demo() {
 }
 
 export const usage: MantineDemo = {
-  type: 'code',
-  component: Demo,
+  type: 'configurator',
+  component: Wrapper,
   code,
-  defaultExpanded: true,
+  controls: [
+    {
+      type: 'boolean',
+      prop: 'showGlow',
+      initialValue: true,
+      libraryValue: true,
+    },
+    {
+      type: 'boolean',
+      prop: 'showDotGrid',
+      initialValue: true,
+      libraryValue: true,
+    },
+    {
+      type: 'boolean',
+      prop: 'showNoise',
+      initialValue: true,
+      libraryValue: true,
+    },
+    {
+      type: 'boolean',
+      prop: 'fullscreen',
+      initialValue: false,
+      libraryValue: false,
+    },
+  ],
 };

@@ -16,6 +16,15 @@ export default function FullscreenPage() {
           angle={180}
           colors={['transparent 0%', 'rgba(0, 0, 0, 0.6) 100%']}
         />
+        <Scene.StarField count={150} twinkle duration={4} opacity={0.8} />
+        <Scene.ShootingStar count={3} trailLength={100} opacity={0.6} />
+        <Scene.Aurora
+          colors={['green', 'teal', 'cyan']}
+          bands={3}
+          opacity={0.15}
+          blur={80}
+          duration={12}
+        />
         <Scene.Glow
           color="rgba(120, 0, 255, 0.25)"
           size={700}
@@ -43,7 +52,7 @@ export default function FullscreenPage() {
           left="50%"
           duration={12}
         />
-        <Scene.DotGrid color="rgba(255, 255, 255, 0.03)" spacing={30} dotSize={1} />
+        <Scene.DotGrid color="rgba(255, 255, 255, 0.03)" spacing={30} dotSize={1} fade="edges" />
         <Scene.Mesh
           stops={[
             { color: 'rgba(120, 0, 255, 0.08)', position: '10% 20%' },
@@ -75,7 +84,8 @@ export default function FullscreenPage() {
           </Text>
           <Text c="dimmed" size="sm" mt="xl">
             This page demonstrates <code>Scene</code> in fullscreen mode with all layers combined:
-            gradients, glow blobs, dot grid, mesh gradient, and noise texture.
+            gradients, glow blobs, star field, shooting stars, aurora, dot grid, mesh gradient, and
+            noise texture.
           </Text>
           <Anchor href="." c="blue.4" size="sm" mt="lg" style={{ display: 'inline-block' }}>
             &larr; Back to documentation

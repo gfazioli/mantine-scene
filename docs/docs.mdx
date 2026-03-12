@@ -24,9 +24,13 @@ import '@gfazioli/mantine-scene/styles.layer.css';
 
 `Scene` is a decorative background container that
 composes multiple visual layers: gradients, glow
-blobs, dot grids, mesh gradients, and noise
-textures. Place it behind your content to create
-rich, atmospheric backgrounds.
+blobs, dot grids, mesh gradients, noise textures,
+star fields, shooting stars, snow, and auroras.
+Place it behind your content to create rich,
+atmospheric backgrounds.
+
+The root element has `aria-hidden="true"` since
+it is purely decorative.
 
 <Demo data={demos.usage} />
 
@@ -37,19 +41,30 @@ Set `fullscreen` to cover the entire viewport with
 at `z-index: 0` by default (configurable via the
 `zIndex` prop).
 
-<Demo data={demos.fullscreen} />
-
 [See the fullscreen demo page →](fullscreen)
+
+## Reduced Motion
+
+`Scene` respects `prefers-reduced-motion` by default.
+Use the `reducedMotion` prop to control behavior:
+
+- `'auto'` (default) — disables animations when the
+  user has enabled reduced motion in their OS settings
+- `'always'` — always disables all animations
+- `'never'` — keeps animations regardless of user
+  preference
 
 ## Gradient
 
 `Scene.Gradient` supports three types: `radial`
-(default), `linear`, and `conic`. Customize with
-`colors`, `position`, and `angle` props.
+(default), `linear`, and `conic`. Use `from` and
+`to` with Mantine theme colors, or pass raw CSS
+color stops via `colors`.
+
+Set `animate` to enable `rotate` (hue-rotate) or
+`pulse` (opacity oscillation) animations.
 
 <Demo data={demos.gradientConfigurator} />
-
-<Demo data={demos.gradient} />
 
 ## Glow
 
@@ -58,19 +73,20 @@ Each blob can be positioned, sized, and animated
 independently. Disable animation with
 `animate={false}`.
 
-<Demo data={demos.glowConfigurator} />
+Choose between animation types: `float` (default),
+`pulse` (scale oscillation), and `breathe` (opacity
+oscillation). Use `delay` to stagger multiple blobs.
 
-<Demo data={demos.glow} />
+<Demo data={demos.glowConfigurator} />
 
 ## DotGrid
 
 `Scene.DotGrid` creates a repeating dot pattern.
-Control `color`, `dotSize`, `spacing`, and
-`opacity`.
+Enable `stagger` for a honeycomb-like layout.
+Use `fade` to mask the edges (`radial`, `top`,
+`bottom`, or `edges`).
 
 <Demo data={demos.dotGridConfigurator} />
-
-<Demo data={demos.dotGrid} />
 
 ## Mesh
 
@@ -78,19 +94,67 @@ Control `color`, `dotSize`, `spacing`, and
 to simulate a mesh gradient effect. Define color
 stops with position and spread.
 
-<Demo data={demos.meshConfigurator} />
+Set `animate` to enable a hue-rotate shift. Use
+`blend` to change the CSS `mix-blend-mode`.
 
-<Demo data={demos.mesh} />
+<Demo data={demos.meshConfigurator} />
 
 ## Noise
 
 `Scene.Noise` adds a film grain texture via an
-inline SVG filter. Adjust `opacity` and `grain`
-(base frequency).
+inline SVG filter. Control the noise with `seed`,
+`type`, and `octaves`. Use `tint` with a Mantine
+theme color to overlay a color tint.
 
 <Demo data={demos.noiseConfigurator} />
 
-<Demo data={demos.noise} />
+## StarField
+
+`Scene.StarField` renders a CSS-only star field
+using `box-shadow` on a single element per layer.
+Stars are positioned deterministically via a PRNG
+seeded with the `seed` prop.
+
+Enable `twinkle` for a staggered opacity animation
+across three layers.
+
+<Demo data={demos.starFieldConfigurator} />
+
+## ShootingStar
+
+`Scene.ShootingStar` creates streaks of light that
+traverse the scene at a configurable `angle`. Each
+trail has a gradient from transparent to the chosen
+`color`.
+
+Control `count` (number of lanes), `trailLength`,
+`speed`, and `minInterval`/`maxInterval` between
+appearances.
+
+<Demo data={demos.shootingStarConfigurator} />
+
+## Snow
+
+`Scene.Snow` renders falling snowflakes with
+horizontal drift. Each flake has a randomized size,
+speed, and position (deterministic via `seed`).
+
+Use `wind` (-1 to 1) to bias the drift direction
+and `speed` as a multiplier on fall duration.
+
+<Demo data={demos.snowConfigurator} />
+
+## Aurora
+
+`Scene.Aurora` creates shimmering aurora borealis
+bands. Each band is a blurred, colored rectangle
+with a wave animation.
+
+Customize `colors` (Mantine theme colors), `bands`
+count, `position` (top/center/bottom), `blur`,
+and `opacity`.
+
+<Demo data={demos.auroraConfigurator} />
 
 ## Combined
 
@@ -98,14 +162,3 @@ All sub-components can be composed freely.
 Layer order follows DOM order.
 
 <Demo data={demos.combined} />
-
-## Styles API
-
-`Scene` supports
-[Styles API](https://mantine.dev/styles/styles-api/),
-you can add styles to any inner element of the
-component with `classNames` prop. Follow
-[Styles API](https://mantine.dev/styles/styles-api/)
-documentation to learn more.
-
-<Demo data={demos.stylesApi} />

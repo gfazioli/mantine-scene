@@ -9,28 +9,27 @@ import { Scene } from '@gfazioli/mantine-scene';
 
 function Demo() {
   return (
-    <Box pos="relative" h={400} bg="dark.9" style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}>
+    <Box pos="relative" h={400} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
-        <Scene.DotGrid color="rgba(255, 255, 255, 0.05)" spacing={28} />
+        <Scene.StarField count={80} twinkle duration={4} opacity={0.6} />
+        <Scene.Gradient from="violet" fromOpacity={0.12} />
+        <Scene.DotGrid color="gray" opacity={0.15} spacing={28} fade="edges" />
         <Scene.Mesh
           stops={[
-            { color: 'rgba(0, 120, 255, 0.1)', position: '15% 20%', spread: 45 },
-            { color: 'rgba(0, 200, 150, 0.08)', position: '85% 40%', spread: 40 },
-            { color: 'rgba(80, 0, 200, 0.06)', position: '50% 80%', spread: 50 },
+            { color: 'blue', position: '15% 20%', spread: 45 },
+            { color: 'teal', position: '85% 40%', spread: 40 },
+            { color: 'violet', position: '50% 80%', spread: 50 },
           ]}
+          opacity={0.3}
         />
-        <Scene.Gradient
-          type="linear"
-          angle={180}
-          colors={['transparent 0%', 'rgba(0, 0, 0, 0.4) 100%']}
-        />
-        <Scene.Glow color="rgba(0, 150, 255, 0.15)" size={500} top="20%" left="30%" duration={10} />
-        <Scene.Glow color="rgba(0, 200, 150, 0.1)" size={400} top="60%" left="70%" duration={14} />
-        <Scene.Noise opacity={0.02} grain={0.65} />
+        <Scene.Glow color="blue" size={500} opacity={0.2} top="20%" left="30%" duration={10} />
+        <Scene.Glow color="teal" size={400} opacity={0.15} top="60%" left="70%" duration={14} />
+        <Scene.ShootingStar count={2} opacity={0.4} />
+        <Scene.Noise opacity={0.03} />
       </Scene>
       <Box pos="relative" style={{ zIndex: 1 }} p="xl">
         <Text size="xl" fw={700} c="white">All effects combined</Text>
-        <Text c="dimmed" mt="sm">DotGrid + Mesh + Gradient + Glow + Noise</Text>
+        <Text c="dimmed" mt="sm">StarField + Gradient + DotGrid + Mesh + Glow + ShootingStar + Noise</Text>
       </Box>
     </Box>
   );
@@ -42,33 +41,35 @@ function Demo() {
     <Box
       pos="relative"
       h={400}
-      bg="dark.9"
-      style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        overflow: 'hidden',
+        background: 'var(--mantine-color-body)',
+      }}
     >
       <Scene>
-        <Scene.DotGrid color="rgba(255, 255, 255, 0.05)" spacing={28} />
+        <Scene.StarField count={80} twinkle duration={4} opacity={0.6} />
+        <Scene.Gradient from="violet" fromOpacity={0.12} />
+        <Scene.DotGrid color="gray" opacity={0.15} spacing={28} fade="edges" />
         <Scene.Mesh
           stops={[
-            { color: 'rgba(0, 120, 255, 0.1)', position: '15% 20%', spread: 45 },
-            { color: 'rgba(0, 200, 150, 0.08)', position: '85% 40%', spread: 40 },
-            { color: 'rgba(80, 0, 200, 0.06)', position: '50% 80%', spread: 50 },
+            { color: 'blue', position: '15% 20%', spread: 45 },
+            { color: 'teal', position: '85% 40%', spread: 40 },
+            { color: 'violet', position: '50% 80%', spread: 50 },
           ]}
+          opacity={0.3}
         />
-        <Scene.Gradient
-          type="linear"
-          angle={180}
-          colors={['transparent 0%', 'rgba(0, 0, 0, 0.4) 100%']}
-        />
-        <Scene.Glow color="rgba(0, 150, 255, 0.15)" size={500} top="20%" left="30%" duration={10} />
-        <Scene.Glow color="rgba(0, 200, 150, 0.1)" size={400} top="60%" left="70%" duration={14} />
-        <Scene.Noise opacity={0.02} grain={0.65} />
+        <Scene.Glow color="blue" size={500} opacity={0.2} top="20%" left="30%" duration={10} />
+        <Scene.Glow color="teal" size={400} opacity={0.15} top="60%" left="70%" duration={14} />
+        <Scene.ShootingStar count={2} opacity={0.4} />
+        <Scene.Noise opacity={0.03} />
       </Scene>
       <Box pos="relative" style={{ zIndex: 1 }} p="xl">
         <Text size="xl" fw={700} c="white">
           All effects combined
         </Text>
         <Text c="dimmed" mt="sm">
-          DotGrid + Mesh + Gradient + Glow + Noise
+          StarField + Gradient + DotGrid + Mesh + Glow + ShootingStar + Noise
         </Text>
       </Box>
     </Box>

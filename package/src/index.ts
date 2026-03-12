@@ -1,5 +1,6 @@
 export { Scene } from './Scene';
 export type {
+  SceneAuroraProps,
   SceneBaseProps,
   SceneCssVariables,
   SceneDotGridProps,
@@ -10,6 +11,9 @@ export type {
   SceneMeshStop,
   SceneNoiseProps,
   SceneProps,
+  SceneShootingStarProps,
+  SceneSnowProps,
+  SceneStarFieldProps,
   SceneStylesNames,
 } from './Scene';
 export { useSceneContext } from './Scene.context';

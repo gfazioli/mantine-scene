@@ -9,7 +9,7 @@ import { Box } from '@mantine/core';
 
 function Demo() {
   return (
-    <Box pos="relative" h={300} bg="dark.9" style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}>
+    <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
         <Scene.Gradient{{props}} />
       </Scene>
@@ -23,8 +23,11 @@ function Wrapper(props: any) {
     <Box
       pos="relative"
       h={300}
-      bg="dark.9"
-      style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        overflow: 'hidden',
+        background: 'var(--mantine-color-body)',
+      }}
     >
       <Scene>
         <Scene.Gradient {...props} />
@@ -48,6 +51,36 @@ export const gradientConfigurator: MantineDemo = {
         { value: 'linear', label: 'Linear' },
         { value: 'conic', label: 'Conic' },
       ],
+    },
+    {
+      type: 'color',
+      prop: 'from',
+      initialValue: 'violet',
+      libraryValue: undefined,
+    },
+    {
+      type: 'color',
+      prop: 'to',
+      initialValue: 'pink',
+      libraryValue: undefined,
+    },
+    {
+      type: 'number',
+      prop: 'fromOpacity',
+      initialValue: 0.15,
+      libraryValue: 0.15,
+      step: 0.05,
+      min: 0,
+      max: 1,
+    },
+    {
+      type: 'number',
+      prop: 'toOpacity',
+      initialValue: 0,
+      libraryValue: 0,
+      step: 0.05,
+      min: 0,
+      max: 1,
     },
     {
       type: 'select',
@@ -80,6 +113,40 @@ export const gradientConfigurator: MantineDemo = {
       prop: 'opacity',
       initialValue: 1,
       libraryValue: 1,
+      step: 0.05,
+      min: 0,
+      max: 1,
+    },
+    {
+      type: 'boolean',
+      prop: 'animate',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
+      type: 'select',
+      prop: 'animationType',
+      initialValue: 'rotate',
+      libraryValue: 'rotate',
+      data: [
+        { value: 'rotate', label: 'Rotate' },
+        { value: 'pulse', label: 'Pulse' },
+      ],
+    },
+    {
+      type: 'number',
+      prop: 'duration',
+      initialValue: 20,
+      libraryValue: 20,
+      step: 1,
+      min: 1,
+      max: 60,
+    },
+    {
+      type: 'number',
+      prop: 'pulseMinOpacity',
+      initialValue: 0.3,
+      libraryValue: 0.3,
       step: 0.05,
       min: 0,
       max: 1,

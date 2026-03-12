@@ -13,9 +13,22 @@
   }
 
   &:not([data-fullscreen]) {
-    width: 100%;
-    height: 100%;
+    position: absolute;
+    inset: 0;
   }
+}
+
+/* ============================================
+   Scene - Reduced Motion
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  .root[data-reduced-motion='auto'] * {
+    animation: none !important;
+  }
+}
+
+.root[data-reduced-motion='always'] * {
+  animation: none !important;
 }
 
 /* ============================================
@@ -26,12 +39,60 @@
   inset: 0;
 }
 
+.gradientAnimated {
+  &[data-animation-type='rotate'] {
+    animation: scene-gradient-rotate var(--scene-gradient-duration) linear infinite;
+  }
+
+  &[data-animation-type='pulse'] {
+    animation: scene-gradient-pulse var(--scene-gradient-duration) ease-in-out infinite alternate;
+  }
+}
+
+@keyframes scene-gradient-rotate {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes scene-gradient-pulse {
+  0% {
+    opacity: var(--scene-gradient-opacity-from, 0.5);
+  }
+
+  100% {
+    opacity: var(--scene-gradient-opacity-to, 1);
+  }
+}
+
 /* ============================================
    Scene - DotGrid layer
    ============================================ */
 .dotGrid {
   position: absolute;
   inset: 0;
+}
+
+.dotGridAnimated {
+  animation: scene-dotgrid-twinkle var(--scene-dotgrid-duration) ease-in-out infinite alternate;
+}
+
+@keyframes scene-dotgrid-twinkle {
+  0% {
+    opacity: var(--scene-dotgrid-opacity, 1);
+  }
+
+  50% {
+    opacity: calc(var(--scene-dotgrid-opacity, 1) * 0.5);
+  }
+
+  100% {
+    opacity: var(--scene-dotgrid-opacity, 1);
+  }
 }
 
 /* ============================================
@@ -47,7 +108,20 @@
 }
 
 .glowAnimated {
-  animation: scene-glow-float var(--scene-glow-duration) ease-in-out infinite alternate;
+  &[data-animation-type='float'] {
+    animation: scene-glow-float var(--scene-glow-duration) ease-in-out infinite alternate;
+    animation-delay: var(--scene-glow-delay, 0s);
+  }
+
+  &[data-animation-type='pulse'] {
+    animation: scene-glow-pulse var(--scene-glow-duration) ease-in-out infinite alternate;
+    animation-delay: var(--scene-glow-delay, 0s);
+  }
+
+  &[data-animation-type='breathe'] {
+    animation: scene-glow-breathe var(--scene-glow-duration) ease-in-out infinite alternate;
+    animation-delay: var(--scene-glow-delay, 0s);
+  }
 }
 
 @keyframes scene-glow-float {
@@ -68,6 +142,26 @@
   }
 }
 
+@keyframes scene-glow-pulse {
+  0% {
+    transform: scale(0.8);
+  }
+
+  100% {
+    transform: scale(1.2);
+  }
+}
+
+@keyframes scene-glow-breathe {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: var(--scene-glow-opacity, 1);
+  }
+}
+
 /* ============================================
    Scene - Mesh layer
    ============================================ */
@@ -76,10 +170,198 @@
   inset: 0;
 }
 
+.meshAnimated {
+  animation: scene-mesh-shift var(--scene-mesh-duration) linear infinite;
+}
+
+@keyframes scene-mesh-shift {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
 /* ============================================
    Scene - Noise layer
    ============================================ */
 .noise {
   position: absolute;
   inset: 0;
+}
+
+/* ============================================
+   Scene - StarField layer
+   ============================================ */
+.starField {
+  position: absolute;
+  inset: 0;
+}
+
+.starFieldLayer {
+  position: absolute;
+  inset: 0;
+}
+
+.starFieldDot {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.starFieldTwinkle1 {
+  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
+}
+
+.starFieldTwinkle2 {
+  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
+  animation-delay: calc(var(--scene-starfield-duration) * 0.33);
+}
+
+.starFieldTwinkle3 {
+  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
+  animation-delay: calc(var(--scene-starfield-duration) * 0.66);
+}
+
+@keyframes scene-starfield-twinkle {
+  0% {
+    opacity: 0.3;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   Scene - ShootingStar layer
+   ============================================ */
+.shootingStar {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.shootingStarLane {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+.shootingStarTrail {
+  display: block;
+  height: 2px;
+  border-radius: 999px;
+  opacity: 0;
+  animation: scene-shooting-star var(--scene-shooting-speed, 4s) linear infinite;
+}
+
+@keyframes scene-shooting-star {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  2% {
+    opacity: var(--scene-shooting-opacity, 0.8);
+  }
+
+  18% {
+    opacity: var(--scene-shooting-opacity, 0.8);
+  }
+
+  22% {
+    transform: translateX(500px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(500px);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Snow layer
+   ============================================ */
+.snow {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.snowFlake {
+  position: absolute;
+  top: -2%;
+  border-radius: 50%;
+  opacity: var(--scene-snow-opacity, 0.8);
+  animation: scene-snow-fall var(--scene-snow-speed) linear infinite;
+}
+
+@keyframes scene-snow-fall {
+  0% {
+    top: -2%;
+    transform: translateX(0);
+    opacity: var(--scene-snow-opacity, 0.8);
+  }
+
+  25% {
+    transform: translateX(var(--scene-snow-drift));
+  }
+
+  50% {
+    top: 50%;
+    transform: translateX(calc(var(--scene-snow-drift) * -0.5));
+  }
+
+  75% {
+    transform: translateX(var(--scene-snow-drift));
+  }
+
+  100% {
+    top: 105%;
+    transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Aurora layer
+   ============================================ */
+.aurora {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.auroraBand {
+  position: absolute;
+  left: -20%;
+  width: 140%;
+  height: var(--scene-aurora-band-height, 30%);
+  border-radius: 50%;
+  filter: blur(var(--scene-aurora-blur, 60px));
+  opacity: var(--scene-aurora-opacity, 0.3);
+}
+
+.auroraBandAnimated {
+  animation: scene-aurora-wave var(--scene-aurora-duration, 8s) ease-in-out infinite alternate;
+}
+
+@keyframes scene-aurora-wave {
+  0% {
+    transform: translateX(-5%) scaleY(1);
+  }
+
+  33% {
+    transform: translateX(3%) scaleY(1.3);
+  }
+
+  66% {
+    transform: translateX(-2%) scaleY(0.8);
+  }
+
+  100% {
+    transform: translateX(5%) scaleY(1.1);
+  }
 }

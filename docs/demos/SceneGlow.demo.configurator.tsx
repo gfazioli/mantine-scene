@@ -9,7 +9,7 @@ import { Box } from '@mantine/core';
 
 function Demo() {
   return (
-    <Box pos="relative" h={350} bg="dark.9" style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}>
+    <Box pos="relative" h={350} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
         <Scene.Glow{{props}} />
       </Scene>
@@ -23,8 +23,11 @@ function Wrapper({ top, left, driftX, driftY, ...props }: any) {
     <Box
       pos="relative"
       h={350}
-      bg="dark.9"
-      style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        overflow: 'hidden',
+        background: 'var(--mantine-color-body)',
+      }}
     >
       <Scene>
         <Scene.Glow
@@ -102,6 +105,17 @@ export const glowConfigurator: MantineDemo = {
       libraryValue: true,
     },
     {
+      type: 'select',
+      prop: 'animationType',
+      initialValue: 'float',
+      libraryValue: 'float',
+      data: [
+        { value: 'float', label: 'Float' },
+        { value: 'pulse', label: 'Pulse' },
+        { value: 'breathe', label: 'Breathe' },
+      ],
+    },
+    {
       type: 'number',
       prop: 'duration',
       initialValue: 8,
@@ -109,6 +123,15 @@ export const glowConfigurator: MantineDemo = {
       step: 1,
       min: 1,
       max: 30,
+    },
+    {
+      type: 'number',
+      prop: 'delay',
+      initialValue: 0,
+      libraryValue: 0,
+      step: 0.5,
+      min: 0,
+      max: 10,
     },
     {
       type: 'number',

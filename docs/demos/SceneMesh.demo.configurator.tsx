@@ -9,13 +9,13 @@ import { Box } from '@mantine/core';
 
 function Demo() {
   return (
-    <Box pos="relative" h={300} bg="dark.9" style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}>
+    <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
         <Scene.Mesh{{props}}
           stops={[
-            { color: 'rgba(120, 0, 255, 0.15)', position: '20% 20%', spread: 50 },
-            { color: 'rgba(255, 0, 128, 0.12)', position: '80% 30%', spread: 45 },
-            { color: 'rgba(0, 100, 255, 0.1)', position: '50% 80%', spread: 55 },
+            { color: 'violet', position: '20% 20%', spread: 50 },
+            { color: 'pink', position: '80% 30%', spread: 45 },
+            { color: 'blue', position: '50% 80%', spread: 55 },
           ]}
         />
       </Scene>
@@ -29,15 +29,18 @@ function Wrapper(props: any) {
     <Box
       pos="relative"
       h={300}
-      bg="dark.9"
-      style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden' }}
+      style={{
+        borderRadius: 'var(--mantine-radius-md)',
+        overflow: 'hidden',
+        background: 'var(--mantine-color-body)',
+      }}
     >
       <Scene>
         <Scene.Mesh
           stops={[
-            { color: 'rgba(120, 0, 255, 0.15)', position: '20% 20%', spread: 50 },
-            { color: 'rgba(255, 0, 128, 0.12)', position: '80% 30%', spread: 45 },
-            { color: 'rgba(0, 100, 255, 0.1)', position: '50% 80%', spread: 55 },
+            { color: 'violet', position: '20% 20%', spread: 50 },
+            { color: 'pink', position: '80% 30%', spread: 45 },
+            { color: 'blue', position: '50% 80%', spread: 55 },
           ]}
           {...props}
         />
@@ -59,6 +62,34 @@ export const meshConfigurator: MantineDemo = {
       step: 0.05,
       min: 0,
       max: 1,
+    },
+    {
+      type: 'boolean',
+      prop: 'animate',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'duration',
+      initialValue: 15,
+      libraryValue: 15,
+      step: 1,
+      min: 1,
+      max: 60,
+    },
+    {
+      type: 'select',
+      prop: 'blend',
+      initialValue: 'normal',
+      libraryValue: 'normal',
+      data: [
+        { value: 'normal', label: 'Normal' },
+        { value: 'screen', label: 'Screen' },
+        { value: 'overlay', label: 'Overlay' },
+        { value: 'multiply', label: 'Multiply' },
+        { value: 'soft-light', label: 'Soft Light' },
+      ],
     },
   ],
 };

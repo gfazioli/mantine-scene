@@ -4,7 +4,6 @@ import { Shell } from '../components/Shell';
 import { PACKAGE_DATA } from '../data';
 import docgen from '../docgen.json';
 import Docs from '../docs.mdx';
-import { STYLES_API_DATA } from '../styles-api';
 
 export default function HomePage() {
   return (
@@ -19,10 +18,12 @@ export default function HomePage() {
           'SceneDotGrid',
           'SceneMesh',
           'SceneNoise',
+          'SceneStarField',
+          'SceneShootingStar',
+          'SceneSnow',
+          'SceneAurora',
         ]}
-        componentsStyles={['Scene']}
         componentPrefix="Scene"
-        stylesApiData={STYLES_API_DATA}
       >
         <Docs />
       </DocsTabs>

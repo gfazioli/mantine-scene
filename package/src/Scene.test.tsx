@@ -26,6 +26,24 @@ describe('Scene', () => {
     expect(root).toBeFalsy();
   });
 
+  it('has aria-hidden attribute', () => {
+    const { container } = render(<Scene />);
+    const root = container.querySelector('[aria-hidden="true"]');
+    expect(root).toBeTruthy();
+  });
+
+  it('applies reduced-motion data attribute', () => {
+    const { container } = render(<Scene reducedMotion="always" />);
+    const root = container.querySelector('[data-reduced-motion="always"]');
+    expect(root).toBeTruthy();
+  });
+
+  it('defaults reduced-motion to auto', () => {
+    const { container } = render(<Scene />);
+    const root = container.querySelector('[data-reduced-motion="auto"]');
+    expect(root).toBeTruthy();
+  });
+
   it('renders Gradient sub-component', () => {
     const { container } = render(
       <Scene>
@@ -71,6 +89,42 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
+  it('renders StarField sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.StarField count={50} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders ShootingStar sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.ShootingStar count={2} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Snow sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Snow count={20} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Aurora sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Aurora />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
   it('renders multiple sub-components together', () => {
     const { container } = render(
       <Scene>
@@ -79,9 +133,13 @@ describe('Scene', () => {
         <Scene.DotGrid />
         <Scene.Mesh />
         <Scene.Noise />
+        <Scene.StarField />
+        <Scene.ShootingStar />
+        <Scene.Snow />
+        <Scene.Aurora />
       </Scene>
     );
     const children = container.querySelector('[class]')?.children;
-    expect(children?.length).toBe(5);
+    expect(children?.length).toBe(9);
   });
 });

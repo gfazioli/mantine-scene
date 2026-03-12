@@ -10,14 +10,28 @@ import {
   useStyles,
 } from '@mantine/core';
 import { SceneProvider } from './Scene.context';
+import { SceneAurora } from './SceneAurora/SceneAurora';
 import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
 import { SceneGlow } from './SceneGlow/SceneGlow';
 import { SceneGradient } from './SceneGradient/SceneGradient';
 import { SceneMesh } from './SceneMesh/SceneMesh';
 import { SceneNoise } from './SceneNoise/SceneNoise';
+import { SceneShootingStar } from './SceneShootingStar/SceneShootingStar';
+import { SceneSnow } from './SceneSnow/SceneSnow';
+import { SceneStarField } from './SceneStarField/SceneStarField';
 import classes from './Scene.module.css';
 
-export type SceneStylesNames = 'root' | 'gradient' | 'dotGrid' | 'glow' | 'mesh' | 'noise';
+export type SceneStylesNames =
+  | 'root'
+  | 'gradient'
+  | 'dotGrid'
+  | 'glow'
+  | 'mesh'
+  | 'noise'
+  | 'starField'
+  | 'shootingStar'
+  | 'snow'
+  | 'aurora';
 
 export type SceneCssVariables = {
   root: '--scene-z-index';
@@ -33,6 +47,11 @@ export interface SceneBaseProps {
    *  @default 0
    */
   zIndex?: number;
+
+  /** Controls animation behavior for prefers-reduced-motion: 'auto' respects system preference, 'always' disables all animations, 'never' keeps animations regardless
+   *  @default 'auto'
+   */
+  reducedMotion?: 'auto' | 'always' | 'never';
 
   /** Scene content (compound sub-components: Scene.Gradient, Scene.Glow, etc.) */
   children?: React.ReactNode;
@@ -51,12 +70,17 @@ export type SceneFactory = Factory<{
     Glow: typeof SceneGlow;
     Mesh: typeof SceneMesh;
     Noise: typeof SceneNoise;
+    StarField: typeof SceneStarField;
+    ShootingStar: typeof SceneShootingStar;
+    Snow: typeof SceneSnow;
+    Aurora: typeof SceneAurora;
   };
 }>;
 
 const defaultProps: Partial<SceneProps> = {
   fullscreen: false,
   zIndex: 0,
+  reducedMotion: 'auto',
 };
 
 const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
@@ -70,6 +94,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
   const {
     fullscreen,
     zIndex,
+    reducedMotion,
     children,
 
     classNames,
@@ -97,7 +122,13 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
 
   return (
     <SceneProvider value={{ getStyles }}>
-      <Box ref={ref} {...getStyles('root')} {...others} mod={[{ fullscreen }, mod]}>
+      <Box
+        ref={ref}
+        aria-hidden="true"
+        {...getStyles('root')}
+        {...others}
+        mod={[{ fullscreen, 'reduced-motion': reducedMotion }, mod]}
+      >
         {children}
       </Box>
     </SceneProvider>
@@ -111,9 +142,17 @@ Scene.DotGrid = SceneDotGrid;
 Scene.Glow = SceneGlow;
 Scene.Mesh = SceneMesh;
 Scene.Noise = SceneNoise;
+Scene.StarField = SceneStarField;
+Scene.ShootingStar = SceneShootingStar;
+Scene.Snow = SceneSnow;
+Scene.Aurora = SceneAurora;
 
 export type { SceneGradientProps } from './SceneGradient/SceneGradient';
 export type { SceneDotGridProps } from './SceneDotGrid/SceneDotGrid';
 export type { SceneGlowProps } from './SceneGlow/SceneGlow';
 export type { SceneMeshProps, SceneMeshStop } from './SceneMesh/SceneMesh';
 export type { SceneNoiseProps } from './SceneNoise/SceneNoise';
+export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';
+export type { SceneShootingStarProps } from './SceneShootingStar/SceneShootingStar';
+export type { SceneSnowProps } from './SceneSnow/SceneSnow';
+export type { SceneAuroraProps } from './SceneAurora/SceneAurora';

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
+import classes from '../Scene.module.css';
 
 export interface SceneMeshStop {
   /** Color — supports Mantine theme colors */
@@ -22,6 +23,21 @@ export interface SceneMeshProps {
    */
   opacity?: number;
 
+  /** Enable animated hue-rotate shift
+   *  @default false
+   */
+  animate?: boolean;
+
+  /** Animation duration in seconds
+   *  @default 15
+   */
+  duration?: number;
+
+  /** CSS mix-blend-mode
+   *  @default 'normal'
+   */
+  blend?: React.CSSProperties['mixBlendMode'];
+
   /** Additional className */
   className?: string;
 
@@ -35,7 +51,15 @@ const defaultStops: SceneMeshStop[] = [
   { color: 'blue', position: '50% 80%', spread: 55 },
 ];
 
-export function SceneMesh({ stops = defaultStops, opacity = 1, className, style }: SceneMeshProps) {
+export function SceneMesh({
+  stops = defaultStops,
+  opacity = 1,
+  animate = false,
+  duration = 15,
+  blend = 'normal',
+  className,
+  style,
+}: SceneMeshProps) {
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
 
@@ -46,7 +70,21 @@ export function SceneMesh({ stops = defaultStops, opacity = 1, className, style 
     )
     .join(', ');
 
-  return <Box {...getStyles('mesh', { className, style: { background, opacity, ...style } })} />;
+  return (
+    <Box
+      {...getStyles('mesh', {
+        className:
+          [animate && classes.meshAnimated, className].filter(Boolean).join(' ') || undefined,
+        style: {
+          background,
+          opacity,
+          mixBlendMode: blend,
+          '--scene-mesh-duration': `${duration}s`,
+          ...style,
+        } as React.CSSProperties,
+      })}
+    />
+  );
 }
 
 SceneMesh.displayName = 'SceneMesh';

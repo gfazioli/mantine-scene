@@ -11,7 +11,7 @@ function Demo() {
   return (
     <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
       <Scene>
-        <Scene.DotGrid{{props}} />
+        <Scene.Aurora{{props}} />
       </Scene>
     </Box>
   );
@@ -30,83 +30,69 @@ function Wrapper(props: any) {
       }}
     >
       <Scene>
-        <Scene.DotGrid {...props} />
+        <Scene.Aurora {...props} />
       </Scene>
     </Box>
   );
 }
 
-export const dotGridConfigurator: MantineDemo = {
+export const auroraConfigurator: MantineDemo = {
   type: 'configurator',
   component: Wrapper,
   code,
   controls: [
     {
-      type: 'color',
-      prop: 'color',
-      initialValue: 'gray',
-      libraryValue: 'gray',
-    },
-    {
       type: 'number',
-      prop: 'dotSize',
-      initialValue: 1,
-      libraryValue: 1,
-      step: 0.5,
-      min: 0.5,
-      max: 10,
-    },
-    {
-      type: 'number',
-      prop: 'spacing',
-      initialValue: 24,
-      libraryValue: 24,
-      step: 2,
-      min: 4,
-      max: 80,
-    },
-    {
-      type: 'boolean',
-      prop: 'stagger',
-      initialValue: false,
-      libraryValue: false,
+      prop: 'bands',
+      initialValue: 3,
+      libraryValue: 3,
+      step: 1,
+      min: 1,
+      max: 6,
     },
     {
       type: 'select',
-      prop: 'fade',
-      initialValue: 'none',
-      libraryValue: 'none',
+      prop: 'position',
+      initialValue: 'top',
+      libraryValue: 'top',
       data: [
-        { value: 'none', label: 'None' },
-        { value: 'radial', label: 'Radial' },
         { value: 'top', label: 'Top' },
+        { value: 'center', label: 'Center' },
         { value: 'bottom', label: 'Bottom' },
-        { value: 'edges', label: 'Edges' },
       ],
     },
     {
       type: 'boolean',
       prop: 'animate',
-      initialValue: false,
-      libraryValue: false,
+      initialValue: true,
+      libraryValue: true,
     },
     {
       type: 'number',
       prop: 'duration',
-      initialValue: 4,
-      libraryValue: 4,
+      initialValue: 8,
+      libraryValue: 8,
       step: 1,
       min: 1,
-      max: 20,
+      max: 30,
     },
     {
       type: 'number',
       prop: 'opacity',
-      initialValue: 1,
-      libraryValue: 1,
+      initialValue: 0.3,
+      libraryValue: 0.3,
       step: 0.05,
       min: 0,
       max: 1,
+    },
+    {
+      type: 'number',
+      prop: 'blur',
+      initialValue: 60,
+      libraryValue: 60,
+      step: 5,
+      min: 0,
+      max: 150,
     },
   ],
 };
