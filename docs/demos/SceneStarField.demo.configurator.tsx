@@ -53,7 +53,7 @@ export const starFieldConfigurator: MantineDemo = {
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'white',
+      initialValue: 'gray',
       libraryValue: 'white',
     },
     {

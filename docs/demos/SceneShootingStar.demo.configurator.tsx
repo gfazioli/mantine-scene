@@ -44,16 +44,16 @@ export const shootingStarConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'count',
-      initialValue: 3,
+      initialValue: 50,
       libraryValue: 3,
       step: 1,
       min: 1,
-      max: 8,
+      max: 80,
     },
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'white',
+      initialValue: 'gray',
       libraryValue: 'white',
     },
     {
@@ -86,7 +86,7 @@ export const shootingStarConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'minInterval',
-      initialValue: 3,
+      initialValue: 1,
       libraryValue: 3,
       step: 0.5,
       min: 0.5,
@@ -95,7 +95,7 @@ export const shootingStarConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'maxInterval',
-      initialValue: 8,
+      initialValue: 3,
       libraryValue: 8,
       step: 0.5,
       min: 2,

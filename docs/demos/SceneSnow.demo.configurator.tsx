@@ -53,7 +53,7 @@ export const snowConfigurator: MantineDemo = {
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'white',
+      initialValue: 'gray',
       libraryValue: 'white',
     },
     {

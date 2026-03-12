@@ -250,7 +250,7 @@
 
 .shootingStarTrail {
   display: block;
-  height: 2px;
+  height: var(--scene-shooting-height, 2px);
   border-radius: 999px;
   opacity: 0;
   animation: scene-shooting-star var(--scene-shooting-speed, 4s) linear infinite;
@@ -262,15 +262,15 @@
     opacity: 0;
   }
 
-  2% {
-    opacity: var(--scene-shooting-opacity, 0.8);
+  3% {
+    opacity: 1;
   }
 
-  18% {
-    opacity: var(--scene-shooting-opacity, 0.8);
+  20% {
+    opacity: 1;
   }
 
-  22% {
+  25% {
     transform: translateX(500px);
     opacity: 0;
   }

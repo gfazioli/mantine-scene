@@ -86,7 +86,8 @@ export function SceneShootingStar({
       const startY = dy > 0 ? -5 + rng() * 15 : dy < -0.3 ? 75 + rng() * 25 : rng() * 40;
 
       const interval = minInterval + rng() * (maxInterval - minInterval);
-      const totalDuration = speed + interval;
+      const activeDuration = 1 / speed;
+      const totalDuration = activeDuration + interval;
       return {
         key: i,
         startX,
@@ -112,6 +113,7 @@ export function SceneShootingStar({
             left: `${trail.startX}%`,
             top: `${trail.startY}%`,
             transform: `rotate(${angle}deg)`,
+            opacity,
           }}
         >
           <Box
@@ -120,9 +122,9 @@ export function SceneShootingStar({
             style={
               {
                 width: `${trailLength}px`,
-                background: `linear-gradient(90deg, transparent 0%, ${resolvedColor} 100%)`,
+                '--scene-shooting-height': '2px',
                 '--scene-shooting-speed': `${trail.totalDuration}s`,
-                '--scene-shooting-opacity': String(opacity),
+                background: `linear-gradient(90deg, transparent 0%, ${resolvedColor} 100%)`,
                 animationDelay: `${trail.delay}s`,
               } as React.CSSProperties
             }

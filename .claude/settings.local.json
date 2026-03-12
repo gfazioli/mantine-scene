@@ -34,7 +34,9 @@
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -10)",
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -5 && yarn jest 2>&1 | tail -20)",
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn docgen 2>&1 | tail -5)",
-      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -5 && yarn jest 2>&1 | tail -10)"
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -5 && yarn jest 2>&1 | tail -10)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -5 && yarn jest 2>&1 | tail -5)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1 | tail -3 && yarn jest 2>&1 | tail -5)"
     ]
   }
 }
