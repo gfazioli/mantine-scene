@@ -14,6 +14,7 @@ export type {
   SceneShootingStarProps,
   SceneSnowProps,
   SceneStarFieldProps,
+  SceneStarWarpProps,
   SceneStylesNames,
 } from './Scene';
 export { useSceneContext } from './Scene.context';

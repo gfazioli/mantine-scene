@@ -16,6 +16,7 @@ generateDeclarations({
     getComponentPath('SceneShootingStar/SceneShootingStar.tsx'),
     getComponentPath('SceneSnow/SceneSnow.tsx'),
     getComponentPath('SceneAurora/SceneAurora.tsx'),
+    getComponentPath('SceneStarWarp/SceneStarWarp.tsx'),
   ],
   tsConfigPath: path.join(process.cwd(), 'tsconfig.json'),
   outputPath: path.join(process.cwd(), 'docs'),

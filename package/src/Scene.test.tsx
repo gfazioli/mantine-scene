@@ -116,6 +116,15 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
+  it('renders StarWarp sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.StarWarp count={20} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
   it('renders Aurora sub-component', () => {
     const { container } = render(
       <Scene>
@@ -135,11 +144,12 @@ describe('Scene', () => {
         <Scene.Noise />
         <Scene.StarField />
         <Scene.ShootingStar />
+        <Scene.StarWarp />
         <Scene.Snow />
         <Scene.Aurora />
       </Scene>
     );
     const children = container.querySelector('[class]')?.children;
-    expect(children?.length).toBe(9);
+    expect(children?.length).toBe(10);
   });
 });

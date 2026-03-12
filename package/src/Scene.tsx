@@ -19,6 +19,7 @@ import { SceneNoise } from './SceneNoise/SceneNoise';
 import { SceneShootingStar } from './SceneShootingStar/SceneShootingStar';
 import { SceneSnow } from './SceneSnow/SceneSnow';
 import { SceneStarField } from './SceneStarField/SceneStarField';
+import { SceneStarWarp } from './SceneStarWarp/SceneStarWarp';
 import classes from './Scene.module.css';
 
 export type SceneStylesNames =
@@ -31,7 +32,8 @@ export type SceneStylesNames =
   | 'starField'
   | 'shootingStar'
   | 'snow'
-  | 'aurora';
+  | 'aurora'
+  | 'starWarp';
 
 export type SceneCssVariables = {
   root: '--scene-z-index';
@@ -74,6 +76,7 @@ export type SceneFactory = Factory<{
     ShootingStar: typeof SceneShootingStar;
     Snow: typeof SceneSnow;
     Aurora: typeof SceneAurora;
+    StarWarp: typeof SceneStarWarp;
   };
 }>;
 
@@ -146,6 +149,7 @@ Scene.StarField = SceneStarField;
 Scene.ShootingStar = SceneShootingStar;
 Scene.Snow = SceneSnow;
 Scene.Aurora = SceneAurora;
+Scene.StarWarp = SceneStarWarp;
 
 export type { SceneGradientProps } from './SceneGradient/SceneGradient';
 export type { SceneDotGridProps } from './SceneDotGrid/SceneDotGrid';
@@ -156,3 +160,4 @@ export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';
 export type { SceneShootingStarProps } from './SceneShootingStar/SceneShootingStar';
 export type { SceneSnowProps } from './SceneSnow/SceneSnow';
 export type { SceneAuroraProps } from './SceneAurora/SceneAurora';
+export type { SceneStarWarpProps } from './SceneStarWarp/SceneStarWarp';

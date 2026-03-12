@@ -22,6 +22,7 @@ export default function HomePage() {
           'SceneShootingStar',
           'SceneSnow',
           'SceneAurora',
+          'SceneStarWarp',
         ]}
         componentPrefix="Scene"
       >

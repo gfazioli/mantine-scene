@@ -13,6 +13,7 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     shootingStar: 'Shooting star layer element (Scene.ShootingStar)',
     snow: 'Snow layer element (Scene.Snow)',
     aurora: 'Aurora layer element (Scene.Aurora)',
+    starWarp: 'Star warp layer element (Scene.StarWarp)',
   },
 
   vars: {

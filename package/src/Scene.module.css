@@ -365,3 +365,61 @@
     transform: translateX(5%) scaleY(1.1);
   }
 }
+
+/* ============================================
+   Scene - StarWarp layer
+   ============================================ */
+.starWarp {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.starWarpLane {
+  position: absolute;
+  transform-origin: 0 0;
+}
+
+.starWarpDotOut {
+  display: block;
+  border-radius: 50%;
+  animation: scene-starwarp-out var(--scene-starwarp-speed, 3s) ease-in infinite;
+}
+
+.starWarpDotIn {
+  display: block;
+  border-radius: 50%;
+  animation: scene-starwarp-in var(--scene-starwarp-speed, 3s) ease-out infinite;
+}
+
+@keyframes scene-starwarp-out {
+  0% {
+    transform: translateX(0) scale(0.1);
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateX(400px) scale(2.5);
+    opacity: 1;
+  }
+}
+
+@keyframes scene-starwarp-in {
+  0% {
+    transform: translateX(400px) scale(2.5);
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateX(0) scale(0.1);
+    opacity: 0;
+  }
+}
