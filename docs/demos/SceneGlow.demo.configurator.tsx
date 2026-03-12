@@ -18,7 +18,7 @@ function Demo() {
 }
 `;
 
-function Wrapper({ top, left, driftX, driftY, ...props }: any) {
+function Wrapper({ top, left, driftX, driftY, interactive, ...props }: any) {
   return (
     <Box
       pos="relative"
@@ -29,7 +29,7 @@ function Wrapper({ top, left, driftX, driftY, ...props }: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene>
+      <Scene interactive={interactive}>
         <Scene.Glow
           top={`${top}%`}
           left={`${left}%`}
@@ -150,6 +150,12 @@ export const glowConfigurator: MantineDemo = {
       step: 5,
       min: 0,
       max: 100,
+    },
+    {
+      type: 'boolean',
+      prop: 'interactive',
+      initialValue: false,
+      libraryValue: false,
     },
   ],
 };

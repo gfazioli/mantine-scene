@@ -93,10 +93,14 @@ export function SceneGlow({
   className,
   style,
 }: SceneGlowProps) {
-  const { getStyles } = useSceneContext();
+  const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor =
     shade !== undefined ? getThemeColor(`${color}.${shade}`, theme) : getThemeColor(color, theme);
+
+  // When interactive, mouse position overrides top/left
+  const effectiveTop = mouse ? `${mouse.y}%` : top;
+  const effectiveLeft = mouse ? `${mouse.x}%` : left;
 
   return (
     <Box
@@ -111,8 +115,8 @@ export function SceneGlow({
           '--scene-glow-delay': `${delay}s`,
           '--scene-glow-drift-x': driftX,
           '--scene-glow-drift-y': driftY,
-          top,
-          left,
+          top: effectiveTop,
+          left: effectiveLeft,
           marginTop: `${-size / 2}px`,
           marginLeft: `${-size / 2}px`,
           background: `radial-gradient(circle, ${resolvedColor} 0%, transparent 70%)`,

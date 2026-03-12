@@ -82,9 +82,13 @@ export function SceneStarWarp({
   className,
   style,
 }: SceneStarWarpProps) {
-  const { getStyles } = useSceneContext();
+  const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);
+
+  // When interactive, mouse position overrides focalX/focalY
+  const effectiveFocalX = mouse ? `${mouse.x}%` : focalX;
+  const effectiveFocalY = mouse ? `${mouse.y}%` : focalY;
 
   const stars = useMemo(() => {
     const rng = mulberry32(seed);
@@ -117,8 +121,8 @@ export function SceneStarWarp({
           key={star.key}
           className={classes.starWarpLane}
           style={{
-            left: focalX,
-            top: focalY,
+            left: effectiveFocalX,
+            top: effectiveFocalY,
             transform: `rotate(${star.angle}deg)`,
           }}
         >

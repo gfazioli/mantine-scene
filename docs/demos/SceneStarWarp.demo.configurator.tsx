@@ -18,7 +18,7 @@ function Demo() {
 }
 `;
 
-function Wrapper({ focalX, focalY, ...props }: any) {
+function Wrapper({ focalX, focalY, interactive, ...props }: any) {
   return (
     <Box
       pos="relative"
@@ -29,7 +29,7 @@ function Wrapper({ focalX, focalY, ...props }: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene>
+      <Scene interactive={interactive}>
         <Scene.StarWarp focalX={`${focalX}%`} focalY={`${focalY}%`} {...props} />
       </Scene>
     </Box>
@@ -134,6 +134,12 @@ export const starWarpConfigurator: MantineDemo = {
       step: 1,
       min: 0,
       max: 200,
+    },
+    {
+      type: 'boolean',
+      prop: 'interactive',
+      initialValue: false,
+      libraryValue: false,
     },
   ],
 };

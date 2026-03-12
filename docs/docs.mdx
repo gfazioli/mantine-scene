@@ -54,6 +54,20 @@ Use the `reducedMotion` prop to control behavior:
 - `'never'` — keeps animations regardless of user
   preference
 
+## Interactive
+
+Set `interactive` on the root `Scene` to enable mouse
+tracking. Sub-components that support it will react
+to the cursor position automatically:
+
+- **`Scene.StarWarp`** — focal point follows the mouse
+- **`Scene.Glow`** — blob position follows the mouse
+- **`Scene.Gradient`** — radial/conic gradient center
+  follows the mouse
+
+When the mouse leaves the scene, components fall back
+to their default position props.
+
 ## Gradient
 
 `Scene.Gradient` supports three types: `radial`

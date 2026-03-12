@@ -85,5 +85,11 @@ export const usage: MantineDemo = {
       initialValue: false,
       libraryValue: false,
     },
+    {
+      type: 'boolean',
+      prop: 'interactive',
+      initialValue: false,
+      libraryValue: false,
+    },
   ],
 };

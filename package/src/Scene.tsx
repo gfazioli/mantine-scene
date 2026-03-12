@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -9,7 +9,7 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
-import { SceneProvider } from './Scene.context';
+import { SceneProvider, type SceneMousePosition } from './Scene.context';
 import { SceneAurora } from './SceneAurora/SceneAurora';
 import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
 import { SceneGlow } from './SceneGlow/SceneGlow';
@@ -55,6 +55,11 @@ export interface SceneBaseProps {
    */
   reducedMotion?: 'auto' | 'always' | 'never';
 
+  /** Enable mouse tracking — sub-components can react to the cursor position
+   *  @default false
+   */
+  interactive?: boolean;
+
   /** Scene content (compound sub-components: Scene.Gradient, Scene.Glow, etc.) */
   children?: React.ReactNode;
 }
@@ -84,6 +89,7 @@ const defaultProps: Partial<SceneProps> = {
   fullscreen: false,
   zIndex: 0,
   reducedMotion: 'auto',
+  interactive: false,
 };
 
 const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
@@ -98,6 +104,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
     fullscreen,
     zIndex,
     reducedMotion,
+    interactive,
     children,
 
     classNames,
@@ -123,14 +130,49 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
     varsResolver,
   });
 
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mouse, setMouse] = useState<SceneMousePosition | null>(null);
+
+  const handleMouseMove = useCallback(
+    (e: React.MouseEvent<HTMLDivElement>) => {
+      if (!interactive) {
+        return;
+      }
+      const rect = containerRef.current?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+      setMouse({
+        x: ((e.clientX - rect.left) / rect.width) * 100,
+        y: ((e.clientY - rect.top) / rect.height) * 100,
+      });
+    },
+    [interactive]
+  );
+
+  const handleMouseLeave = useCallback(() => {
+    if (interactive) {
+      setMouse(null);
+    }
+  }, [interactive]);
+
   return (
-    <SceneProvider value={{ getStyles }}>
+    <SceneProvider value={{ getStyles, mouse }}>
       <Box
-        ref={ref}
+        ref={(node) => {
+          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          if (typeof ref === 'function') {
+            ref(node);
+          } else if (ref) {
+            (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+          }
+        }}
         aria-hidden="true"
         {...getStyles('root')}
         {...others}
-        mod={[{ fullscreen, 'reduced-motion': reducedMotion }, mod]}
+        mod={[{ fullscreen, interactive, 'reduced-motion': reducedMotion }, mod]}
+        onMouseMove={interactive ? handleMouseMove : undefined}
+        onMouseLeave={interactive ? handleMouseLeave : undefined}
       >
         {children}
       </Box>

@@ -91,8 +91,11 @@ export function SceneGradient({
   className,
   style,
 }: SceneGradientProps) {
-  const { getStyles } = useSceneContext();
+  const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
+
+  // When interactive, mouse position overrides gradient center
+  const effectivePosition = mouse ? `${mouse.x}% ${mouse.y}%` : position;
 
   let resolvedColors: string[];
 
@@ -115,11 +118,11 @@ export function SceneGradient({
       background = `linear-gradient(${angle}deg, ${resolvedColors.join(', ')})`;
       break;
     case 'conic':
-      background = `conic-gradient(from 0deg at ${position}, ${resolvedColors.join(', ')})`;
+      background = `conic-gradient(from 0deg at ${effectivePosition}, ${resolvedColors.join(', ')})`;
       break;
     case 'radial':
     default:
-      background = `radial-gradient(ellipse at ${position}, ${resolvedColors.join(', ')})`;
+      background = `radial-gradient(ellipse at ${effectivePosition}, ${resolvedColors.join(', ')})`;
       break;
   }
 
