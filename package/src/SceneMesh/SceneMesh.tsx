@@ -1,10 +1,10 @@
 import React from 'react';
-import { Box } from '@mantine/core';
+import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
 
 export interface SceneMeshStop {
-  /** CSS color */
-  color: string;
+  /** Color — supports Mantine theme colors */
+  color: MantineColor;
   /** Position as 'x% y%' (e.g. '20% 30%') */
   position: string;
   /** Spread radius as percentage
@@ -30,18 +30,19 @@ export interface SceneMeshProps {
 }
 
 const defaultStops: SceneMeshStop[] = [
-  { color: 'rgba(120, 0, 255, 0.15)', position: '20% 20%', spread: 50 },
-  { color: 'rgba(255, 0, 128, 0.12)', position: '80% 30%', spread: 45 },
-  { color: 'rgba(0, 100, 255, 0.1)', position: '50% 80%', spread: 55 },
+  { color: 'violet', position: '20% 20%', spread: 50 },
+  { color: 'pink', position: '80% 30%', spread: 45 },
+  { color: 'blue', position: '50% 80%', spread: 55 },
 ];
 
 export function SceneMesh({ stops = defaultStops, opacity = 1, className, style }: SceneMeshProps) {
   const { getStyles } = useSceneContext();
+  const theme = useMantineTheme();
 
   const background = stops
     .map(
       (stop) =>
-        `radial-gradient(ellipse at ${stop.position}, ${stop.color} 0%, transparent ${stop.spread ?? 50}%)`
+        `radial-gradient(ellipse at ${stop.position}, ${getThemeColor(stop.color, theme)} 0%, transparent ${stop.spread ?? 50}%)`
     )
     .join(', ');
 

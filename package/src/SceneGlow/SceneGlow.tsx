@@ -1,13 +1,13 @@
 import React from 'react';
-import { Box } from '@mantine/core';
+import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
 import classes from '../Scene.module.css';
 
 export interface SceneGlowProps {
-  /** CSS color for the glow blob
-   *  @default 'rgba(120, 0, 255, 0.3)'
+  /** Color of the glow blob — supports Mantine theme colors
+   *  @default 'violet'
    */
-  color?: string;
+  color?: MantineColor;
 
   /** Size of the blob in px
    *  @default 400
@@ -62,7 +62,7 @@ export interface SceneGlowProps {
 }
 
 export function SceneGlow({
-  color = 'rgba(120, 0, 255, 0.3)',
+  color = 'violet',
   size = 400,
   blur = 120,
   opacity = 0.5,
@@ -76,6 +76,8 @@ export function SceneGlow({
   style,
 }: SceneGlowProps) {
   const { getStyles } = useSceneContext();
+  const theme = useMantineTheme();
+  const resolvedColor = getThemeColor(color, theme);
 
   return (
     <Box
@@ -92,7 +94,7 @@ export function SceneGlow({
           top,
           left,
           transform: 'translate(-50%, -50%)',
-          background: `radial-gradient(circle, ${color} 0%, transparent 70%)`,
+          background: `radial-gradient(circle, ${resolvedColor} 0%, transparent 70%)`,
           ...style,
         },
       })}

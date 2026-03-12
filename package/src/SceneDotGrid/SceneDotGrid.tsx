@@ -1,12 +1,12 @@
 import React from 'react';
-import { Box } from '@mantine/core';
+import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
 
 export interface SceneDotGridProps {
-  /** Dot color (CSS color)
-   *  @default 'rgba(255, 255, 255, 0.15)'
+  /** Dot color — supports Mantine theme colors
+   *  @default 'gray'
    */
-  color?: string;
+  color?: MantineColor;
 
   /** Dot radius in px
    *  @default 1
@@ -31,7 +31,7 @@ export interface SceneDotGridProps {
 }
 
 export function SceneDotGrid({
-  color = 'rgba(255, 255, 255, 0.15)',
+  color = 'gray',
   dotSize = 1,
   spacing = 24,
   opacity = 1,
@@ -39,8 +39,10 @@ export function SceneDotGrid({
   style,
 }: SceneDotGridProps) {
   const { getStyles } = useSceneContext();
+  const theme = useMantineTheme();
+  const resolvedColor = getThemeColor(color, theme);
 
-  const backgroundImage = `radial-gradient(circle, ${color} ${dotSize}px, transparent ${dotSize}px)`;
+  const backgroundImage = `radial-gradient(circle, ${resolvedColor} ${dotSize}px, transparent ${dotSize}px)`;
 
   return (
     <Box

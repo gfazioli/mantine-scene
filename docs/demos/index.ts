@@ -1,9 +1,14 @@
 export { combined } from './Scene.demo.combined';
 export { dotGrid } from './Scene.demo.dotGrid';
+export { dotGridConfigurator } from './SceneDotGrid.demo.configurator';
 export { fullscreen } from './Scene.demo.fullscreen';
 export { glow } from './Scene.demo.glow';
+export { glowConfigurator } from './SceneGlow.demo.configurator';
 export { gradient } from './Scene.demo.gradient';
+export { gradientConfigurator } from './SceneGradient.demo.configurator';
 export { mesh } from './Scene.demo.mesh';
+export { meshConfigurator } from './SceneMesh.demo.configurator';
 export { noise } from './Scene.demo.noise';
+export { noiseConfigurator } from './SceneNoise.demo.configurator';
 export { stylesApi } from './Scene.demo.stylesApi';
 export { usage } from './Scene.demo.usage';
