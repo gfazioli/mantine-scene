@@ -1,8 +1,9 @@
-export { animations } from './Scene.demo.animations';
-export { colors } from './Scene.demo.colors';
-export { configurator } from './Scene.demo.configurator';
-export { controlled } from './Scene.demo.controlled';
-export { defcon } from './Scene.demo.defcon';
-export { labels } from './Scene.demo.labels';
-export { statusPanel } from './Scene.demo.statusPanel';
+export { combined } from './Scene.demo.combined';
+export { dotGrid } from './Scene.demo.dotGrid';
+export { fullscreen } from './Scene.demo.fullscreen';
+export { glow } from './Scene.demo.glow';
+export { gradient } from './Scene.demo.gradient';
+export { mesh } from './Scene.demo.mesh';
+export { noise } from './Scene.demo.noise';
 export { stylesApi } from './Scene.demo.stylesApi';
+export { usage } from './Scene.demo.usage';

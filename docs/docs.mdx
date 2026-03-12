@@ -5,13 +5,16 @@ import * as demos from './demos';
 
 <InstallScript packages="@gfazioli/mantine-scene" />
 
-After installation import package styles at the root of your application:
+After installation import package styles at the root
+of your application:
 
 ```tsx
 import '@gfazioli/mantine-scene/styles.css';
 ```
 
-You can import styles within a layer `@layer mantine-scene` by importing `@gfazioli/mantine-scene/styles.layer.css` file.
+You can import styles within a layer `@layer mantine-scene`
+by importing `@gfazioli/mantine-scene/styles.layer.css`
+file.
 
 ```tsx
 import '@gfazioli/mantine-scene/styles.layer.css';
@@ -19,60 +22,78 @@ import '@gfazioli/mantine-scene/styles.layer.css';
 
 ## Usage
 
-Explore all available props and see the component in action:
+`Scene` is a decorative background container that
+composes multiple visual layers: gradients, glow
+blobs, dot grids, mesh gradients, and noise
+textures. Place it behind your content to create
+rich, atmospheric backgrounds.
 
-<Demo data={demos.configurator} />
+<Demo data={demos.usage} />
 
-## Controlled
+## Fullscreen
 
-The Scene component is fully controlled through the `value` prop. Here's an example of controlling the Scene state:
+Set `fullscreen` to cover the entire viewport with
+`position: fixed`. The scene sits behind all content
+at `z-index: 0` by default (configurable via the
+`zIndex` prop).
 
-<Demo data={demos.controlled} />
+<Demo data={demos.fullscreen} />
 
-## Colors
+## Gradient
 
-The Scene component supports all Mantine theme colors. Use the `color` prop to set the Scene color:
+`Scene.Gradient` supports three types: `radial`
+(default), `linear`, and `conic`. Customize with
+`colors`, `position`, and `angle` props.
 
-<Demo data={demos.colors} />
+<Demo data={demos.gradient} />
 
-## Animations
+## Glow
 
-Add visual feedback with built-in animations. The component supports multiple animation types:
+`Scene.Glow` renders animated floating blobs.
+Each blob can be positioned, sized, and animated
+independently. Disable animation with
+`animate={false}`.
 
-- **pulse**: Smooth pulsing effect (default)
-- **flash**: Quick flashing
-- **breathe**: Slow breathing effect
-- **blink**: Regular blinking
-- **glow**: Glowing effect with increased intensity
+<Demo data={demos.glow} />
 
-<Demo data={demos.animations} />
+## DotGrid
 
-## Labels
+`Scene.DotGrid` creates a repeating dot pattern.
+Control `color`, `dotSize`, `spacing`, and
+`opacity`.
 
-Add descriptive labels to your Scene indicators with full customization support:
+<Demo data={demos.dotGrid} />
 
-<Demo data={demos.labels} />
+## Mesh
 
-The `label` prop accepts any React node, allowing you to use custom components like badges, icons, or formatted text. Use `labelPosition` to control whether the label appears on the left or right side of the Scene.
+`Scene.Mesh` overlays multiple radial gradients
+to simulate a mesh gradient effect. Define color
+stops with position and spread.
+
+<Demo data={demos.mesh} />
+
+## Noise
+
+`Scene.Noise` adds a film grain texture via an
+inline SVG filter. Adjust `opacity` and `grain`
+(base frequency).
+
+<Demo data={demos.noise} />
+
+## Combined
+
+All sub-components can be composed freely.
+Layer order follows DOM order.
+
+<Demo data={demos.combined} />
 
 ## Styles API
 
-`Scene` supports [Styles API](https://mantine.dev/styles/styles-api/), you can add styles to any inner element of the component with `classNames` prop. Follow [Styles API](https://mantine.dev/styles/styles-api/) documentation to learn more.
-
-You can customize the appearance of the `Scene` component using the Styles API. This allows you to modify styles for various parts of the component, such as the root, scene, and label.
+`Scene` supports
+[Styles API](https://mantine.dev/styles/styles-api/),
+you can add styles to any inner element of the
+component with `classNames` prop. Follow
+[Styles API](https://mantine.dev/styles/styles-api/)
+documentation to learn more.
 
 <Demo data={demos.stylesApi} />
-
-## Use Cases
-
-### System Status Panel
-
-Monitor multiple system components with organized Scene indicators:
-
-<Demo data={demos.statusPanel} />
-
-### DEFCON Alert System
-
-A fun example showing how to build a DEFCON (Defense Readiness Condition) alert system with animated Scenes:
-
-<Demo data={demos.defcon} />

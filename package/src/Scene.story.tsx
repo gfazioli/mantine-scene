@@ -1,262 +1,211 @@
 import React from 'react';
-import { Divider, Group, Paper, Stack, Text } from '@mantine/core';
-import { Scene, type SceneProps } from './Scene';
+import { Box, Paper, Stack, Text } from '@mantine/core';
+import { Scene } from './Scene';
 
 export default {
   title: 'Components/Scene',
-  args: {
-    size: 'md',
-    radius: 'xl',
-    value: true,
-    variant: 'flat',
-    intensity: 80,
-    animate: false,
-    animationType: 'none',
-    animationDuration: 1.5,
-  },
-  argTypes: {
-    label: {
-      control: 'text',
-    },
-    justify: {
-      control: 'select',
-      options: [
-        'flex-start',
-        'center',
-        'flex-end',
-        'space-between',
-        'space-around',
-        'space-evenly',
-      ],
-    },
-    labelPosition: {
-      control: 'select',
-      options: ['left', 'right'],
-    },
-    size: {
-      control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl'],
-    },
-    radius: {
-      control: 'select',
-      options: ['xs', 'sm', 'md', 'lg', 'xl'],
-    },
-    color: {
-      control: 'color',
-    },
-    variant: {
-      control: 'select',
-      options: ['flat', '3d'],
-    },
-    intensity: {
-      control: { type: 'range', min: 0, max: 100, step: 10 },
-    },
-    animationType: {
-      control: 'select',
-      options: ['none', 'pulse', 'flash', 'breathe', 'blink', 'glow'],
-    },
-    animationDuration: {
-      control: { type: 'range', min: 0.5, max: 10, step: 0.5 },
-    },
-  },
 };
 
-export function Usage() {
+export function Fullscreen() {
+  return (
+    <Scene fullscreen>
+      <Scene.Gradient
+        type="radial"
+        position="center top"
+        colors={['rgba(120, 0, 255, 0.12) 0%', 'rgba(255, 0, 128, 0.06) 40%', 'transparent 70%']}
+      />
+      <Scene.Glow
+        color="rgba(120, 0, 255, 0.2)"
+        size={600}
+        blur={150}
+        opacity={0.4}
+        top="15%"
+        left="25%"
+      />
+      <Scene.Glow
+        color="rgba(255, 0, 128, 0.15)"
+        size={500}
+        blur={140}
+        opacity={0.35}
+        top="10%"
+        left="75%"
+        driftX="-40px"
+        driftY="30px"
+      />
+      <Scene.Noise opacity={0.025} grain={0.7} />
+    </Scene>
+  );
+}
+
+export function Contained() {
   return (
     <Stack gap="xl" p="md">
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Basic Scene States
-        </Text>
-        <Group>
-          <Stack align="center">
-            <Scene />
-            <Text size="xs">On</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene value={false} />
-            <Text size="xs">Off</Text>
-          </Stack>
-        </Group>
-      </Paper>
+      <Text fw={500}>Scene as contained box (Card-like)</Text>
 
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Variants
-        </Text>
-        <Group>
-          <Stack align="center">
-            <Scene variant="flat" />
-            <Text size="xs">Flat</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene variant="3d" />
-            <Text size="xs">3D</Text>
-          </Stack>
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Sizes
-        </Text>
-        <Group align="flex-end">
-          <Stack align="center">
-            <Scene size="xs" />
-            <Text size="xs">XS</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene size="sm" />
-            <Text size="xs">SM</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene size="md" />
-            <Text size="xs">MD</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene size="lg" />
-            <Text size="xs">LG</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene size="xl" />
-            <Text size="xs">XL</Text>
-          </Stack>
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Colors
-        </Text>
-        <Group>
-          {['red', 'green', 'blue', 'yellow', 'orange', 'cyan', 'pink', 'violet'].map((color) => (
-            <Stack key={color} align="center">
-              <Scene color={color} variant="3d" size="lg" />
-              <Text size="xs" tt="capitalize">
-                {color}
-              </Text>
-            </Stack>
-          ))}
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Intensity Levels (3D variant)
-        </Text>
-        <Group>
-          {[20, 40, 60, 80, 100].map((intensity) => (
-            <Stack key={intensity} align="center">
-              <Scene intensity={intensity} variant="3d" size="lg" />
-              <Text size="xs">{intensity}%</Text>
-            </Stack>
-          ))}
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Animations
-        </Text>
-        <Group>
-          <Stack align="center">
-            <Scene animate animationType="pulse" size="lg" />
-            <Text size="xs">Pulse</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="flash" size="lg" color="red" />
-            <Text size="xs">Flash</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="breathe" size="lg" color="blue" />
-            <Text size="xs">Breathe</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="blink" size="lg" color="yellow" />
-            <Text size="xs">Blink</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="glow" size="lg" color="cyan" />
-            <Text size="xs">Glow</Text>
-          </Stack>
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Animation Speed
-        </Text>
-        <Group>
-          <Stack align="center">
-            <Scene animate animationType="pulse" animationDuration={0.5} size="lg" />
-            <Text size="xs">Fast (0.5s)</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="pulse" animationDuration={1.5} size="lg" />
-            <Text size="xs">Normal (1.5s)</Text>
-          </Stack>
-          <Stack align="center">
-            <Scene animate animationType="pulse" animationDuration={3} size="lg" />
-            <Text size="xs">Slow (3s)</Text>
-          </Stack>
-        </Group>
-      </Paper>
-
-      <Paper p="md" withBorder>
-        <Text fw={500} mb="md">
-          Combined Effects (3D + Animation + High Intensity)
-        </Text>
-        <Group>
-          <Scene
-            variant="3d"
-            animate
-            animationType="glow"
-            intensity={100}
-            size="xl"
-            color="green"
-          />
-          <Scene variant="3d" animate animationType="pulse" intensity={90} size="xl" color="red" />
-          <Scene
-            variant="3d"
-            animate
-            animationType="breathe"
-            intensity={95}
-            size="xl"
-            color="blue"
-          />
-        </Group>
+      <Paper p={0} withBorder style={{ overflow: 'hidden' }}>
+        <Box pos="relative" h={300}>
+          <Scene>
+            <Scene.Gradient
+              type="linear"
+              angle={135}
+              colors={['rgba(120, 0, 255, 0.2) 0%', 'rgba(255, 0, 128, 0.15) 100%']}
+            />
+            <Scene.DotGrid color="rgba(255, 255, 255, 0.08)" spacing={20} />
+            <Scene.Noise opacity={0.03} />
+          </Scene>
+          <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+            <Text size="xl" fw={700} c="white">
+              Content on top of Scene
+            </Text>
+            <Text c="dimmed" mt="sm">
+              The Scene acts as a decorative background layer
+            </Text>
+          </Box>
+        </Box>
       </Paper>
     </Stack>
   );
 }
 
-export function WithProps(props: SceneProps) {
-  return <Scene {...props} />;
+export function GradientVariants() {
+  return (
+    <Stack gap="xl" p="md">
+      <Text fw={500}>Gradient types</Text>
+
+      {(['radial', 'linear', 'conic'] as const).map((type) => (
+        <Paper key={type} p={0} withBorder style={{ overflow: 'hidden' }}>
+          <Box pos="relative" h={200} bg="dark.9">
+            <Scene>
+              <Scene.Gradient
+                type={type}
+                colors={[
+                  'rgba(120, 0, 255, 0.3) 0%',
+                  'rgba(255, 0, 128, 0.2) 50%',
+                  'transparent 100%',
+                ]}
+                angle={type === 'linear' ? 45 : undefined}
+              />
+            </Scene>
+            <Box pos="relative" style={{ zIndex: 1 }} p="md">
+              <Text c="white" tt="capitalize">
+                {type}
+              </Text>
+            </Box>
+          </Box>
+        </Paper>
+      ))}
+    </Stack>
+  );
 }
 
-export function WithLabel() {
+export function GlowBlobs() {
   return (
-    <>
-      <Group>
-        <Scene label="Server Online" color="green" />
-        <Scene label="Server Offline" color="red" value={false} />
-        <Scene label={<Text c="blue">Custom Label</Text>} color="blue" />
-      </Group>
-      <Divider />
-      <div>
-        <Scene label="Left Label" labelPosition="left" color="orange" />
-      </div>
+    <Box pos="relative" h={400} bg="dark.9">
+      <Scene>
+        <Scene.Glow color="rgba(120, 0, 255, 0.3)" size={300} top="30%" left="20%" duration={8} />
+        <Scene.Glow color="rgba(255, 0, 128, 0.25)" size={250} top="50%" left="70%" duration={10} />
+        <Scene.Glow color="rgba(255, 200, 0, 0.2)" size={200} top="70%" left="40%" duration={12} />
+      </Scene>
+      <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+        <Text size="xl" fw={700} c="white">
+          Animated Glow Blobs
+        </Text>
+      </Box>
+    </Box>
+  );
+}
 
-      <div>
-        <Scene label="Right Label" labelPosition="right" color="pink" />
-      </div>
+export function DotGridPattern() {
+  return (
+    <Stack gap="xl" p="md">
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.DotGrid color="rgba(255, 255, 255, 0.1)" dotSize={1} spacing={24} />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Default dot grid</Text>
+        </Box>
+      </Box>
 
-      <Divider />
-      <Stack>
-        <Scene label="Left Label" labelPosition="left" color="orange" />
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.DotGrid color="rgba(100, 150, 255, 0.2)" dotSize={2} spacing={16} />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Dense blue dots</Text>
+        </Box>
+      </Box>
+    </Stack>
+  );
+}
 
-        <Scene label="Right Label" labelPosition="right" color="pink" />
-      </Stack>
-    </>
+export function MeshGradient() {
+  return (
+    <Box pos="relative" h={400} bg="dark.9">
+      <Scene>
+        <Scene.Mesh
+          stops={[
+            { color: 'rgba(120, 0, 255, 0.2)', position: '20% 20%', spread: 50 },
+            { color: 'rgba(255, 0, 128, 0.15)', position: '80% 30%', spread: 45 },
+            { color: 'rgba(0, 100, 255, 0.12)', position: '50% 80%', spread: 55 },
+          ]}
+        />
+      </Scene>
+      <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+        <Text size="xl" fw={700} c="white">
+          Mesh Gradient
+        </Text>
+      </Box>
+    </Box>
+  );
+}
+
+export function NoiseTexture() {
+  return (
+    <Stack gap="xl" p="md">
+      {[0.02, 0.05, 0.1].map((opacity) => (
+        <Box key={opacity} pos="relative" h={200} bg="dark.9">
+          <Scene>
+            <Scene.Noise opacity={opacity} grain={0.65} />
+          </Scene>
+          <Box pos="relative" style={{ zIndex: 1 }} p="md">
+            <Text c="white">Noise opacity: {opacity}</Text>
+          </Box>
+        </Box>
+      ))}
+    </Stack>
+  );
+}
+
+export function CombinedEffects() {
+  return (
+    <Box pos="relative" h={500} bg="dark.9">
+      <Scene>
+        <Scene.DotGrid color="rgba(255, 255, 255, 0.05)" spacing={28} />
+        <Scene.Mesh
+          stops={[
+            { color: 'rgba(0, 120, 255, 0.1)', position: '15% 20%', spread: 45 },
+            { color: 'rgba(0, 200, 150, 0.08)', position: '85% 40%', spread: 40 },
+            { color: 'rgba(80, 0, 200, 0.06)', position: '50% 80%', spread: 50 },
+          ]}
+        />
+        <Scene.Gradient
+          type="linear"
+          angle={180}
+          colors={['transparent 0%', 'rgba(0, 0, 0, 0.4) 100%']}
+        />
+        <Scene.Glow color="rgba(0, 150, 255, 0.15)" size={500} top="20%" left="30%" duration={10} />
+        <Scene.Glow color="rgba(0, 200, 150, 0.1)" size={400} top="60%" left="70%" duration={14} />
+        <Scene.Noise opacity={0.02} grain={0.65} />
+      </Scene>
+      <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+        <Text size="xl" fw={700} c="white">
+          All effects combined
+        </Text>
+        <Text c="dimmed" mt="sm">
+          DotGrid + Mesh + Gradient + Glow + Noise
+        </Text>
+      </Box>
+    </Box>
   );
 }

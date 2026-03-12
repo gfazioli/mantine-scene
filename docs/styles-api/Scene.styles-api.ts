@@ -3,42 +3,25 @@ import type { StylesApiData } from '../components/styles-api.types';
 
 export const SceneStylesApi: StylesApiData<SceneFactory> = {
   selectors: {
-    root: 'Root element',
-    scene: 'Scene element',
-    label: 'Label element',
-    glow: 'Outer glow effect element',
-    light: 'Inner light reflection element',
+    root: 'Root element — the container for all layers',
+    gradient: 'Gradient layer element (Scene.Gradient)',
+    dotGrid: 'Dot grid pattern layer element (Scene.DotGrid)',
+    glow: 'Glow blob layer element (Scene.Glow)',
+    mesh: 'Mesh gradient layer element (Scene.Mesh)',
+    noise: 'Noise texture layer element (Scene.Noise)',
   },
 
   vars: {
     root: {
-      '--scene-size': 'Controls Scene width and height',
-      '--scene-radius': 'Controls border radius',
-      '--scene-color': 'Controls Scene base color',
-      '--scene-intensity': 'Controls brightness intensity (0-1)',
-      '--scene-animation-duration': 'Controls animation duration',
-      '--scene-glow-size': 'Controls outer glow size',
-      '--scene-justify-content': 'Controls label and Scene alignment',
+      '--scene-z-index': 'Controls z-index when fullscreen is true',
     },
   },
 
   modifiers: [
     {
-      modifier: 'data-value',
+      modifier: 'data-fullscreen',
       selector: 'root',
-      condition: '`value` prop is true',
-    },
-    {
-      modifier: 'data-animate',
-      selector: 'root',
-      value: 'pulse | flash | breathe | blink | glow',
-      condition: '`animate` prop is true and `value` is true',
-    },
-    {
-      modifier: 'data-variant',
-      selector: 'root',
-      value: 'flat | 3d',
-      condition: 'Based on `variant` prop',
+      condition: '`fullscreen` prop is true',
     },
   ],
 };

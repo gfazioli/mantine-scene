@@ -3,130 +3,74 @@ import {
   Box,
   BoxProps,
   createVarsResolver,
-  getFontSize,
-  getRadius,
-  getSize,
-  getThemeColor,
-  PolymorphicFactory,
-  polymorphicFactory,
+  Factory,
+  factory,
   StylesApiProps,
   useProps,
   useStyles,
-  type MantineColor,
-  type MantineRadius,
-  type MantineSize,
-  type StyleProp,
 } from '@mantine/core';
+import { DotGrid } from './DotGrid';
+import { Glow } from './Glow';
+import { Gradient } from './Gradient';
+import { Mesh } from './Mesh';
+import { Noise } from './Noise';
+import { SceneProvider } from './Scene.context';
 import classes from './Scene.module.css';
 
-export type SceneVariant = 'flat' | '3d';
-
-export type SceneAnimationType = 'pulse' | 'flash' | 'breathe' | 'blink' | 'glow' | 'none';
-
-export type SceneStylesNames = 'root' | 'scene' | 'label' | 'light' | 'glow';
+export type SceneStylesNames = 'root' | 'gradient' | 'dotGrid' | 'glow' | 'mesh' | 'noise';
 
 export type SceneCssVariables = {
-  root:
-    | '--scene-size'
-    | '--scene-radius'
-    | '--scene-color'
-    | '--scene-intensity'
-    | '--scene-animation-duration'
-    | '--scene-glow-size'
-    | '--scene-justify-content';
+  root: '--scene-z-index';
 };
 
 export interface SceneBaseProps {
-  /** Scene color from theme */
-  color?: MantineColor;
+  /** Whether the scene covers the full viewport (fixed position) or acts as a contained box
+   *  @default false
+   */
+  fullscreen?: boolean;
 
-  /** Scene size */
-  size?: MantineSize | (string & {}) | number;
+  /** z-index when fullscreen is true
+   *  @default 0
+   */
+  zIndex?: number;
 
-  /** Border radius */
-  radius?: MantineRadius | (string & {}) | number;
-
-  /** Controls Scene on/off state */
-  value?: boolean;
-
-  /** Light intensity (0-100) */
-  intensity?: number;
-
-  /** Enable animation */
-  animate?: boolean;
-
-  /** Animation type; one of 'pulse', 'flash', 'breathe', 'blink', 'glow', or 'none' */
-  animationType?: SceneAnimationType;
-
-  /** Animation duration in seconds */
-  animationDuration?: number;
-
-  /** Label content */
-  label?: React.ReactNode;
-
-  /** Label position */
-  labelPosition?: 'left' | 'right';
-
-  /** `justify-content` CSS property */
-  justify?: StyleProp<React.CSSProperties['justifyContent']>;
+  /** Scene content (compound sub-components: Scene.Gradient, Scene.Glow, etc.) */
+  children?: React.ReactNode;
 }
 
 export interface SceneProps extends BoxProps, SceneBaseProps, StylesApiProps<SceneFactory> {}
 
-export type SceneFactory = PolymorphicFactory<{
+export type SceneFactory = Factory<{
   props: SceneProps;
-  defaultComponent: 'div';
-  defaultRef: HTMLDivElement;
+  ref: HTMLDivElement;
   stylesNames: SceneStylesNames;
-  variant: SceneVariant;
   vars: SceneCssVariables;
+  staticComponents: {
+    Gradient: typeof Gradient;
+    DotGrid: typeof DotGrid;
+    Glow: typeof Glow;
+    Mesh: typeof Mesh;
+    Noise: typeof Noise;
+  };
 }>;
 
 const defaultProps: Partial<SceneProps> = {
-  color: 'green',
-  size: 'sm',
-  radius: 'xl',
-  value: true,
-  variant: 'flat',
-  intensity: 80,
-  animate: false,
-  animationType: 'none',
-  animationDuration: 1.5,
-  labelPosition: 'right',
+  fullscreen: false,
+  zIndex: 0,
 };
 
-const varsResolver = createVarsResolver<SceneFactory>(
-  (theme, { size, radius, color, intensity, animationDuration, justify }) => {
-    return {
-      root: {
-        '--scene-size': getSize(size, 'scene-size'),
-        '--scene-radius': radius === undefined ? undefined : getRadius(radius),
-        '--scene-color': getThemeColor(color, theme),
-        '--scene-intensity': intensity !== undefined ? `${intensity / 100}` : '0.8',
-        '--scene-animation-duration':
-          animationDuration !== undefined ? `${animationDuration}s` : '1.5s',
-        '--scene-glow-size': `calc(var(--scene-size) * 0.6)`,
-        '--scene-justify-content': String(justify) || 'center',
-      },
-    };
-  }
-);
+const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
+  root: {
+    '--scene-z-index': zIndex !== undefined ? String(zIndex) : '0',
+  },
+}));
 
-export const Scene = polymorphicFactory<SceneFactory>((_props, ref) => {
+export const Scene = factory<SceneFactory>((_props, ref) => {
   const props = useProps('Scene', defaultProps, _props);
   const {
-    size,
-    radius,
-    color,
-    intensity,
-    animationDuration,
-    value,
-    animate,
-    animationType,
-    variant,
-    label,
-    labelPosition,
-    justify,
+    fullscreen,
+    zIndex,
+    children,
 
     classNames,
     style,
@@ -152,29 +96,24 @@ export const Scene = polymorphicFactory<SceneFactory>((_props, ref) => {
   });
 
   return (
-    <Box
-      ref={ref}
-      {...getStyles('root')}
-      {...others}
-      mod={[{ 'label-position': labelPosition }, mod]}
-      __vars={{
-        '--label-fz': getFontSize(size),
-        '--label-lh': getSize(size, 'label-lh'),
-      }}
-    >
-      <Box
-        {...getStyles('scene')}
-        variant={variant}
-        data-value={value || undefined}
-        data-animate={animate && value ? animationType : undefined}
-      >
-        <Box {...getStyles('glow')} />
-        <Box {...getStyles('light')} />
+    <SceneProvider value={{ getStyles }}>
+      <Box ref={ref} {...getStyles('root')} {...others} mod={[{ fullscreen }, mod]}>
+        {children}
       </Box>
-      {label && <Box {...getStyles('label')}>{label}</Box>}
-    </Box>
+    </SceneProvider>
   );
 });
 
 Scene.classes = classes;
 Scene.displayName = 'Scene';
+Scene.Gradient = Gradient;
+Scene.DotGrid = DotGrid;
+Scene.Glow = Glow;
+Scene.Mesh = Mesh;
+Scene.Noise = Noise;
+
+export type { GradientProps } from './Gradient';
+export type { DotGridProps } from './DotGrid';
+export type { GlowProps } from './Glow';
+export type { MeshProps, MeshStop } from './Mesh';
+export type { NoiseProps } from './Noise';

@@ -14,45 +14,74 @@ describe('Scene', () => {
     expect(ref.current).toBeTruthy();
   });
 
-  it('applies value prop as data attribute when true', () => {
+  it('applies fullscreen data attribute when fullscreen is true', () => {
+    const { container } = render(<Scene fullscreen />);
+    const root = container.querySelector('[data-fullscreen]');
+    expect(root).toBeTruthy();
+  });
+
+  it('does not apply fullscreen data attribute by default', () => {
     const { container } = render(<Scene />);
-    const root = container.querySelector('[data-value]');
-    expect(root).toBeTruthy();
-  });
-
-  it('does not apply value data attribute when false', () => {
-    const { container } = render(<Scene value={false} />);
-    const root = container.querySelector('[data-value]');
+    const root = container.querySelector('[data-fullscreen]');
     expect(root).toBeFalsy();
   });
 
-  it('applies animation type as data attribute when animate is true and value is true', () => {
-    const { container } = render(<Scene animate animationType="pulse" />);
-    const root = container.querySelector('[data-animate="pulse"]');
-    expect(root).toBeTruthy();
+  it('renders Gradient sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Gradient colors={['red 0%', 'blue 100%']} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
   });
 
-  it('does not apply animation when animate is false', () => {
-    const { container } = render(<Scene animate={false} animationType="pulse" />);
-    const root = container.querySelector('[data-animate]');
-    expect(root).toBeFalsy();
+  it('renders DotGrid sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.DotGrid color="white" spacing={20} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
   });
 
-  it('does not apply animation when value is false', () => {
-    const { container } = render(<Scene animate animationType="pulse" value={false} />);
-    const root = container.querySelector('[data-animate]');
-    expect(root).toBeFalsy();
+  it('renders Glow sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Glow color="purple" size={300} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
   });
 
-  it('supports flat variant', () => {
-    const { container } = render(<Scene variant="flat" />);
-    const root = container.querySelector('[data-variant="flat"]');
-    expect(root).toBeTruthy();
+  it('renders Mesh sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Mesh stops={[{ color: 'red', position: '50% 50%' }]} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
   });
 
-  it('supports 3d variant', () => {
-    const { container } = render(<Scene variant="3d" />);
-    const root = container.querySelector('[data-variant="3d"]');
-    expect(root).toBeTruthy();
+  it('renders Noise sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Noise opacity={0.05} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders multiple sub-components together', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Gradient />
+        <Scene.Glow />
+        <Scene.DotGrid />
+        <Scene.Mesh />
+        <Scene.Noise />
+      </Scene>
+    );
+    const children = container.querySelector('[class]')?.children;
+    expect(children?.length).toBe(5);
   });
 });
