@@ -80,7 +80,12 @@ function Demo() {
             <Text fw={800}>Network</Text>
             <Paper withBorder p="md">
               <Stack gap="xs">
-                <Scene label="Internet" color="green" labelPosition="left" justify="space-between" />
+                <Scene
+                  label="Internet"
+                  color="green"
+                  labelPosition="left"
+                  justify="space-between"
+                />
                 <Scene label="LAN" color="green" labelPosition="left" justify="space-between" />
                 <Scene
                   value={false}
@@ -147,7 +152,12 @@ function Demo() {
             <Text fw={800}>Security</Text>
             <Paper withBorder p="md">
               <Stack gap="xs">
-                <Scene label="Firewall" color="green" labelPosition="left" justify="space-between" />
+                <Scene
+                  label="Firewall"
+                  color="green"
+                  labelPosition="left"
+                  justify="space-between"
+                />
                 <Scene
                   label="SSL Cert"
                   color="green"

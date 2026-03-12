@@ -207,9 +207,23 @@ export function Usage() {
           Combined Effects (3D + Animation + High Intensity)
         </Text>
         <Group>
-          <Scene variant="3d" animate animationType="glow" intensity={100} size="xl" color="green" />
+          <Scene
+            variant="3d"
+            animate
+            animationType="glow"
+            intensity={100}
+            size="xl"
+            color="green"
+          />
           <Scene variant="3d" animate animationType="pulse" intensity={90} size="xl" color="red" />
-          <Scene variant="3d" animate animationType="breathe" intensity={95} size="xl" color="blue" />
+          <Scene
+            variant="3d"
+            animate
+            animationType="breathe"
+            intensity={95}
+            size="xl"
+            color="blue"
+          />
         </Group>
       </Paper>
     </Stack>
