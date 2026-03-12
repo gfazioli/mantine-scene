@@ -25,7 +25,7 @@ function Demo() {
 }
 `;
 
-function Wrapper({ showGlow, showDotGrid, showNoise, ...props }: any) {
+function Wrapper({ showGlow, showDotGrid, showNoise, interactive, ...props }: any) {
   return (
     <Box
       pos="relative"
@@ -36,7 +36,7 @@ function Wrapper({ showGlow, showDotGrid, showNoise, ...props }: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene>
+      <Scene interactive={interactive}>
         <Scene.Gradient from="violet" fromOpacity={0.15} {...props} />
         {showGlow && (
           <Scene.Glow color="violet" size={400} blur={120} opacity={0.3} top="20%" left="30%" />
@@ -78,12 +78,6 @@ export const usage: MantineDemo = {
       prop: 'showNoise',
       initialValue: true,
       libraryValue: true,
-    },
-    {
-      type: 'boolean',
-      prop: 'fullscreen',
-      initialValue: false,
-      libraryValue: false,
     },
     {
       type: 'boolean',
