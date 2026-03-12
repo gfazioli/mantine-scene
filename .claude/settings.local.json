@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(diny yolo:*)"
+      "Bash(diny yolo:*)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && rm package/src/Led.tsx package/src/Led.module.css package/src/Led.test.tsx package/src/Led.story.tsx)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && rm docs/demos/Led.demo.animations.tsx docs/demos/Led.demo.colors.tsx docs/demos/Led.demo.configurator.tsx docs/demos/Led.demo.controlled.tsx docs/demos/Led.demo.defcon.tsx docs/demos/Led.demo.labels.tsx docs/demos/Led.demo.statusPanel.tsx docs/demos/Led.demo.stylesApi.tsx docs/styles-api/Led.styles-api.ts)"
     ]
   }
 }

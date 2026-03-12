@@ -1,5 +1,5 @@
-import { LedStylesApi } from './Led.styles-api';
+import { SceneStylesApi } from './Scene.styles-api';
 
 export const STYLES_API_DATA = {
-  Led: LedStylesApi,
+  Scene: SceneStylesApi,
 };

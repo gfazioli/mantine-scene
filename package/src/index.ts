@@ -1,2 +1,2 @@
-export { Led } from './Led';
-export type { LedBaseProps, LedCssVariables, LedFactory } from './Led';
+export { Scene } from './Scene';
+export type { SceneBaseProps, SceneCssVariables, SceneFactory } from './Scene';

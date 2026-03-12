@@ -1,9 +1,9 @@
 import React from 'react';
 import { Divider, Group, Paper, Stack, Text } from '@mantine/core';
-import { Led, type LedProps } from './Led';
+import { Scene, type SceneProps } from './Scene';
 
 export default {
-  title: 'Components/Led',
+  title: 'Components/Scene',
   args: {
     size: 'md',
     radius: 'xl',
@@ -66,15 +66,15 @@ export function Usage() {
     <Stack gap="xl" p="md">
       <Paper p="md" withBorder>
         <Text fw={500} mb="md">
-          Basic LED States
+          Basic Scene States
         </Text>
         <Group>
           <Stack align="center">
-            <Led />
+            <Scene />
             <Text size="xs">On</Text>
           </Stack>
           <Stack align="center">
-            <Led value={false} />
+            <Scene value={false} />
             <Text size="xs">Off</Text>
           </Stack>
         </Group>
@@ -86,11 +86,11 @@ export function Usage() {
         </Text>
         <Group>
           <Stack align="center">
-            <Led variant="flat" />
+            <Scene variant="flat" />
             <Text size="xs">Flat</Text>
           </Stack>
           <Stack align="center">
-            <Led variant="3d" />
+            <Scene variant="3d" />
             <Text size="xs">3D</Text>
           </Stack>
         </Group>
@@ -102,23 +102,23 @@ export function Usage() {
         </Text>
         <Group align="flex-end">
           <Stack align="center">
-            <Led size="xs" />
+            <Scene size="xs" />
             <Text size="xs">XS</Text>
           </Stack>
           <Stack align="center">
-            <Led size="sm" />
+            <Scene size="sm" />
             <Text size="xs">SM</Text>
           </Stack>
           <Stack align="center">
-            <Led size="md" />
+            <Scene size="md" />
             <Text size="xs">MD</Text>
           </Stack>
           <Stack align="center">
-            <Led size="lg" />
+            <Scene size="lg" />
             <Text size="xs">LG</Text>
           </Stack>
           <Stack align="center">
-            <Led size="xl" />
+            <Scene size="xl" />
             <Text size="xs">XL</Text>
           </Stack>
         </Group>
@@ -131,7 +131,7 @@ export function Usage() {
         <Group>
           {['red', 'green', 'blue', 'yellow', 'orange', 'cyan', 'pink', 'violet'].map((color) => (
             <Stack key={color} align="center">
-              <Led color={color} variant="3d" size="lg" />
+              <Scene color={color} variant="3d" size="lg" />
               <Text size="xs" tt="capitalize">
                 {color}
               </Text>
@@ -147,7 +147,7 @@ export function Usage() {
         <Group>
           {[20, 40, 60, 80, 100].map((intensity) => (
             <Stack key={intensity} align="center">
-              <Led intensity={intensity} variant="3d" size="lg" />
+              <Scene intensity={intensity} variant="3d" size="lg" />
               <Text size="xs">{intensity}%</Text>
             </Stack>
           ))}
@@ -160,23 +160,23 @@ export function Usage() {
         </Text>
         <Group>
           <Stack align="center">
-            <Led animate animationType="pulse" size="lg" />
+            <Scene animate animationType="pulse" size="lg" />
             <Text size="xs">Pulse</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="flash" size="lg" color="red" />
+            <Scene animate animationType="flash" size="lg" color="red" />
             <Text size="xs">Flash</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="breathe" size="lg" color="blue" />
+            <Scene animate animationType="breathe" size="lg" color="blue" />
             <Text size="xs">Breathe</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="blink" size="lg" color="yellow" />
+            <Scene animate animationType="blink" size="lg" color="yellow" />
             <Text size="xs">Blink</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="glow" size="lg" color="cyan" />
+            <Scene animate animationType="glow" size="lg" color="cyan" />
             <Text size="xs">Glow</Text>
           </Stack>
         </Group>
@@ -188,15 +188,15 @@ export function Usage() {
         </Text>
         <Group>
           <Stack align="center">
-            <Led animate animationType="pulse" animationDuration={0.5} size="lg" />
+            <Scene animate animationType="pulse" animationDuration={0.5} size="lg" />
             <Text size="xs">Fast (0.5s)</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="pulse" animationDuration={1.5} size="lg" />
+            <Scene animate animationType="pulse" animationDuration={1.5} size="lg" />
             <Text size="xs">Normal (1.5s)</Text>
           </Stack>
           <Stack align="center">
-            <Led animate animationType="pulse" animationDuration={3} size="lg" />
+            <Scene animate animationType="pulse" animationDuration={3} size="lg" />
             <Text size="xs">Slow (3s)</Text>
           </Stack>
         </Group>
@@ -207,41 +207,41 @@ export function Usage() {
           Combined Effects (3D + Animation + High Intensity)
         </Text>
         <Group>
-          <Led variant="3d" animate animationType="glow" intensity={100} size="xl" color="green" />
-          <Led variant="3d" animate animationType="pulse" intensity={90} size="xl" color="red" />
-          <Led variant="3d" animate animationType="breathe" intensity={95} size="xl" color="blue" />
+          <Scene variant="3d" animate animationType="glow" intensity={100} size="xl" color="green" />
+          <Scene variant="3d" animate animationType="pulse" intensity={90} size="xl" color="red" />
+          <Scene variant="3d" animate animationType="breathe" intensity={95} size="xl" color="blue" />
         </Group>
       </Paper>
     </Stack>
   );
 }
 
-export function WithProps(props: LedProps) {
-  return <Led {...props} />;
+export function WithProps(props: SceneProps) {
+  return <Scene {...props} />;
 }
 
 export function WithLabel() {
   return (
     <>
       <Group>
-        <Led label="Server Online" color="green" />
-        <Led label="Server Offline" color="red" value={false} />
-        <Led label={<Text c="blue">Custom Label</Text>} color="blue" />
+        <Scene label="Server Online" color="green" />
+        <Scene label="Server Offline" color="red" value={false} />
+        <Scene label={<Text c="blue">Custom Label</Text>} color="blue" />
       </Group>
       <Divider />
       <div>
-        <Led label="Left Label" labelPosition="left" color="orange" />
+        <Scene label="Left Label" labelPosition="left" color="orange" />
       </div>
 
       <div>
-        <Led label="Right Label" labelPosition="right" color="pink" />
+        <Scene label="Right Label" labelPosition="right" color="pink" />
       </div>
 
       <Divider />
       <Stack>
-        <Led label="Left Label" labelPosition="left" color="orange" />
+        <Scene label="Left Label" labelPosition="left" color="orange" />
 
-        <Led label="Right Label" labelPosition="right" color="pink" />
+        <Scene label="Right Label" labelPosition="right" color="pink" />
       </Stack>
     </>
   );

@@ -25,12 +25,12 @@ export interface PackageData {
 }
 
 export const PACKAGE_DATA: PackageData = {
-  packageName: '@gfazioli/mantine-led',
+  packageName: '@gfazioli/mantine-scene',
   packageDescription:
-    'A highly customizable LED indicator component for React applications built with Mantine. Provides visual feedback for status indicators with support for colors, sizes, animations, and controlled states.',
-  mdxFileUrl: 'https://github.com/gfazioli/mantine-led/blob/master/docs/docs.mdx',
-  repositoryUrl: 'https://github.com/gfazioli/mantine-led',
-  licenseUrl: 'https://github.com/gfazioli/mantine-led/blob/master/LICENSE',
+    'A highly customizable Scene indicator component for React applications built with Mantine. Provides visual feedback for status indicators with support for colors, sizes, animations, and controlled states.',
+  mdxFileUrl: 'https://github.com/gfazioli/mantine-scene/blob/master/docs/docs.mdx',
+  repositoryUrl: 'https://github.com/gfazioli/mantine-scene',
+  licenseUrl: 'https://github.com/gfazioli/mantine-scene/blob/master/LICENSE',
   author: {
     name: 'Giovambattista Fazioli',
     githubUsername: 'gfazioli',

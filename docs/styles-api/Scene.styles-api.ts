@@ -1,10 +1,10 @@
-import { LedFactory } from '@gfazioli/mantine-led';
+import { SceneFactory } from '@gfazioli/mantine-scene';
 import type { StylesApiData } from '../components/styles-api.types';
 
-export const LedStylesApi: StylesApiData<LedFactory> = {
+export const SceneStylesApi: StylesApiData<SceneFactory> = {
   selectors: {
     root: 'Root element',
-    led: 'LED element',
+    scene: 'Scene element',
     label: 'Label element',
     glow: 'Outer glow effect element',
     light: 'Inner light reflection element',
@@ -12,13 +12,13 @@ export const LedStylesApi: StylesApiData<LedFactory> = {
 
   vars: {
     root: {
-      '--led-size': 'Controls LED width and height',
-      '--led-radius': 'Controls border radius',
-      '--led-color': 'Controls LED base color',
-      '--led-intensity': 'Controls brightness intensity (0-1)',
-      '--led-animation-duration': 'Controls animation duration',
-      '--led-glow-size': 'Controls outer glow size',
-      '--led-justify-content': 'Controls label and LED alignment',
+      '--scene-size': 'Controls Scene width and height',
+      '--scene-radius': 'Controls border radius',
+      '--scene-color': 'Controls Scene base color',
+      '--scene-intensity': 'Controls brightness intensity (0-1)',
+      '--scene-animation-duration': 'Controls animation duration',
+      '--scene-glow-size': 'Controls outer glow size',
+      '--scene-justify-content': 'Controls label and Scene alignment',
     },
   },
 

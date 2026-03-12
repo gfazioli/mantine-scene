@@ -1,19 +1,19 @@
-import { Led } from '@gfazioli/mantine-led';
+import { Scene } from '@gfazioli/mantine-scene';
 import { MantineDemo } from '@mantinex/demo';
 
 const code = `
-import { Led } from '@gfazioli/mantine-led';
+import { Scene } from '@gfazioli/mantine-scene';
 
 function Demo() {
   return (
-    <Led{{props}}/>
+    <Scene{{props}}/>
   );
 }
 `;
 
 export const configurator: MantineDemo = {
   type: 'configurator',
-  component: (props) => <Led {...props} />,
+  component: (props) => <Scene {...props} />,
   code,
   centered: true,
   controls: [

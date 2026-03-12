@@ -17,36 +17,36 @@ import {
   type MantineSize,
   type StyleProp,
 } from '@mantine/core';
-import classes from './Led.module.css';
+import classes from './Scene.module.css';
 
-export type LedVariant = 'flat' | '3d';
+export type SceneVariant = 'flat' | '3d';
 
-export type LedAnimationType = 'pulse' | 'flash' | 'breathe' | 'blink' | 'glow' | 'none';
+export type SceneAnimationType = 'pulse' | 'flash' | 'breathe' | 'blink' | 'glow' | 'none';
 
-export type LedStylesNames = 'root' | 'led' | 'label' | 'light' | 'glow';
+export type SceneStylesNames = 'root' | 'scene' | 'label' | 'light' | 'glow';
 
-export type LedCssVariables = {
+export type SceneCssVariables = {
   root:
-    | '--led-size'
-    | '--led-radius'
-    | '--led-color'
-    | '--led-intensity'
-    | '--led-animation-duration'
-    | '--led-glow-size'
-    | '--led-justify-content';
+    | '--scene-size'
+    | '--scene-radius'
+    | '--scene-color'
+    | '--scene-intensity'
+    | '--scene-animation-duration'
+    | '--scene-glow-size'
+    | '--scene-justify-content';
 };
 
-export interface LedBaseProps {
-  /** LED color from theme */
+export interface SceneBaseProps {
+  /** Scene color from theme */
   color?: MantineColor;
 
-  /** LED size */
+  /** Scene size */
   size?: MantineSize | (string & {}) | number;
 
   /** Border radius */
   radius?: MantineRadius | (string & {}) | number;
 
-  /** Controls LED on/off state */
+  /** Controls Scene on/off state */
   value?: boolean;
 
   /** Light intensity (0-100) */
@@ -56,7 +56,7 @@ export interface LedBaseProps {
   animate?: boolean;
 
   /** Animation type; one of 'pulse', 'flash', 'breathe', 'blink', 'glow', or 'none' */
-  animationType?: LedAnimationType;
+  animationType?: SceneAnimationType;
 
   /** Animation duration in seconds */
   animationDuration?: number;
@@ -71,18 +71,18 @@ export interface LedBaseProps {
   justify?: StyleProp<React.CSSProperties['justifyContent']>;
 }
 
-export interface LedProps extends BoxProps, LedBaseProps, StylesApiProps<LedFactory> {}
+export interface SceneProps extends BoxProps, SceneBaseProps, StylesApiProps<SceneFactory> {}
 
-export type LedFactory = PolymorphicFactory<{
-  props: LedProps;
+export type SceneFactory = PolymorphicFactory<{
+  props: SceneProps;
   defaultComponent: 'div';
   defaultRef: HTMLDivElement;
-  stylesNames: LedStylesNames;
-  variant: LedVariant;
-  vars: LedCssVariables;
+  stylesNames: SceneStylesNames;
+  variant: SceneVariant;
+  vars: SceneCssVariables;
 }>;
 
-const defaultProps: Partial<LedProps> = {
+const defaultProps: Partial<SceneProps> = {
   color: 'green',
   size: 'sm',
   radius: 'xl',
@@ -95,25 +95,25 @@ const defaultProps: Partial<LedProps> = {
   labelPosition: 'right',
 };
 
-const varsResolver = createVarsResolver<LedFactory>(
+const varsResolver = createVarsResolver<SceneFactory>(
   (theme, { size, radius, color, intensity, animationDuration, justify }) => {
     return {
       root: {
-        '--led-size': getSize(size, 'led-size'),
-        '--led-radius': radius === undefined ? undefined : getRadius(radius),
-        '--led-color': getThemeColor(color, theme),
-        '--led-intensity': intensity !== undefined ? `${intensity / 100}` : '0.8',
-        '--led-animation-duration':
+        '--scene-size': getSize(size, 'scene-size'),
+        '--scene-radius': radius === undefined ? undefined : getRadius(radius),
+        '--scene-color': getThemeColor(color, theme),
+        '--scene-intensity': intensity !== undefined ? `${intensity / 100}` : '0.8',
+        '--scene-animation-duration':
           animationDuration !== undefined ? `${animationDuration}s` : '1.5s',
-        '--led-glow-size': `calc(var(--led-size) * 0.6)`,
-        '--led-justify-content': String(justify) || 'center',
+        '--scene-glow-size': `calc(var(--scene-size) * 0.6)`,
+        '--scene-justify-content': String(justify) || 'center',
       },
     };
   }
 );
 
-export const Led = polymorphicFactory<LedFactory>((_props, ref) => {
-  const props = useProps('Led', defaultProps, _props);
+export const Scene = polymorphicFactory<SceneFactory>((_props, ref) => {
+  const props = useProps('Scene', defaultProps, _props);
   const {
     size,
     radius,
@@ -138,8 +138,8 @@ export const Led = polymorphicFactory<LedFactory>((_props, ref) => {
     ...others
   } = props;
 
-  const getStyles = useStyles<LedFactory>({
-    name: 'Led',
+  const getStyles = useStyles<SceneFactory>({
+    name: 'Scene',
     props,
     classes,
     className,
@@ -163,7 +163,7 @@ export const Led = polymorphicFactory<LedFactory>((_props, ref) => {
       }}
     >
       <Box
-        {...getStyles('led')}
+        {...getStyles('scene')}
         variant={variant}
         data-value={value || undefined}
         data-animate={animate && value ? animationType : undefined}
@@ -176,5 +176,5 @@ export const Led = polymorphicFactory<LedFactory>((_props, ref) => {
   );
 });
 
-Led.classes = classes;
-Led.displayName = 'Led';
+Scene.classes = classes;
+Scene.displayName = 'Scene';
