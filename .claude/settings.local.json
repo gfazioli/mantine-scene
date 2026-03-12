@@ -7,7 +7,13 @@
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn build 2>&1)",
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn jest 2>&1)",
       "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn docgen 2>&1)",
-      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn docs:build 2>&1)"
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && yarn docs:build 2>&1)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && npx tsc --noEmit --project docs/tsconfig.json 2>&1 | head -30)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && npx tsc --noEmit --project docs/tsconfig.json 2>&1 | head -20)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene/package/src\" && mkdir -p SceneGradient SceneGlow SceneDotGrid SceneMesh SceneNoise)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene/package/src\" && rm Gradient.tsx Glow.tsx DotGrid.tsx Mesh.tsx Noise.tsx)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && npx tsc --noEmit 2>&1 | head -20)",
+      "Bash(cd \"/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/mantine-scene\" && python3 -c \"import json; d=json.load\\(open\\('docs/docgen.json'\\)\\); print\\(list\\(d.keys\\(\\)\\)\\)\")"
     ]
   }
 }

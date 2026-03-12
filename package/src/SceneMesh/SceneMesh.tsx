@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from '@mantine/core';
-import { useSceneContext } from './Scene.context';
+import { useSceneContext } from '../Scene.context';
 
-export interface MeshStop {
+export interface SceneMeshStop {
   /** CSS color */
   color: string;
   /** Position as 'x% y%' (e.g. '20% 30%') */
@@ -13,9 +13,9 @@ export interface MeshStop {
   spread?: number;
 }
 
-export interface MeshProps {
+export interface SceneMeshProps {
   /** Array of color stops for the mesh */
-  stops?: MeshStop[];
+  stops?: SceneMeshStop[];
 
   /** Overall opacity (0-1)
    *  @default 1
@@ -29,13 +29,13 @@ export interface MeshProps {
   style?: React.CSSProperties;
 }
 
-const defaultStops: MeshStop[] = [
+const defaultStops: SceneMeshStop[] = [
   { color: 'rgba(120, 0, 255, 0.15)', position: '20% 20%', spread: 50 },
   { color: 'rgba(255, 0, 128, 0.12)', position: '80% 30%', spread: 45 },
   { color: 'rgba(0, 100, 255, 0.1)', position: '50% 80%', spread: 55 },
 ];
 
-export function Mesh({ stops = defaultStops, opacity = 1, className, style }: MeshProps) {
+export function SceneMesh({ stops = defaultStops, opacity = 1, className, style }: SceneMeshProps) {
   const { getStyles } = useSceneContext();
 
   const background = stops
@@ -48,4 +48,4 @@ export function Mesh({ stops = defaultStops, opacity = 1, className, style }: Me
   return <Box {...getStyles('mesh', { className, style: { background, opacity, ...style } })} />;
 }
 
-Mesh.displayName = 'Scene.Mesh';
+SceneMesh.displayName = 'SceneMesh';

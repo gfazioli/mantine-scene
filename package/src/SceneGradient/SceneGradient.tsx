@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from '@mantine/core';
-import { useSceneContext } from './Scene.context';
+import { useSceneContext } from '../Scene.context';
 
-export interface GradientProps {
+export interface SceneGradientProps {
   /** Gradient type
    *  @default 'radial'
    */
@@ -33,7 +33,7 @@ export interface GradientProps {
   style?: React.CSSProperties;
 }
 
-export function Gradient({
+export function SceneGradient({
   type = 'radial',
   colors = ['rgba(120, 0, 255, 0.15) 0%', 'transparent 70%'],
   position = 'center top',
@@ -41,7 +41,7 @@ export function Gradient({
   opacity = 1,
   className,
   style,
-}: GradientProps) {
+}: SceneGradientProps) {
   const { getStyles } = useSceneContext();
 
   let background: string;
@@ -64,4 +64,4 @@ export function Gradient({
   );
 }
 
-Gradient.displayName = 'Scene.Gradient';
+SceneGradient.displayName = 'SceneGradient';

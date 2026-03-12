@@ -12,7 +12,14 @@ export default function HomePage() {
       <PageHeader data={PACKAGE_DATA} />
       <DocsTabs
         docgen={docgen}
-        componentsProps={['Scene']}
+        componentsProps={[
+          'Scene',
+          'SceneGradient',
+          'SceneGlow',
+          'SceneDotGrid',
+          'SceneMesh',
+          'SceneNoise',
+        ]}
         componentsStyles={['Scene']}
         componentPrefix="Scene"
         stylesApiData={STYLES_API_DATA}

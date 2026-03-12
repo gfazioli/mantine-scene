@@ -27,7 +27,7 @@ export interface PackageData {
 export const PACKAGE_DATA: PackageData = {
   packageName: '@gfazioli/mantine-scene',
   packageDescription:
-    'A highly customizable Scene indicator component for React applications built with Mantine. Provides visual feedback for status indicators with support for colors, sizes, animations, and controlled states.',
+    'A composable decorative background component for React applications built with Mantine. Layer gradients, glow blobs, dot grids, mesh gradients, and noise textures to create rich atmospheric backgrounds.',
   mdxFileUrl: 'https://github.com/gfazioli/mantine-scene/blob/master/docs/docs.mdx',
   repositoryUrl: 'https://github.com/gfazioli/mantine-scene',
   licenseUrl: 'https://github.com/gfazioli/mantine-scene/blob/master/LICENSE',

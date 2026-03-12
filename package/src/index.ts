@@ -1,14 +1,15 @@
 export { Scene } from './Scene';
 export type {
-  DotGridProps,
-  GlowProps,
-  GradientProps,
-  MeshProps,
-  MeshStop,
-  NoiseProps,
   SceneBaseProps,
   SceneCssVariables,
+  SceneDotGridProps,
   SceneFactory,
+  SceneGlowProps,
+  SceneGradientProps,
+  SceneMeshProps,
+  SceneMeshStop,
+  SceneNoiseProps,
   SceneProps,
   SceneStylesNames,
 } from './Scene';
+export { useSceneContext } from './Scene.context';

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box } from '@mantine/core';
-import { useSceneContext } from './Scene.context';
+import { useSceneContext } from '../Scene.context';
 
-export interface DotGridProps {
+export interface SceneDotGridProps {
   /** Dot color (CSS color)
    *  @default 'rgba(255, 255, 255, 0.15)'
    */
@@ -30,14 +30,14 @@ export interface DotGridProps {
   style?: React.CSSProperties;
 }
 
-export function DotGrid({
+export function SceneDotGrid({
   color = 'rgba(255, 255, 255, 0.15)',
   dotSize = 1,
   spacing = 24,
   opacity = 1,
   className,
   style,
-}: DotGridProps) {
+}: SceneDotGridProps) {
   const { getStyles } = useSceneContext();
 
   const backgroundImage = `radial-gradient(circle, ${color} ${dotSize}px, transparent ${dotSize}px)`;
@@ -57,4 +57,4 @@ export function DotGrid({
   );
 }
 
-DotGrid.displayName = 'Scene.DotGrid';
+SceneDotGrid.displayName = 'SceneDotGrid';

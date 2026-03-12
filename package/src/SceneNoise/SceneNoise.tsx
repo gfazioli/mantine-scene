@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Box } from '@mantine/core';
-import { useSceneContext } from './Scene.context';
+import { useSceneContext } from '../Scene.context';
 
-export interface NoiseProps {
+export interface SceneNoiseProps {
   /** Opacity of the noise overlay (0-1)
    *  @default 0.03
    */
@@ -20,7 +20,7 @@ export interface NoiseProps {
   style?: React.CSSProperties;
 }
 
-export function Noise({ opacity = 0.03, grain = 0.65, className, style }: NoiseProps) {
+export function SceneNoise({ opacity = 0.03, grain = 0.65, className, style }: SceneNoiseProps) {
   const { getStyles } = useSceneContext();
 
   const backgroundImage = useMemo(() => {
@@ -43,4 +43,4 @@ export function Noise({ opacity = 0.03, grain = 0.65, className, style }: NoiseP
   );
 }
 
-Noise.displayName = 'Scene.Noise';
+SceneNoise.displayName = 'SceneNoise';

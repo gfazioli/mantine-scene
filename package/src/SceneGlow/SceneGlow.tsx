@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box } from '@mantine/core';
-import { useSceneContext } from './Scene.context';
-import classes from './Scene.module.css';
+import { useSceneContext } from '../Scene.context';
+import classes from '../Scene.module.css';
 
-export interface GlowProps {
+export interface SceneGlowProps {
   /** CSS color for the glow blob
    *  @default 'rgba(120, 0, 255, 0.3)'
    */
@@ -61,7 +61,7 @@ export interface GlowProps {
   style?: React.CSSProperties;
 }
 
-export function Glow({
+export function SceneGlow({
   color = 'rgba(120, 0, 255, 0.3)',
   size = 400,
   blur = 120,
@@ -74,13 +74,14 @@ export function Glow({
   driftY = '20px',
   className,
   style,
-}: GlowProps) {
+}: SceneGlowProps) {
   const { getStyles } = useSceneContext();
 
   return (
     <Box
       {...getStyles('glow', {
-        className: `${animate ? classes.glowAnimated : ''}${className ? ` ${className}` : ''}`,
+        className:
+          [animate && classes.glowAnimated, className].filter(Boolean).join(' ') || undefined,
         style: {
           '--scene-glow-size': `${size}px`,
           '--scene-glow-blur': `${blur}px`,
@@ -99,4 +100,4 @@ export function Glow({
   );
 }
 
-Glow.displayName = 'Scene.Glow';
+SceneGlow.displayName = 'SceneGlow';

@@ -9,12 +9,12 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
-import { DotGrid } from './DotGrid';
-import { Glow } from './Glow';
-import { Gradient } from './Gradient';
-import { Mesh } from './Mesh';
-import { Noise } from './Noise';
 import { SceneProvider } from './Scene.context';
+import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
+import { SceneGlow } from './SceneGlow/SceneGlow';
+import { SceneGradient } from './SceneGradient/SceneGradient';
+import { SceneMesh } from './SceneMesh/SceneMesh';
+import { SceneNoise } from './SceneNoise/SceneNoise';
 import classes from './Scene.module.css';
 
 export type SceneStylesNames = 'root' | 'gradient' | 'dotGrid' | 'glow' | 'mesh' | 'noise';
@@ -46,11 +46,11 @@ export type SceneFactory = Factory<{
   stylesNames: SceneStylesNames;
   vars: SceneCssVariables;
   staticComponents: {
-    Gradient: typeof Gradient;
-    DotGrid: typeof DotGrid;
-    Glow: typeof Glow;
-    Mesh: typeof Mesh;
-    Noise: typeof Noise;
+    Gradient: typeof SceneGradient;
+    DotGrid: typeof SceneDotGrid;
+    Glow: typeof SceneGlow;
+    Mesh: typeof SceneMesh;
+    Noise: typeof SceneNoise;
   };
 }>;
 
@@ -106,14 +106,14 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
 
 Scene.classes = classes;
 Scene.displayName = 'Scene';
-Scene.Gradient = Gradient;
-Scene.DotGrid = DotGrid;
-Scene.Glow = Glow;
-Scene.Mesh = Mesh;
-Scene.Noise = Noise;
+Scene.Gradient = SceneGradient;
+Scene.DotGrid = SceneDotGrid;
+Scene.Glow = SceneGlow;
+Scene.Mesh = SceneMesh;
+Scene.Noise = SceneNoise;
 
-export type { GradientProps } from './Gradient';
-export type { DotGridProps } from './DotGrid';
-export type { GlowProps } from './Glow';
-export type { MeshProps, MeshStop } from './Mesh';
-export type { NoiseProps } from './Noise';
+export type { SceneGradientProps } from './SceneGradient/SceneGradient';
+export type { SceneDotGridProps } from './SceneDotGrid/SceneDotGrid';
+export type { SceneGlowProps } from './SceneGlow/SceneGlow';
+export type { SceneMeshProps, SceneMeshStop } from './SceneMesh/SceneMesh';
+export type { SceneNoiseProps } from './SceneNoise/SceneNoise';
