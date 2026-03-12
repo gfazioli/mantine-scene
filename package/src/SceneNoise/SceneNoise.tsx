@@ -60,7 +60,7 @@ export function SceneNoise({
   const theme = useMantineTheme();
 
   const backgroundImage = useMemo(() => {
-    const noiseSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n' x='0' y='0'><feTurbulence type='${type}' baseFrequency='${grain}' numOctaves='${octaves}' seed='${seed}' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)' opacity='1'/></svg>`;
+    const noiseSvg = `<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n' x='0' y='0'><feTurbulence type='${type}' baseFrequency='${grain}' numOctaves='${octaves}' seed='${seed}' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(#n)' opacity='1'/></svg>`;
     return `url("data:image/svg+xml,${encodeURIComponent(noiseSvg)}")`;
   }, [grain, seed, type, octaves]);
 
