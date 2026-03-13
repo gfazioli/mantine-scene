@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   Box,
   BoxProps,
@@ -133,46 +133,53 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState<SceneMousePosition | null>(null);
 
-  const handleMouseMove = useCallback(
-    (e: React.MouseEvent<HTMLDivElement>) => {
-      if (!interactive) {
-        return;
-      }
+  useEffect(() => {
+    if (!interactive) {
+      setMouse(null);
+      return;
+    }
+
+    const onPointerMove = (e: PointerEvent) => {
       const rect = containerRef.current?.getBoundingClientRect();
       if (!rect) {
         return;
       }
-      setMouse({
-        x: ((e.clientX - rect.left) / rect.width) * 100,
-        y: ((e.clientY - rect.top) / rect.height) * 100,
-      });
-    },
-    [interactive]
-  );
 
-  const handleMouseLeave = useCallback(() => {
-    if (interactive) {
-      setMouse(null);
-    }
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+
+      // Mouse is inside the container bounds (with a small margin)
+      if (x >= -5 && x <= 105 && y >= -5 && y <= 105) {
+        setMouse({ x, y });
+      } else {
+        setMouse(null);
+      }
+    };
+
+    document.addEventListener('pointermove', onPointerMove);
+    return () => document.removeEventListener('pointermove', onPointerMove);
   }, [interactive]);
+
+  const mergeRefs = useCallback(
+    (node: HTMLDivElement | null) => {
+      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      if (typeof ref === 'function') {
+        ref(node);
+      } else if (ref) {
+        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
+      }
+    },
+    [ref]
+  );
 
   return (
     <SceneProvider value={{ getStyles, mouse }}>
       <Box
-        ref={(node) => {
-          (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-          if (typeof ref === 'function') {
-            ref(node);
-          } else if (ref) {
-            (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
-          }
-        }}
+        ref={mergeRefs}
         aria-hidden="true"
         {...getStyles('root')}
         {...others}
-        mod={[{ fullscreen, interactive, 'reduced-motion': reducedMotion }, mod]}
-        onMouseMove={interactive ? handleMouseMove : undefined}
-        onMouseLeave={interactive ? handleMouseLeave : undefined}
+        mod={[{ fullscreen, 'reduced-motion': reducedMotion }, mod]}
       >
         {children}
       </Box>

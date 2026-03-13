@@ -6,10 +6,6 @@
   pointer-events: none;
   overflow: hidden;
 
-  &[data-interactive] {
-    pointer-events: auto;
-  }
-
   &[data-fullscreen] {
     position: fixed;
     inset: 0;
