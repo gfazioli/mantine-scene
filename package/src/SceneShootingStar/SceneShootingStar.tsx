@@ -70,7 +70,7 @@ export function SceneShootingStar({
   className,
   style,
 }: SceneShootingStarProps) {
-  const { getStyles } = useSceneContext();
+  const { getStyles, fullscreen } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);
 
@@ -128,7 +128,7 @@ export function SceneShootingStar({
         >
           <Box
             component="span"
-            className={classes.shootingStarTrail}
+            className={fullscreen ? classes.shootingStarTrailFullscreen : classes.shootingStarTrail}
             style={
               {
                 width: `${trailLength}px`,

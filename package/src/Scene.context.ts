@@ -12,6 +12,8 @@ interface SceneContextValue {
   getStyles: GetStylesApi<SceneFactory>;
   /** Mouse position when `interactive` is true, null otherwise */
   mouse: SceneMousePosition | null;
+  /** Whether the Scene is in fullscreen mode */
+  fullscreen: boolean;
 }
 
 export const [SceneProvider, useSceneContext] = createSafeContext<SceneContextValue>(

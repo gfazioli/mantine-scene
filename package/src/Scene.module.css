@@ -256,7 +256,40 @@
   animation: scene-shooting-star var(--scene-shooting-speed, 4s) linear infinite;
 }
 
+.shootingStarTrailFullscreen {
+  display: block;
+  height: var(--scene-shooting-height, 2px);
+  border-radius: 999px;
+  opacity: 0;
+  animation: scene-shooting-star-fs var(--scene-shooting-speed, 4s) linear infinite;
+}
+
 @keyframes scene-shooting-star {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+
+  3% {
+    opacity: 1;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  25% {
+    transform: translateX(500px);
+    opacity: 0;
+  }
+
+  100% {
+    transform: translateX(500px);
+    opacity: 0;
+  }
+}
+
+@keyframes scene-shooting-star-fs {
   0% {
     transform: translateX(0);
     opacity: 0;
@@ -392,7 +425,51 @@
   animation: scene-starwarp-in var(--scene-starwarp-speed, 3s) ease-out infinite;
 }
 
+.starWarpDotOutFullscreen {
+  display: block;
+  border-radius: 50%;
+  animation: scene-starwarp-out-fs var(--scene-starwarp-speed, 3s) ease-in infinite;
+}
+
+.starWarpDotInFullscreen {
+  display: block;
+  border-radius: 50%;
+  animation: scene-starwarp-in-fs var(--scene-starwarp-speed, 3s) ease-out infinite;
+}
+
 @keyframes scene-starwarp-out {
+  0% {
+    transform: translateX(0) scale(0.1);
+    opacity: 0;
+  }
+
+  8% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateX(400px) scale(2.5);
+    opacity: 1;
+  }
+}
+
+@keyframes scene-starwarp-in {
+  0% {
+    transform: translateX(400px) scale(2.5);
+    opacity: 1;
+  }
+
+  92% {
+    opacity: 0.4;
+  }
+
+  100% {
+    transform: translateX(0) scale(0.1);
+    opacity: 0;
+  }
+}
+
+@keyframes scene-starwarp-out-fs {
   0% {
     transform: translateX(0) scale(0.1);
     opacity: 0;
@@ -408,7 +485,7 @@
   }
 }
 
-@keyframes scene-starwarp-in {
+@keyframes scene-starwarp-in-fs {
   0% {
     transform: translateX(100vmax) scale(2.5);
     opacity: 1;

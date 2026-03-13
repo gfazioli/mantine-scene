@@ -173,7 +173,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
   );
 
   return (
-    <SceneProvider value={{ getStyles, mouse }}>
+    <SceneProvider value={{ getStyles, mouse, fullscreen: !!fullscreen }}>
       <Box
         ref={mergeRefs}
         aria-hidden="true"

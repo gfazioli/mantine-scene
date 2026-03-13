@@ -82,7 +82,7 @@ export function SceneStarWarp({
   className,
   style,
 }: SceneStarWarpProps) {
-  const { getStyles, mouse } = useSceneContext();
+  const { getStyles, mouse, fullscreen } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);
 
@@ -104,7 +104,14 @@ export function SceneStarWarp({
     });
   }, [count, speed, minSize, maxSize, seed]);
 
-  const dotClass = direction === 'out' ? classes.starWarpDotOut : classes.starWarpDotIn;
+  const dotClass =
+    direction === 'out'
+      ? fullscreen
+        ? classes.starWarpDotOutFullscreen
+        : classes.starWarpDotOut
+      : fullscreen
+        ? classes.starWarpDotInFullscreen
+        : classes.starWarpDotIn;
 
   return (
     <Box
