@@ -9,4 +9,5 @@ export { shootingStarConfigurator } from './SceneShootingStar.demo.configurator'
 export { snowConfigurator } from './SceneSnow.demo.configurator';
 export { starFieldConfigurator } from './SceneStarField.demo.configurator';
 export { starWarpConfigurator } from './SceneStarWarp.demo.configurator';
+export { responsive } from './Scene.demo.responsive';
 export { usage } from './Scene.demo.usage';
