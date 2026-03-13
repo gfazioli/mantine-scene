@@ -738,6 +738,7 @@ export default function FullscreenPage() {
   const [panelOpen, setPanelOpen] = useState(true);
   const [expandedLayer, setExpandedLayer] = useState<string | null>(null);
   const [interactive, setInteractive] = useState(false);
+  const [interactiveEasing, setInteractiveEasing] = useState(0.12);
 
   const updateLayer = (key: string, config: LayerConfig) => {
     setLayers((prev) => ({ ...prev, [key]: config }));
@@ -763,7 +764,7 @@ export default function FullscreenPage() {
 
   return (
     <>
-      <Scene fullscreen zIndex={0} interactive={interactive}>
+      <Scene fullscreen zIndex={0} interactive={interactive} interactiveEasing={interactiveEasing}>
         {g.enabled && (
           <Scene.Gradient
             type={g.type}
@@ -937,8 +938,20 @@ export default function FullscreenPage() {
             label="Interactive (mouse tracking)"
             checked={interactive}
             onChange={(e) => setInteractive(e.currentTarget.checked)}
-            mb="sm"
+            mb={interactive ? 4 : 'sm'}
           />
+          {interactive && (
+            <Box mb="sm">
+              <SliderField
+                label="Easing"
+                value={interactiveEasing}
+                onChange={setInteractiveEasing}
+                min={0.01}
+                max={1}
+                step={0.01}
+              />
+            </Box>
+          )}
 
           <ScrollArea style={{ flex: 1 }} offsetScrollbars>
             <Stack gap={4}>

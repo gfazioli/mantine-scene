@@ -1,4 +1,3 @@
-import React from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Box } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
@@ -18,7 +17,7 @@ function Demo() {
 }
 `;
 
-function Wrapper({ focalX, focalY, interactive, ...props }: any) {
+function Wrapper({ focalX, focalY, interactive, interactiveEasing, ...props }: any) {
   return (
     <Box
       pos="relative"
@@ -29,7 +28,7 @@ function Wrapper({ focalX, focalY, interactive, ...props }: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene interactive={interactive}>
+      <Scene interactive={interactive} interactiveEasing={interactiveEasing}>
         <Scene.StarWarp focalX={`${focalX}%`} focalY={`${focalY}%`} {...props} />
       </Scene>
     </Box>
@@ -96,7 +95,7 @@ export const starWarpConfigurator: MantineDemo = {
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'gray',
+      initialValue: 'blue',
       libraryValue: 'white',
     },
     {
@@ -140,6 +139,15 @@ export const starWarpConfigurator: MantineDemo = {
       prop: 'interactive',
       initialValue: false,
       libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'interactiveEasing',
+      initialValue: 0.12,
+      libraryValue: 0.12,
+      step: 0.01,
+      min: 0.01,
+      max: 1,
     },
   ],
 };

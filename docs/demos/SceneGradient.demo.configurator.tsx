@@ -18,7 +18,7 @@ function Demo() {
 }
 `;
 
-function Wrapper({ interactive, ...props }: any) {
+function Wrapper({ interactive, interactiveEasing, ...props }: any) {
   return (
     <Box
       pos="relative"
@@ -29,7 +29,7 @@ function Wrapper({ interactive, ...props }: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene interactive={interactive}>
+      <Scene interactive={interactive} interactiveEasing={interactiveEasing}>
         <Scene.Gradient {...props} />
       </Scene>
     </Box>
@@ -156,6 +156,15 @@ export const gradientConfigurator: MantineDemo = {
       prop: 'interactive',
       initialValue: false,
       libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'interactiveEasing',
+      initialValue: 0.12,
+      libraryValue: 0.12,
+      step: 0.01,
+      min: 0.01,
+      max: 1,
     },
   ],
 };

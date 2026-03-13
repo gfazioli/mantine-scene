@@ -60,6 +60,11 @@ export interface SceneBaseProps {
    */
   interactive?: boolean;
 
+  /** Easing factor for interactive mouse tracking (0 to 1). Lower values result in slower, smoother following. Set to 1 for instant tracking (no easing).
+   *  @default 0.12
+   */
+  interactiveEasing?: number;
+
   /** Scene content (compound sub-components: Scene.Gradient, Scene.Glow, etc.) */
   children?: React.ReactNode;
 }
@@ -90,6 +95,7 @@ const defaultProps: Partial<SceneProps> = {
   zIndex: 0,
   reducedMotion: 'auto',
   interactive: false,
+  interactiveEasing: 0.12,
 };
 
 const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
@@ -105,6 +111,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
     zIndex,
     reducedMotion,
     interactive,
+    interactiveEasing,
     children,
 
     classNames,
@@ -132,10 +139,13 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const [mouse, setMouse] = useState<SceneMousePosition | null>(null);
+  const targetRef = useRef<SceneMousePosition>({ x: 50, y: 50 });
+  const smoothRef = useRef<SceneMousePosition>({ x: 50, y: 50 });
+  const hasReceivedInput = useRef(false);
 
+  // Track raw cursor position on the full document
   useEffect(() => {
     if (!interactive) {
-      setMouse(null);
       return;
     }
 
@@ -148,17 +158,60 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
       const x = ((e.clientX - rect.left) / rect.width) * 100;
       const y = ((e.clientY - rect.top) / rect.height) * 100;
 
-      // Mouse is inside the container bounds (with a small margin)
-      if (x >= -5 && x <= 105 && y >= -5 && y <= 105) {
-        setMouse({ x, y });
-      } else {
-        setMouse(null);
-      }
+      // Clamp to 0-100 so the position stays meaningful even when mouse is outside
+      targetRef.current = {
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+      };
+      hasReceivedInput.current = true;
     };
 
     document.addEventListener('pointermove', onPointerMove);
     return () => document.removeEventListener('pointermove', onPointerMove);
   }, [interactive]);
+
+  // LERP smoothing via requestAnimationFrame
+  useEffect(() => {
+    if (!interactive) {
+      setMouse(null);
+      hasReceivedInput.current = false;
+      return;
+    }
+
+    const easing = interactiveEasing ?? 0.12;
+    let frameId = 0;
+
+    const animate = () => {
+      if (!hasReceivedInput.current) {
+        frameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      const prev = smoothRef.current;
+      const target = targetRef.current;
+
+      if (easing >= 1) {
+        // Instant tracking — no easing
+        smoothRef.current = target;
+        setMouse({ ...target });
+      } else {
+        const dx = target.x - prev.x;
+        const dy = target.y - prev.y;
+        const nextX = Math.abs(dx) < 0.01 ? target.x : prev.x + dx * easing;
+        const nextY = Math.abs(dy) < 0.01 ? target.y : prev.y + dy * easing;
+
+        if (nextX !== prev.x || nextY !== prev.y) {
+          smoothRef.current = { x: nextX, y: nextY };
+          setMouse({ x: nextX, y: nextY });
+        }
+      }
+
+      frameId = requestAnimationFrame(animate);
+    };
+
+    frameId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(frameId);
+  }, [interactive, interactiveEasing]);
 
   const mergeRefs = useCallback(
     (node: HTMLDivElement | null) => {

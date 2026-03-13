@@ -25,7 +25,14 @@ function Demo() {
 }
 `;
 
-function Wrapper({ showGlow, showDotGrid, showNoise, interactive, ...props }: any) {
+function Wrapper({
+  showGlow,
+  showDotGrid,
+  showNoise,
+  interactive,
+  interactiveEasing,
+  ...props
+}: any) {
   return (
     <Box
       pos="relative"
@@ -36,7 +43,7 @@ function Wrapper({ showGlow, showDotGrid, showNoise, interactive, ...props }: an
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene interactive={interactive}>
+      <Scene interactive={interactive} interactiveEasing={interactiveEasing}>
         <Scene.Gradient from="violet" fromOpacity={0.15} {...props} />
         {showGlow && (
           <Scene.Glow color="violet" size={400} blur={120} opacity={0.3} top="20%" left="30%" />
@@ -84,6 +91,15 @@ export const usage: MantineDemo = {
       prop: 'interactive',
       initialValue: false,
       libraryValue: false,
+    },
+    {
+      type: 'number',
+      prop: 'interactiveEasing',
+      initialValue: 0.12,
+      libraryValue: 0.12,
+      step: 0.01,
+      min: 0.01,
+      max: 1,
     },
   ],
 };

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Box } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
@@ -53,7 +52,7 @@ export const starFieldConfigurator: MantineDemo = {
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'gray',
+      initialValue: 'blue',
       libraryValue: 'white',
     },
     {

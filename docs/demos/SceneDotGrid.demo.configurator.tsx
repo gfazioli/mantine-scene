@@ -1,4 +1,3 @@
-import React from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Box } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
@@ -44,8 +43,8 @@ export const dotGridConfigurator: MantineDemo = {
     {
       type: 'color',
       prop: 'color',
-      initialValue: 'gray',
-      libraryValue: 'gray',
+      initialValue: 'blue',
+      libraryValue: 'blue',
     },
     {
       type: 'number',
