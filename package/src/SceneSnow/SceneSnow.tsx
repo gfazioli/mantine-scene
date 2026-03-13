@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { mulberry32 } from '../prng';
 import { useSceneContext } from '../Scene.context';
+import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneSnowProps {
-  /** Number of snowflakes (recommended max ~80)
+  /** Number of snowflakes (recommended max ~80) — accepts a responsive object like `{ base: 25, md: 50 }`
    *  @default 50
    */
-  count?: number;
+  count?: ResponsiveValue<number>;
 
   /** Snowflake color — supports Mantine theme colors
    *  @default 'white'
@@ -58,7 +59,7 @@ export interface SceneSnowProps {
 }
 
 export function SceneSnow({
-  count = 50,
+  count: countProp = 50,
   color = 'white',
   minSize = 2,
   maxSize = 6,
@@ -70,6 +71,7 @@ export function SceneSnow({
   className,
   style,
 }: SceneSnowProps) {
+  const count = useResponsiveValue(countProp);
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);

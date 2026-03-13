@@ -18,3 +18,4 @@ export type {
   SceneStylesNames,
 } from './Scene';
 export { useSceneContext } from './Scene.context';
+export type { ResponsiveValue } from './use-responsive-value';

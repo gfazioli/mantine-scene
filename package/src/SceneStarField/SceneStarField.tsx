@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { mulberry32 } from '../prng';
 import { useSceneContext } from '../Scene.context';
+import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneStarFieldProps {
-  /** Number of stars
+  /** Number of stars — accepts a responsive object like `{ base: 50, md: 100 }`
    *  @default 100
    */
-  count?: number;
+  count?: ResponsiveValue<number>;
 
   /** Star color — supports Mantine theme colors
    *  @default 'white'
@@ -74,7 +75,7 @@ function generateStars(count: number, seed: number, minSize: number, maxSize: nu
 }
 
 export function SceneStarField({
-  count = 100,
+  count: countProp = 100,
   color = 'white',
   minSize = 1,
   maxSize = 3,
@@ -85,6 +86,7 @@ export function SceneStarField({
   className,
   style,
 }: SceneStarFieldProps) {
+  const count = useResponsiveValue(countProp);
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);

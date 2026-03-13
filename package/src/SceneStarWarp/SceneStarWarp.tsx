@@ -2,13 +2,14 @@ import React, { useMemo } from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { mulberry32 } from '../prng';
 import { useSceneContext } from '../Scene.context';
+import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneStarWarpProps {
-  /** Number of stars (capped at 200)
+  /** Number of stars (capped at 200) — accepts a responsive object like `{ base: 50, md: 100 }`
    *  @default 100
    */
-  count?: number;
+  count?: ResponsiveValue<number>;
 
   /** Speed multiplier — higher = faster
    *  @default 1
@@ -68,7 +69,7 @@ export interface SceneStarWarpProps {
 }
 
 export function SceneStarWarp({
-  count = 100,
+  count: countProp = 100,
   speed = 1,
   direction = 'out',
   focalX = '50%',
@@ -82,6 +83,7 @@ export function SceneStarWarp({
   className,
   style,
 }: SceneStarWarpProps) {
+  const count = useResponsiveValue(countProp);
   const { getStyles, mouse, fullscreen } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);

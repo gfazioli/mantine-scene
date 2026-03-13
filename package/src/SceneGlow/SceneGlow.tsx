@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
+import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneGlowProps {
@@ -14,15 +15,15 @@ export interface SceneGlowProps {
    */
   shade?: number;
 
-  /** Size of the blob in px
+  /** Size of the blob in px — accepts a responsive object like `{ base: 200, md: 400 }`
    *  @default 400
    */
-  size?: number;
+  size?: ResponsiveValue<number>;
 
-  /** Blur radius in px
+  /** Blur radius in px — accepts a responsive object like `{ base: 60, md: 120 }`
    *  @default 120
    */
-  blur?: number;
+  blur?: ResponsiveValue<number>;
 
   /** Opacity (0-1)
    *  @default 0.5
@@ -79,8 +80,8 @@ export interface SceneGlowProps {
 export function SceneGlow({
   color = 'violet',
   shade,
-  size = 400,
-  blur = 120,
+  size: sizeProp = 400,
+  blur: blurProp = 120,
   opacity = 0.5,
   top = '10%',
   left = '50%',
@@ -93,6 +94,8 @@ export function SceneGlow({
   className,
   style,
 }: SceneGlowProps) {
+  const size = useResponsiveValue(sizeProp);
+  const blur = useResponsiveValue(blurProp);
   const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor =

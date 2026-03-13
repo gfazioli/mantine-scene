@@ -1,6 +1,7 @@
 import React from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
+import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneDotGridProps {
@@ -19,10 +20,10 @@ export interface SceneDotGridProps {
    */
   dotSize?: number;
 
-  /** Spacing between dots in px
+  /** Spacing between dots in px — accepts a responsive object like `{ base: 16, md: 24 }`
    *  @default 24
    */
-  spacing?: number;
+  spacing?: ResponsiveValue<number>;
 
   /** Stagger alternate rows by half the spacing
    *  @default false
@@ -75,7 +76,7 @@ export function SceneDotGrid({
   color = 'gray',
   shade,
   dotSize = 1,
-  spacing = 24,
+  spacing: spacingProp = 24,
   stagger = false,
   fade = 'none',
   animate = false,
@@ -84,6 +85,7 @@ export function SceneDotGrid({
   className,
   style,
 }: SceneDotGridProps) {
+  const spacing = useResponsiveValue(spacingProp);
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
   const resolvedColor =

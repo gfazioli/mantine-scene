@@ -32,9 +32,7 @@ atmospheric backgrounds.
 The root element has `aria-hidden="true"` since
 it is purely decorative.
 
-<Demo data={demos.usage} />
-
-## Fullscreen
+### Fullscreen
 
 Set `fullscreen` to cover the entire viewport with
 `position: fixed`. The scene sits behind all content
@@ -42,6 +40,8 @@ at `z-index: 0` by default (configurable via the
 `zIndex` prop).
 
 [See the fullscreen demo page →](fullscreen)
+
+<Demo data={demos.usage} />
 
 ## Reduced Motion
 
@@ -67,6 +67,47 @@ to the cursor position automatically:
 
 When the mouse leaves the scene, components fall back
 to their default position props.
+
+## Responsive Props
+
+Some props accept responsive objects following
+Mantine's breakpoint convention. This is useful for
+reducing particle counts on mobile or adjusting sizes
+across viewports.
+
+Supported responsive props:
+
+- **`Scene.Glow`** — `size`, `blur`
+- **`Scene.DotGrid`** — `spacing`
+- **`Scene.StarField`** — `count`
+- **`Scene.StarWarp`** — `count`
+- **`Scene.Snow`** — `count`
+
+```tsx
+import { Scene } from '@gfazioli/mantine-scene';
+
+function Demo() {
+  return (
+    <Scene>
+      {/* Fewer stars on small screens for performance */}
+      <Scene.StarField count={{ base: 30, sm: 60, md: 100 }} />
+
+      {/* Smaller glow on mobile */}
+      <Scene.Glow
+        color="violet"
+        size={{ base: 200, md: 400 }}
+        blur={{ base: 60, md: 120 }}
+      />
+
+      {/* Tighter dot grid on small screens */}
+      <Scene.DotGrid color="gray" spacing={{ base: 16, md: 24 }} />
+    </Scene>
+  );
+}
+```
+
+Plain number values continue to work as before —
+responsive objects are entirely opt-in.
 
 ## Gradient
 
