@@ -166,7 +166,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
       hasReceivedInput.current = true;
     };
 
-    document.addEventListener('pointermove', onPointerMove);
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
     return () => document.removeEventListener('pointermove', onPointerMove);
   }, [interactive]);
 
@@ -180,8 +180,13 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
 
     const easing = interactiveEasing ?? 0.12;
     let frameId = 0;
+    let active = true;
 
     const animate = () => {
+      if (!active) {
+        return;
+      }
+
       if (!hasReceivedInput.current) {
         frameId = requestAnimationFrame(animate);
         return;
@@ -210,7 +215,10 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
     };
 
     frameId = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(frameId);
+    return () => {
+      active = false;
+      cancelAnimationFrame(frameId);
+    };
   }, [interactive, interactiveEasing]);
 
   const mergeRefs = useCallback(
