@@ -271,12 +271,12 @@
   }
 
   25% {
-    transform: translateX(500px);
+    transform: translateX(150vmax);
     opacity: 0;
   }
 
   100% {
-    transform: translateX(500px);
+    transform: translateX(150vmax);
     opacity: 0;
   }
 }
@@ -403,14 +403,14 @@
   }
 
   100% {
-    transform: translateX(400px) scale(2.5);
+    transform: translateX(100vmax) scale(2.5);
     opacity: 1;
   }
 }
 
 @keyframes scene-starwarp-in {
   0% {
-    transform: translateX(400px) scale(2.5);
+    transform: translateX(100vmax) scale(2.5);
     opacity: 1;
   }
 

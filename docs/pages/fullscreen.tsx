@@ -85,6 +85,7 @@ const defaultLayers: Record<string, LayerConfig> = {
   shootingStar: {
     enabled: true,
     count: 5,
+    color: '#868e96',
     trailLength: 100,
     opacity: 0.6,
     speed: 1,
@@ -493,6 +494,14 @@ function ShootingStarControls({
         min={1}
         max={20}
       />
+      <ColorInput
+        size="xs"
+        label="Color"
+        value={config.color}
+        onChange={(v) => onChange({ ...config, color: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
       <SliderField
         label="Speed"
         value={config.speed}
@@ -823,6 +832,7 @@ export default function FullscreenPage() {
         {ss.enabled && (
           <Scene.ShootingStar
             count={ss.count}
+            color={ss.color}
             trailLength={ss.trailLength}
             opacity={ss.opacity}
             speed={ss.speed}
