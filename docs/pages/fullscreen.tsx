@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { IconAdjustments, IconMoon, IconSun, IconX } from '@tabler/icons-react';
 import {
@@ -18,6 +18,7 @@ import {
   Text,
   Title,
   Tooltip,
+  useComputedColorScheme,
   useMantineColorScheme,
 } from '@mantine/core';
 
@@ -718,8 +719,10 @@ const controlsMap: Record<
 };
 
 export default function FullscreenPage() {
-  const { colorScheme, toggleColorScheme } = useMantineColorScheme();
-  const isDark = colorScheme === 'dark';
+  const { toggleColorScheme } = useMantineColorScheme();
+  const computedColorScheme = useComputedColorScheme('dark');
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
   const [layers, setLayers] = useState<Record<string, LayerConfig>>(() =>
     JSON.parse(JSON.stringify(defaultLayers))
   );
@@ -883,9 +886,10 @@ export default function FullscreenPage() {
             zIndex: 1000,
             width: 280,
             maxHeight: 'calc(100vh - 32px)',
-            background: isDark ? 'rgba(0, 0, 0, 0.85)' : 'rgba(255, 255, 255, 0.9)',
+            background: 'var(--mantine-color-body)',
+            opacity: 0.95,
             backdropFilter: 'blur(12px)',
-            border: `1px solid ${isDark ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.1)'}`,
+            border: '1px solid var(--mantine-color-default-border)',
             display: 'flex',
             flexDirection: 'column',
             pointerEvents: 'auto',
@@ -896,9 +900,15 @@ export default function FullscreenPage() {
               Scene Playground
             </Text>
             <Group gap={4}>
-              <Tooltip label={isDark ? 'Light mode' : 'Dark mode'}>
+              <Tooltip
+                label={mounted && computedColorScheme === 'dark' ? 'Light mode' : 'Dark mode'}
+              >
                 <ActionIcon variant="subtle" color="gray" size="sm" onClick={toggleColorScheme}>
-                  {isDark ? <IconSun size={14} /> : <IconMoon size={14} />}
+                  {mounted && computedColorScheme === 'dark' ? (
+                    <IconSun size={14} />
+                  ) : (
+                    <IconMoon size={14} />
+                  )}
                 </ActionIcon>
               </Tooltip>
               <ActionIcon
@@ -961,7 +971,7 @@ export default function FullscreenPage() {
                         ml={28}
                         p="xs"
                         style={{
-                          borderLeft: `2px solid ${isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)'}`,
+                          borderLeft: '2px solid var(--mantine-color-default-border)',
                         }}
                       >
                         <Controls config={layers[key]} onChange={(c) => updateLayer(key, c)} />
