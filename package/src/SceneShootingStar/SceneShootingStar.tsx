@@ -79,11 +79,21 @@ export function SceneShootingStar({
     const dx = Math.cos(rad);
     const dy = Math.sin(rad);
 
+    // Perpendicular direction — used to spread stars along the entry edge
+    const perpX = -dy;
+    const perpY = dx;
+
     const rng = mulberry32(seed);
     return Array.from({ length: count }, (_, i) => {
-      // Start from the opposite edge of the movement direction
-      const startX = dx > 0 ? rng() * 20 : dx < -0.3 ? 70 + rng() * 30 : 10 + rng() * 80;
-      const startY = dy > 0 ? -5 + rng() * 15 : dy < -0.3 ? 75 + rng() * 25 : rng() * 40;
+      // Base entry point: opposite edge of movement direction
+      // Center of entry edge, offset inward by a small margin
+      const baseX = dx > 0 ? -5 : dx < 0 ? 105 : 50;
+      const baseY = dy > 0 ? -5 : dy < 0 ? 105 : 50;
+
+      // Spread along the perpendicular axis across the full container
+      const spread = (rng() - 0.5) * 140; // -70 to +70 range covers full container width/height
+      const startX = baseX + perpX * spread;
+      const startY = baseY + perpY * spread;
 
       const interval = minInterval + rng() * (maxInterval - minInterval);
       const activeDuration = 1 / speed;

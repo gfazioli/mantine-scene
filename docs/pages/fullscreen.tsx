@@ -87,7 +87,7 @@ const defaultLayers: Record<string, LayerConfig> = {
     trailLength: 100,
     opacity: 0.6,
     speed: 1,
-    angle: 215,
+    angle: 150,
   },
   snow: {
     enabled: false,

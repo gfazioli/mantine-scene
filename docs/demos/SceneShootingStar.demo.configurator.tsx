@@ -68,7 +68,7 @@ export const shootingStarConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'angle',
-      initialValue: 215,
+      initialValue: 150,
       libraryValue: 215,
       step: 5,
       min: 0,
