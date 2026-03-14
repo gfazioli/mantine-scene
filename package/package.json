@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/mantine-scene",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "A composable decorative background component for React applications built with Mantine. Layer gradients, glow blobs, dot grids, mesh gradients, and noise textures to create rich atmospheric backgrounds.",
   "homepage": "https://gfazioli.github.io/mantine-scene/",
   "packageManager": "yarn@4.0.1",
