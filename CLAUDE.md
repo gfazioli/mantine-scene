@@ -1,96 +1,68 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## What This Repo Is
-
-This is the **GitHub template** used to bootstrap every Mantine Extensions component library. It currently contains a working Scene component as a reference implementation. All 19+ component repos in the ecosystem are cloned from this template and share its structure, build pipeline, and tooling.
-
-Changes to shared files here (Shell, Footer, scripts, configs) must be propagated manually to all component repos.
+## Project
+`@gfazioli/mantine-scene` — A Mantine component that renders animated, canvas-based decorative backgrounds (aurora, star fields, snow, mesh gradients, and more) with 10 built-in sub-scenes and mouse-tracking support.
+This repo (`mantine-scene`) also serves as the **GitHub template** (`mantine-base-component`) used to bootstrap all 21 Mantine Extensions component repositories. Changes to shared files here (Shell, Footer, scripts, configs) must be propagated manually to all component repos.
 
 ## Commands
-
 | Command | Purpose |
 |---------|---------|
-| `yarn build` | Build the npm package (Rollup + DTS + CSS extraction) |
-| `yarn test` | Full test suite: syncpack → prettier → typecheck → lint → jest |
+| `yarn build` | Build the npm package via Rollup |
+| `yarn dev` | Start the Next.js docs dev server (port 9281) |
+| `yarn test` | Full test suite (syncpack + prettier + typecheck + lint + jest) |
 | `yarn jest` | Run only Jest unit tests |
-| `yarn jest --testPathPattern=Scene` | Run tests for a single component |
-| `yarn dev` | Start docs dev server at http://localhost:9281 |
-| `yarn storybook` | Start Storybook at http://localhost:8271 |
-| `yarn docgen` | Generate `docs/docgen.json` from component TypeScript types |
-| `yarn docs:build` | Run docgen + build Next.js static site |
-| `yarn docs:deploy` | Build docs + deploy to GitHub Pages |
-| `yarn prettier:write` | Auto-fix formatting (run this if prettier check fails after template propagation) |
-| `yarn release:patch` | Bump patch version, publish to npm, deploy docs |
-| `diny yolo` | AI-assisted git commit (stages all, generates message, commits + pushes) |
+| `yarn docgen` | Generate component API docs (docgen.json) |
+| `yarn docs:build` | Build the Next.js docs site for production |
+| `yarn docs:deploy` | Build and deploy docs to GitHub Pages |
+| `yarn lint` | Run ESLint |
+| `yarn prettier:write` | Format all files with Prettier |
+| `yarn storybook` | Start Storybook dev server |
+| `yarn clean` | Remove build artifacts |
+| `yarn release:patch` | Bump patch version and deploy docs |
+| `diny yolo` | AI-assisted commit (stage all, generate message, commit + push) |
+
+> **Important**: After changing the public API, always run `yarn clean && yarn build` before `yarn test`.
 
 ## Architecture
 
-**Monorepo with two Yarn workspaces:**
+### Workspace Layout
+Yarn workspaces monorepo with two workspaces: `package/` (npm package) and `docs/` (Next.js 15 documentation site).
 
-- `package/` — The publishable npm package. Source lives in `package/src/`. Built artifacts go to `package/dist/` (ESM `.mjs`, CJS `.cjs`, `.d.ts`, `styles.css`).
-- `docs/` — Next.js 15 static site with MDX support. Uses `workspace:*` to reference the local package. Deployed to GitHub Pages via `gh-pages`.
+### Package Source (`package/src/`)
+- `Scene.tsx` — Main component (Factory pattern, not polymorphic). Renders a container with layered sub-scene children, tracks mouse position via context, and manages canvas refs.
+- `Scene.context.ts` — React context providing mouse position (`SceneMousePosition`) to sub-scenes via `useSceneContext`.
+- `Scene.module.css` — CSS module with custom properties for all dynamic values.
+- `use-responsive-value.ts` — Custom hook (`useResponsiveValue`) for responsive prop values; exports `ResponsiveValue` type.
+- `prng.ts` — Deterministic pseudo-random number generator used by canvas-based sub-scenes for reproducible animations.
+- `index.ts` — Public API barrel file exporting `Scene`, all prop types, context hook, and `ResponsiveValue`.
+- 10 sub-scene directories, each self-contained with its own component and styles:
+  - `SceneAurora/` — Animated aurora borealis effect
+  - `SceneDotGrid/` — Dot grid pattern background
+  - `SceneGlow/` — Glowing light effect
+  - `SceneGradient/` — Gradient background
+  - `SceneMesh/` — Mesh gradient with configurable stops (`SceneMeshStop`)
+  - `SceneNoise/` — Noise texture overlay
+  - `SceneShootingStar/` — Animated shooting stars
+  - `SceneSnow/` — Falling snow particles (canvas-based)
+  - `SceneStarField/` — Static star field (canvas-based)
+  - `SceneStarWarp/` — Warp-speed star animation (canvas-based)
 
-**Build pipeline** (`yarn build`):
-1. Rollup bundles `package/src/index.ts` → ESM + CJS with `preserveModules`
-2. `scripts/generate-dts.ts` produces `.d.ts` and `.d.mts` declarations
-3. `scripts/prepare-css.ts` extracts CSS into `styles.css` and `styles.layer.css`
+### Build Pipeline
+Rollup bundles to dual ESM/CJS with `'use client'` banner. CSS modules hashed with `hash-css-selector` (prefix `me`). TypeScript declarations via `rollup-plugin-dts`. CSS split into `styles.css` and `styles.layer.css`.
 
-CSS class names are hashed with the prefix `me` via `hash-css-selector`. Non-index chunks get a `'use client';` banner automatically.
+## Component Details
+- **Compound component pattern**: Sub-scenes are registered as static properties on `Scene` (e.g., `Scene.Aurora`, `Scene.Snow`, `Scene.StarWarp`). Each sub-scene is a standalone component that reads mouse position from `SceneProvider` context.
+- **Canvas-based rendering**: `SceneSnow`, `SceneStarField`, and `SceneStarWarp` use HTML5 Canvas with `requestAnimationFrame` loops. The PRNG (`prng.ts`) ensures deterministic particle placement for consistent rendering across mounts.
+- **Responsive hook**: `useResponsiveValue` allows any numeric prop to accept breakpoint-keyed objects (e.g., `{ base: 100, md: 200 }`), resolved at runtime via `ResponsiveValue<T>`.
+- **Mouse tracking**: The root `Scene` component tracks mouse position and exposes it via context so sub-scenes (like `SceneGlow` and `SceneAurora`) can react to cursor movement.
+- **Styles API names**: `root`, `gradient`, `dotGrid`, `glow`, `mesh`, `noise`, `shootingStar`, `starField`, `starWarp`, `snow`, `aurora`.
 
-## Component Authoring Pattern
+## Testing
+Jest with `jsdom`, `esbuild-jest` transform, CSS mocked via `identity-obj-proxy`. Tests use `@mantine-tests/core` render helper.
 
-Every component follows Mantine's Styles API pattern. Use the Scene component (`package/src/Scene.tsx`) as the canonical reference:
-
-1. **Factory type** — Define a `PolymorphicFactory` type specifying props, default element, stylesNames, variants, and CSS variables.
-2. **Props interface** — Extend `BoxProps` + your base props + `StylesApiProps<YourFactory>`.
-3. **Default props** — Declare a `defaultProps` partial object.
-4. **CSS Variables resolver** — Use `createVarsResolver<YourFactory>()` to map props to CSS custom properties.
-5. **Component body** — Use `polymorphicFactory()` with `useProps()` and `useStyles()` hooks. Render via Mantine's `Box` with `getStyles('partName')` and `mod` for data attributes.
-6. **Attach classes** — Set `Component.classes = classes` and `Component.displayName`.
-
-### Exports pattern (`package/src/index.ts`)
-Export the component and its public types (base props, CSS variables type, factory type). Do not export internal types.
-
-### CSS Modules (`Component.module.css`)
-- Use CSS custom properties (`--component-*`) for all dynamic values
-- Define sizes via `--component-size-{xs,sm,md,lg,xl}`
-- Use `[data-attribute]` selectors for state/variant styling
-- Animations go in `@keyframes` within the module
-
-### Testing (`Component.test.tsx`)
-- Import `render` from `@mantine-tests/core` (not directly from `@testing-library/react`)
-- Test: renders without crashing, forwards ref, data attributes for props/variants/states
-- Jest with jsdom; CSS modules are mocked via `identity-obj-proxy`
-
-### Storybook (`Component.story.tsx`)
-Stories live alongside source. Storybook runs on port 8271.
-
-## Documentation Site
-
-- `docs/data.ts` — Package metadata (name, description, repo URL, author)
-- `docs/docs.mdx` — Main documentation content
-- `docs/demos/` — Interactive demos using `@mantinex/demo`
-- `docs/pages/index.tsx` — Assembles Shell, PageHeader, DocsTabs, and the MDX content
-- `docs/styles-api/` — Styles API data for the documentation table
-- `docs/docgen.json` — Auto-generated from TypeScript types (don't edit manually)
-
-The `next.config.mjs` dynamically sets `basePath` from the repository field in `package/package.json`.
-
-## Code Style
-
-- Prettier: 160 char width, single quotes, trailing commas, sorted imports (styles → react → third-party → @mantine → local)
-- MDX files use 70 char print width
-- ESLint: `eslint-config-mantine` base
-- Stylelint: `stylelint-config-standard-scss` (relaxed)
-- Syncpack enforces consistent dependency versions across workspaces
-
-## Tech Stack
-
-- **Mantine 8.x**, **React 19**, **TypeScript 5.9**
-- **Yarn 4** (node-modules linker, not PnP)
-- **Rollup** for package builds, **esbuild** for transpilation
-- **Next.js 15** with static export for docs
-- **Jest 29** with jsdom for tests
-- **Storybook 8** with React-Vite framework
+## Ecosystem
+This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace CLAUDE.md at `/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/CLAUDE.md` for:
+- Development checklist (code -> test -> build -> docs -> release)
+- Cross-cutting patterns (compound components, responsive CSS, GitHub sync)
+- Update packages workflow
+- Release process
