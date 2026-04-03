@@ -61,7 +61,7 @@ Rollup bundles to dual ESM/CJS with `'use client'` banner. CSS modules hashed wi
 Jest with `jsdom`, `esbuild-jest` transform, CSS mocked via `identity-obj-proxy`. Tests use `@mantine-tests/core` render helper.
 
 ## Ecosystem
-This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace CLAUDE.md at `/Users/giovambattistafazioli/Lavoro/GitHub/Mantine Extensions/CLAUDE.md` for:
+This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace `CLAUDE.md` (in the parent directory) for:
 - Development checklist (code -> test -> build -> docs -> release)
 - Cross-cutting patterns (compound components, responsive CSS, GitHub sync)
 - Update packages workflow

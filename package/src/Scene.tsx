@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useMergedRef } from '@mantine/hooks';
 import {
   Box,
   BoxProps,
@@ -104,8 +105,9 @@ const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
   },
 }));
 
-export const Scene = factory<SceneFactory>((_props, ref) => {
-  const props = useProps('Scene', defaultProps, _props);
+export const Scene = factory<SceneFactory>((_props) => {
+  const { ref, ...restProps } = _props as typeof _props & { ref?: React.Ref<HTMLDivElement> };
+  const props = useProps('Scene', defaultProps, restProps);
   const {
     fullscreen,
     zIndex,
@@ -221,17 +223,7 @@ export const Scene = factory<SceneFactory>((_props, ref) => {
     };
   }, [interactive, interactiveEasing]);
 
-  const mergeRefs = useCallback(
-    (node: HTMLDivElement | null) => {
-      (containerRef as React.MutableRefObject<HTMLDivElement | null>).current = node;
-      if (typeof ref === 'function') {
-        ref(node);
-      } else if (ref) {
-        (ref as React.MutableRefObject<HTMLDivElement | null>).current = node;
-      }
-    },
-    [ref]
-  );
+  const mergeRefs = useMergedRef(ref as React.Ref<HTMLDivElement>, containerRef);
 
   return (
     <SceneProvider value={{ getStyles, mouse, fullscreen: !!fullscreen }}>

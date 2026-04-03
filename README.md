@@ -18,6 +18,7 @@
 ## Overview
 
 This component is created on top of the [Mantine](https://mantine.dev/) library.
+It requires **Mantine 9.x** and **React 19**.
 
 [Mantine Scene](https://gfazioli.github.io/mantine-scene/) is a decorative background container that composes multiple visual layers to create rich, atmospheric backgrounds for your React applications. Place it behind your content and combine sub-components to build anything from subtle gradients to full starfield environments.
 
