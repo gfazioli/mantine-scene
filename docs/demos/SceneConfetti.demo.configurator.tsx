@@ -103,5 +103,24 @@ export const confettiConfigurator: MantineDemo = {
       min: 0,
       max: 1,
     },
+    {
+      type: 'segmented',
+      prop: 'origin',
+      initialValue: 'top',
+      libraryValue: 'top',
+      data: [
+        { value: 'top', label: 'top' },
+        { value: 'bottom', label: 'bottom' },
+      ],
+    },
+    {
+      type: 'number',
+      prop: 'rise',
+      initialValue: 320,
+      libraryValue: 320,
+      step: 20,
+      min: 80,
+      max: 800,
+    },
   ],
 };

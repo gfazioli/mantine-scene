@@ -29,7 +29,10 @@ function Demo() {
               key={bursts}
               count={120}
               burst
+              origin="bottom"
+              rise={400}
               duration={3.5}
+              shapes={['rectangle', 'triangle', 'circle']}
               onComplete={() => setCompleted((n) => n + 1)}
             />
           )}
@@ -69,7 +72,10 @@ function Demo() {
               key={bursts}
               count={120}
               burst
+              origin="bottom"
+              rise={400}
               duration={3.5}
+              shapes={['rectangle', 'triangle', 'circle']}
               onComplete={() => setCompleted((n) => n + 1)}
             />
           )}

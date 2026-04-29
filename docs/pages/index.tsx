@@ -25,6 +25,7 @@ export default function HomePage() {
           'SceneConfetti',
           'SceneAurora',
           'SceneStarWarp',
+          'SceneWaves',
         ]}
         componentPrefix="Scene"
       >

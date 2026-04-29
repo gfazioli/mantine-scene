@@ -16,6 +16,7 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     confetti: 'Confetti layer element (Scene.Confetti)',
     aurora: 'Aurora layer element (Scene.Aurora)',
     starWarp: 'Star warp layer element (Scene.StarWarp)',
+    waves: 'Waves layer element (Scene.Waves) — wraps the parallax SVG layers',
   },
 
   vars: {
