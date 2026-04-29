@@ -134,6 +134,46 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
+  it('renders Rain sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Rain count={10} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Rain sub-component with splash', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Rain count={10} splash splashCount={5} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Confetti sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Confetti count={10} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('fires Confetti onComplete in burst mode', async () => {
+    jest.useFakeTimers();
+    const onComplete = jest.fn();
+    render(
+      <Scene>
+        <Scene.Confetti count={5} burst duration={1} speed={1} seed={1} onComplete={onComplete} />
+      </Scene>
+    );
+    jest.advanceTimersByTime(5000);
+    expect(onComplete).toHaveBeenCalledTimes(1);
+    jest.useRealTimers();
+  });
+
   it('renders multiple sub-components together', () => {
     const { container } = render(
       <Scene>
@@ -146,10 +186,13 @@ describe('Scene', () => {
         <Scene.ShootingStar />
         <Scene.StarWarp />
         <Scene.Snow />
+        <Scene.Rain />
+        <Scene.Confetti />
         <Scene.Aurora />
       </Scene>
     );
-    const children = container.querySelector('[class]')?.children;
-    expect(children?.length).toBe(10);
+    const root = container.querySelector('[class]');
+    const layers = root?.querySelectorAll(':scope > div');
+    expect(layers?.length).toBe(12);
   });
 });

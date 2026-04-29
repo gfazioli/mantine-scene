@@ -1,18 +1,22 @@
-import { useMatches, type MantineBreakpoint } from '@mantine/core';
-
-/** A value that can be either a plain value or a responsive object keyed by breakpoint */
-export type ResponsiveValue<T> = T | Partial<Record<MantineBreakpoint | 'base', T>>;
+import { useMatches, type MantineBreakpoint, type StyleProp } from '@mantine/core';
 
 /**
- * Resolves a ResponsiveValue<T> to its current value based on the viewport.
- * If the value is a plain value, returns it directly.
- * If it's a responsive object (e.g. { base: 100, md: 200 }), uses Mantine's useMatches.
+ * Backwards-compatible alias for `StyleProp<T>` from `@mantine/core`.
+ * Prefer `StyleProp<T>` directly in new code.
+ *
+ * @deprecated Use `StyleProp<T>` from `@mantine/core`.
  */
-export function useResponsiveValue<T>(value: ResponsiveValue<T>): T {
+export type ResponsiveValue<T> = StyleProp<T>;
+
+/**
+ * Resolves a `StyleProp<T>` to its current value based on the viewport.
+ * Reserved for JS-only props (e.g. canvas particle counts) that cannot be
+ * expressed as CSS variables. CSS-derivable props should use the
+ * `InlineStyles` + media queries pattern instead.
+ */
+export function useResponsiveValue<T>(value: StyleProp<T>): T {
   const isResponsiveObject = value !== null && typeof value === 'object' && !Array.isArray(value);
 
-  // useMatches must always be called (hooks can't be conditional),
-  // so we pass either the responsive object or a dummy with just the base value.
   const matchesInput = isResponsiveObject
     ? (value as Partial<Record<MantineBreakpoint | 'base', T>>)
     : ({ base: value } as Partial<Record<MantineBreakpoint | 'base', T>>);

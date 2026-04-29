@@ -12,6 +12,8 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     starField: 'Star field layer element (Scene.StarField)',
     shootingStar: 'Shooting star layer element (Scene.ShootingStar)',
     snow: 'Snow layer element (Scene.Snow)',
+    rain: 'Rain layer element (Scene.Rain)',
+    confetti: 'Confetti layer element (Scene.Confetti)',
     aurora: 'Aurora layer element (Scene.Aurora)',
     starWarp: 'Star warp layer element (Scene.StarWarp)',
   },
@@ -32,6 +34,11 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
       modifier: 'data-reduced-motion',
       selector: 'root',
       condition: '`reducedMotion` prop value (`auto`, `always`, or `never`)',
+    },
+    {
+      modifier: 'data-paused',
+      selector: 'root',
+      condition: '`lazy` prop is true and the scene is currently outside the viewport',
     },
   ],
 };

@@ -1,7 +1,18 @@
 import React from 'react';
-import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
+import {
+  Box,
+  getBaseValue,
+  getSortedBreakpoints,
+  getThemeColor,
+  InlineStyles,
+  keys,
+  useMantineTheme,
+  useRandomClassName,
+  type MantineBreakpoint,
+  type MantineColor,
+  type StyleProp,
+} from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
-import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneGlowProps {
@@ -18,12 +29,12 @@ export interface SceneGlowProps {
   /** Size of the blob in px — accepts a responsive object like `{ base: 200, md: 400 }`
    *  @default 400
    */
-  size?: ResponsiveValue<number>;
+  size?: StyleProp<number>;
 
   /** Blur radius in px — accepts a responsive object like `{ base: 60, md: 120 }`
    *  @default 120
    */
-  blur?: ResponsiveValue<number>;
+  blur?: StyleProp<number>;
 
   /** Opacity (0-1)
    *  @default 0.5
@@ -77,11 +88,59 @@ export interface SceneGlowProps {
   style?: React.CSSProperties;
 }
 
+/** Responsive CSS variables for size/blur via InlineStyles + media queries */
+function SceneGlowMediaVariables({
+  size,
+  blur,
+  selector,
+}: {
+  size: StyleProp<number>;
+  blur: StyleProp<number>;
+  selector: string;
+}) {
+  const theme = useMantineTheme();
+
+  const baseStyles: Record<string, string> = {};
+  const baseSize = getBaseValue(size);
+  const baseBlur = getBaseValue(blur);
+  if (baseSize !== undefined) {
+    baseStyles['--scene-glow-size'] = `${baseSize}px`;
+  }
+  if (baseBlur !== undefined) {
+    baseStyles['--scene-glow-blur'] = `${baseBlur}px`;
+  }
+
+  const queries = keys(theme.breakpoints).reduce<Record<string, Record<string, string>>>(
+    (acc, breakpoint) => {
+      acc[breakpoint] = {};
+      if (typeof size === 'object' && size !== null && size[breakpoint] !== undefined) {
+        acc[breakpoint]['--scene-glow-size'] = `${size[breakpoint]}px`;
+      }
+      if (typeof blur === 'object' && blur !== null && blur[breakpoint] !== undefined) {
+        acc[breakpoint]['--scene-glow-blur'] = `${blur[breakpoint]}px`;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  const sorted = getSortedBreakpoints(keys(queries), theme.breakpoints).filter(
+    (bp) => keys(queries[bp.value]).length > 0
+  );
+
+  const media = sorted.map((bp) => ({
+    query: `(min-width: ${theme.breakpoints[bp.value as MantineBreakpoint]})`,
+    styles: queries[bp.value],
+  }));
+
+  return <InlineStyles styles={baseStyles} media={media} selector={selector} />;
+}
+
 export function SceneGlow({
   color = 'violet',
   shade,
-  size: sizeProp = 400,
-  blur: blurProp = 120,
+  size = 400,
+  blur = 120,
   opacity = 0.5,
   top = '10%',
   left = '50%',
@@ -94,40 +153,41 @@ export function SceneGlow({
   className,
   style,
 }: SceneGlowProps) {
-  const size = useResponsiveValue(sizeProp);
-  const blur = useResponsiveValue(blurProp);
   const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
+  const responsiveClassName = useRandomClassName();
   const resolvedColor =
     shade !== undefined ? getThemeColor(`${color}.${shade}`, theme) : getThemeColor(color, theme);
 
-  // When interactive, mouse position overrides top/left
   const effectiveTop = mouse ? `${mouse.y}%` : top;
   const effectiveLeft = mouse ? `${mouse.x}%` : left;
 
   return (
-    <Box
-      {...getStyles('glow', {
-        className:
-          [animate && classes.glowAnimated, className].filter(Boolean).join(' ') || undefined,
-        style: {
-          '--scene-glow-size': `${size}px`,
-          '--scene-glow-blur': `${blur}px`,
-          '--scene-glow-opacity': String(opacity),
-          '--scene-glow-duration': `${duration}s`,
-          '--scene-glow-delay': `${delay}s`,
-          '--scene-glow-drift-x': driftX,
-          '--scene-glow-drift-y': driftY,
-          top: effectiveTop,
-          left: effectiveLeft,
-          marginTop: 'calc(var(--scene-glow-size) / -2)',
-          marginLeft: 'calc(var(--scene-glow-size) / -2)',
-          background: `radial-gradient(circle, ${resolvedColor} 0%, transparent 70%)`,
-          ...style,
-        } as React.CSSProperties,
-      })}
-      data-animation-type={animate ? animationType : undefined}
-    />
+    <>
+      <SceneGlowMediaVariables size={size} blur={blur} selector={`.${responsiveClassName}`} />
+      <Box
+        {...getStyles('glow', {
+          className:
+            [responsiveClassName, animate && classes.glowAnimated, className]
+              .filter(Boolean)
+              .join(' ') || undefined,
+          style: {
+            '--scene-glow-opacity': String(opacity),
+            '--scene-glow-duration': `${duration}s`,
+            '--scene-glow-delay': `${delay}s`,
+            '--scene-glow-drift-x': driftX,
+            '--scene-glow-drift-y': driftY,
+            top: effectiveTop,
+            left: effectiveLeft,
+            marginTop: 'calc(var(--scene-glow-size) / -2)',
+            marginLeft: 'calc(var(--scene-glow-size) / -2)',
+            background: `radial-gradient(circle, ${resolvedColor} 0%, transparent 70%)`,
+            ...style,
+          } as React.CSSProperties,
+        })}
+        data-animation-type={animate ? animationType : undefined}
+      />
+    </>
   );
 }
 

@@ -1,7 +1,18 @@
 import React from 'react';
-import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
+import {
+  Box,
+  getBaseValue,
+  getSortedBreakpoints,
+  getThemeColor,
+  InlineStyles,
+  keys,
+  useMantineTheme,
+  useRandomClassName,
+  type MantineBreakpoint,
+  type MantineColor,
+  type StyleProp,
+} from '@mantine/core';
 import { useSceneContext } from '../Scene.context';
-import { useResponsiveValue, type ResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
 export interface SceneDotGridProps {
@@ -23,7 +34,7 @@ export interface SceneDotGridProps {
   /** Spacing between dots in px — accepts a responsive object like `{ base: 16, md: 24 }`
    *  @default 24
    */
-  spacing?: ResponsiveValue<number>;
+  spacing?: StyleProp<number>;
 
   /** Stagger alternate rows by half the spacing
    *  @default false
@@ -72,11 +83,50 @@ function getFadeMask(fade: string): string | undefined {
   }
 }
 
+/** Responsive CSS variable for spacing via InlineStyles + media queries */
+function SceneDotGridMediaVariables({
+  spacing,
+  selector,
+}: {
+  spacing: StyleProp<number>;
+  selector: string;
+}) {
+  const theme = useMantineTheme();
+
+  const baseStyles: Record<string, string> = {};
+  const baseSpacing = getBaseValue(spacing);
+  if (baseSpacing !== undefined) {
+    baseStyles['--scene-dotgrid-spacing'] = `${baseSpacing}px`;
+  }
+
+  const queries = keys(theme.breakpoints).reduce<Record<string, Record<string, string>>>(
+    (acc, breakpoint) => {
+      acc[breakpoint] = {};
+      if (typeof spacing === 'object' && spacing !== null && spacing[breakpoint] !== undefined) {
+        acc[breakpoint]['--scene-dotgrid-spacing'] = `${spacing[breakpoint]}px`;
+      }
+      return acc;
+    },
+    {}
+  );
+
+  const sorted = getSortedBreakpoints(keys(queries), theme.breakpoints).filter(
+    (bp) => keys(queries[bp.value]).length > 0
+  );
+
+  const media = sorted.map((bp) => ({
+    query: `(min-width: ${theme.breakpoints[bp.value as MantineBreakpoint]})`,
+    styles: queries[bp.value],
+  }));
+
+  return <InlineStyles styles={baseStyles} media={media} selector={selector} />;
+}
+
 export function SceneDotGrid({
   color = 'gray',
   shade,
   dotSize = 1,
-  spacing: spacingProp = 24,
+  spacing = 24,
   stagger = false,
   fade = 'none',
   animate = false,
@@ -85,13 +135,15 @@ export function SceneDotGrid({
   className,
   style,
 }: SceneDotGridProps) {
-  const spacing = useResponsiveValue(spacingProp);
   const { getStyles } = useSceneContext();
   const theme = useMantineTheme();
+  const responsiveClassName = useRandomClassName();
   const resolvedColor =
     shade !== undefined ? getThemeColor(`${color}.${shade}`, theme) : getThemeColor(color, theme);
 
   const dotPattern = `radial-gradient(circle, ${resolvedColor} ${dotSize}px, transparent ${dotSize}px)`;
+
+  const spacingVar = 'var(--scene-dotgrid-spacing)';
 
   let backgroundImage: string;
   let backgroundSize: string;
@@ -99,34 +151,39 @@ export function SceneDotGrid({
 
   if (stagger) {
     backgroundImage = `${dotPattern}, ${dotPattern}`;
-    backgroundSize = `${spacing}px ${spacing * 2}px, ${spacing}px ${spacing * 2}px`;
-    backgroundPosition = `0 0, ${spacing / 2}px ${spacing}px`;
+    backgroundSize = `${spacingVar} calc(${spacingVar} * 2), ${spacingVar} calc(${spacingVar} * 2)`;
+    backgroundPosition = `0 0, calc(${spacingVar} / 2) ${spacingVar}`;
   } else {
     backgroundImage = dotPattern;
-    backgroundSize = `${spacing}px ${spacing}px`;
+    backgroundSize = `${spacingVar} ${spacingVar}`;
     backgroundPosition = undefined;
   }
 
   const maskImage = getFadeMask(fade);
 
   return (
-    <Box
-      {...getStyles('dotGrid', {
-        className:
-          [animate && classes.dotGridAnimated, className].filter(Boolean).join(' ') || undefined,
-        style: {
-          backgroundImage,
-          backgroundSize,
-          backgroundPosition,
-          opacity,
-          maskImage,
-          WebkitMaskImage: maskImage,
-          '--scene-dotgrid-opacity': String(opacity),
-          '--scene-dotgrid-duration': `${duration}s`,
-          ...style,
-        } as React.CSSProperties,
-      })}
-    />
+    <>
+      <SceneDotGridMediaVariables spacing={spacing} selector={`.${responsiveClassName}`} />
+      <Box
+        {...getStyles('dotGrid', {
+          className:
+            [responsiveClassName, animate && classes.dotGridAnimated, className]
+              .filter(Boolean)
+              .join(' ') || undefined,
+          style: {
+            backgroundImage,
+            backgroundSize,
+            backgroundPosition,
+            opacity,
+            maskImage,
+            WebkitMaskImage: maskImage,
+            '--scene-dotgrid-opacity': String(opacity),
+            '--scene-dotgrid-duration': `${duration}s`,
+            ...style,
+          } as React.CSSProperties,
+        })}
+      />
+    </>
   );
 }
 

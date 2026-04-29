@@ -116,6 +116,29 @@ const defaultLayers: Record<string, LayerConfig> = {
     trail: true,
     opacity: 0.8,
   },
+  rain: {
+    enabled: false,
+    count: 80,
+    color: '#4dabf7',
+    angle: 15,
+    speed: 1,
+    minLength: 8,
+    maxLength: 18,
+    thickness: 1,
+    opacity: 0.6,
+    splash: false,
+    splashCount: 20,
+  },
+  confetti: {
+    enabled: false,
+    count: 80,
+    duration: 4,
+    speed: 1,
+    minSize: 6,
+    maxSize: 12,
+    flutter: 60,
+    opacity: 1,
+  },
 };
 
 const layerLabels: Record<string, string> = {
@@ -129,6 +152,8 @@ const layerLabels: Record<string, string> = {
   snow: 'Snow',
   aurora: 'Aurora',
   starWarp: 'Star Warp',
+  rain: 'Rain',
+  confetti: 'Confetti',
 };
 
 const SWATCHES = [
@@ -675,6 +700,159 @@ function StarWarpControls({
   );
 }
 
+function RainControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SliderField
+        label="Count"
+        value={config.count}
+        onChange={(v) => onChange({ ...config, count: v })}
+        min={10}
+        max={200}
+      />
+      <ColorInput
+        size="xs"
+        label="Color"
+        value={config.color}
+        onChange={(v) => onChange({ ...config, color: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <SliderField
+        label="Angle (°)"
+        value={config.angle}
+        onChange={(v) => onChange({ ...config, angle: v })}
+        min={-45}
+        max={45}
+      />
+      <SliderField
+        label="Speed"
+        value={config.speed}
+        onChange={(v) => onChange({ ...config, speed: v })}
+        min={0.2}
+        max={3}
+        step={0.1}
+      />
+      <SliderField
+        label="Min Length"
+        value={config.minLength}
+        onChange={(v) => onChange({ ...config, minLength: v })}
+        min={2}
+        max={30}
+      />
+      <SliderField
+        label="Max Length"
+        value={config.maxLength}
+        onChange={(v) => onChange({ ...config, maxLength: v })}
+        min={4}
+        max={40}
+      />
+      <SliderField
+        label="Thickness"
+        value={config.thickness}
+        onChange={(v) => onChange({ ...config, thickness: v })}
+        min={0.5}
+        max={4}
+        step={0.5}
+      />
+      <SliderField
+        label="Opacity"
+        value={config.opacity}
+        onChange={(v) => onChange({ ...config, opacity: v })}
+        min={0}
+        max={1}
+        step={0.01}
+      />
+      <Checkbox
+        size="xs"
+        label="Splash"
+        checked={config.splash}
+        onChange={(e) => onChange({ ...config, splash: e.currentTarget.checked })}
+      />
+      {config.splash && (
+        <SliderField
+          label="Splash Count"
+          value={config.splashCount}
+          onChange={(v) => onChange({ ...config, splashCount: v })}
+          min={0}
+          max={80}
+        />
+      )}
+    </Stack>
+  );
+}
+
+function ConfettiControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SliderField
+        label="Count"
+        value={config.count}
+        onChange={(v) => onChange({ ...config, count: v })}
+        min={10}
+        max={200}
+      />
+      <SliderField
+        label="Duration (s)"
+        value={config.duration}
+        onChange={(v) => onChange({ ...config, duration: v })}
+        min={1}
+        max={10}
+        step={0.5}
+      />
+      <SliderField
+        label="Speed"
+        value={config.speed}
+        onChange={(v) => onChange({ ...config, speed: v })}
+        min={0.2}
+        max={3}
+        step={0.1}
+      />
+      <SliderField
+        label="Min Size"
+        value={config.minSize}
+        onChange={(v) => onChange({ ...config, minSize: v })}
+        min={2}
+        max={20}
+      />
+      <SliderField
+        label="Max Size"
+        value={config.maxSize}
+        onChange={(v) => onChange({ ...config, maxSize: v })}
+        min={4}
+        max={30}
+      />
+      <SliderField
+        label="Flutter"
+        value={config.flutter}
+        onChange={(v) => onChange({ ...config, flutter: v })}
+        min={0}
+        max={200}
+      />
+      <SliderField
+        label="Opacity"
+        value={config.opacity}
+        onChange={(v) => onChange({ ...config, opacity: v })}
+        min={0}
+        max={1}
+        step={0.01}
+      />
+    </Stack>
+  );
+}
+
 function MeshControls({
   config,
   onChange,
@@ -725,6 +903,8 @@ const controlsMap: Record<
   snow: SnowControls,
   aurora: AuroraControls,
   starWarp: StarWarpControls,
+  rain: RainControls,
+  confetti: ConfettiControls,
 };
 
 export default function FullscreenPage() {
@@ -761,6 +941,8 @@ export default function FullscreenPage() {
   const sn = layers.snow;
   const au = layers.aurora;
   const sw = layers.starWarp;
+  const rn = layers.rain;
+  const cf = layers.confetti;
 
   return (
     <>
@@ -859,6 +1041,31 @@ export default function FullscreenPage() {
             direction={sw.direction}
             trail={sw.trail}
             opacity={sw.opacity}
+          />
+        )}
+        {rn.enabled && (
+          <Scene.Rain
+            count={rn.count}
+            color={rn.color}
+            angle={rn.angle}
+            speed={rn.speed}
+            minLength={rn.minLength}
+            maxLength={rn.maxLength}
+            thickness={rn.thickness}
+            opacity={rn.opacity}
+            splash={rn.splash}
+            splashCount={rn.splashCount}
+          />
+        )}
+        {cf.enabled && (
+          <Scene.Confetti
+            count={cf.count}
+            duration={cf.duration}
+            speed={cf.speed}
+            minSize={cf.minSize}
+            maxSize={cf.maxSize}
+            flutter={cf.flutter}
+            opacity={cf.opacity}
           />
         )}
       </Scene>

@@ -12,11 +12,13 @@ import {
 } from '@mantine/core';
 import { SceneProvider, type SceneMousePosition } from './Scene.context';
 import { SceneAurora } from './SceneAurora/SceneAurora';
+import { SceneConfetti } from './SceneConfetti/SceneConfetti';
 import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
 import { SceneGlow } from './SceneGlow/SceneGlow';
 import { SceneGradient } from './SceneGradient/SceneGradient';
 import { SceneMesh } from './SceneMesh/SceneMesh';
 import { SceneNoise } from './SceneNoise/SceneNoise';
+import { SceneRain } from './SceneRain/SceneRain';
 import { SceneShootingStar } from './SceneShootingStar/SceneShootingStar';
 import { SceneSnow } from './SceneSnow/SceneSnow';
 import { SceneStarField } from './SceneStarField/SceneStarField';
@@ -33,6 +35,8 @@ export type SceneStylesNames =
   | 'starField'
   | 'shootingStar'
   | 'snow'
+  | 'rain'
+  | 'confetti'
   | 'aurora'
   | 'starWarp';
 
@@ -66,6 +70,20 @@ export interface SceneBaseProps {
    */
   interactiveEasing?: number;
 
+  /** Pause all child animations (and mouse-tracking rAF loop) when the scene is outside the viewport. Uses `IntersectionObserver`. Resumes automatically when the scene re-enters the viewport.
+   *  @default false
+   */
+  lazy?: boolean;
+
+  /** Threshold (0-1) used by `IntersectionObserver` when `lazy` is true. A value of 0 pauses as soon as the scene leaves the viewport; higher values require more of the scene to be visible before resuming.
+   *  @default 0
+   */
+  lazyThreshold?: number;
+
+  /** Called on every smoothed mouse-position update when `interactive` is true. Receives `{ x, y }` as percentages (0-100) relative to the scene container. Useful for coordinating external UI with the scene's tracking.
+   */
+  onMousePosition?: (position: SceneMousePosition) => void;
+
   /** Scene content (compound sub-components: Scene.Gradient, Scene.Glow, etc.) */
   children?: React.ReactNode;
 }
@@ -86,6 +104,8 @@ export type SceneFactory = Factory<{
     StarField: typeof SceneStarField;
     ShootingStar: typeof SceneShootingStar;
     Snow: typeof SceneSnow;
+    Rain: typeof SceneRain;
+    Confetti: typeof SceneConfetti;
     Aurora: typeof SceneAurora;
     StarWarp: typeof SceneStarWarp;
   };
@@ -97,6 +117,8 @@ const defaultProps: Partial<SceneProps> = {
   reducedMotion: 'auto',
   interactive: false,
   interactiveEasing: 0.12,
+  lazy: false,
+  lazyThreshold: 0,
 };
 
 const varsResolver = createVarsResolver<SceneFactory>((_, { zIndex }) => ({
@@ -114,6 +136,9 @@ export const Scene = factory<SceneFactory>((_props) => {
     reducedMotion,
     interactive,
     interactiveEasing,
+    onMousePosition,
+    lazy,
+    lazyThreshold,
     children,
 
     classNames,
@@ -144,6 +169,36 @@ export const Scene = factory<SceneFactory>((_props) => {
   const targetRef = useRef<SceneMousePosition>({ x: 50, y: 50 });
   const smoothRef = useRef<SceneMousePosition>({ x: 50, y: 50 });
   const hasReceivedInput = useRef(false);
+  const onMousePositionRef = useRef(onMousePosition);
+  useEffect(() => {
+    onMousePositionRef.current = onMousePosition;
+  }, [onMousePosition]);
+
+  // Lazy mode — pause animations and mouse tracking when off-screen
+  const [isVisible, setIsVisible] = useState(true);
+  useEffect(() => {
+    if (!lazy) {
+      setIsVisible(true);
+      return;
+    }
+
+    const target = containerRef.current;
+    if (!target || typeof IntersectionObserver === 'undefined') {
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          setIsVisible(entry.isIntersecting);
+        }
+      },
+      { threshold: lazyThreshold ?? 0 }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [lazy, lazyThreshold]);
 
   // Track raw cursor position on the full document
   useEffect(() => {
@@ -174,9 +229,11 @@ export const Scene = factory<SceneFactory>((_props) => {
 
   // LERP smoothing via requestAnimationFrame
   useEffect(() => {
-    if (!interactive) {
-      setMouse(null);
-      hasReceivedInput.current = false;
+    if (!interactive || !isVisible) {
+      if (!interactive) {
+        setMouse(null);
+        hasReceivedInput.current = false;
+      }
       return;
     }
 
@@ -200,7 +257,9 @@ export const Scene = factory<SceneFactory>((_props) => {
       if (easing >= 1) {
         // Instant tracking — no easing
         smoothRef.current = target;
-        setMouse({ ...target });
+        const next = { ...target };
+        setMouse(next);
+        onMousePositionRef.current?.(next);
       } else {
         const dx = target.x - prev.x;
         const dy = target.y - prev.y;
@@ -208,8 +267,10 @@ export const Scene = factory<SceneFactory>((_props) => {
         const nextY = Math.abs(dy) < 0.01 ? target.y : prev.y + dy * easing;
 
         if (nextX !== prev.x || nextY !== prev.y) {
-          smoothRef.current = { x: nextX, y: nextY };
-          setMouse({ x: nextX, y: nextY });
+          const next = { x: nextX, y: nextY };
+          smoothRef.current = next;
+          setMouse(next);
+          onMousePositionRef.current?.(next);
         }
       }
 
@@ -221,7 +282,7 @@ export const Scene = factory<SceneFactory>((_props) => {
       active = false;
       cancelAnimationFrame(frameId);
     };
-  }, [interactive, interactiveEasing]);
+  }, [interactive, interactiveEasing, isVisible]);
 
   const mergeRefs = useMergedRef(ref as React.Ref<HTMLDivElement>, containerRef);
 
@@ -232,7 +293,7 @@ export const Scene = factory<SceneFactory>((_props) => {
         aria-hidden="true"
         {...getStyles('root')}
         {...others}
-        mod={[{ fullscreen, 'reduced-motion': reducedMotion }, mod]}
+        mod={[{ fullscreen, 'reduced-motion': reducedMotion, paused: lazy && !isVisible }, mod]}
       >
         {children}
       </Box>
@@ -250,6 +311,8 @@ Scene.Noise = SceneNoise;
 Scene.StarField = SceneStarField;
 Scene.ShootingStar = SceneShootingStar;
 Scene.Snow = SceneSnow;
+Scene.Rain = SceneRain;
+Scene.Confetti = SceneConfetti;
 Scene.Aurora = SceneAurora;
 Scene.StarWarp = SceneStarWarp;
 
@@ -261,5 +324,7 @@ export type { SceneNoiseProps } from './SceneNoise/SceneNoise';
 export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';
 export type { SceneShootingStarProps } from './SceneShootingStar/SceneShootingStar';
 export type { SceneSnowProps } from './SceneSnow/SceneSnow';
+export type { SceneRainProps } from './SceneRain/SceneRain';
+export type { SceneConfettiProps, SceneConfettiShape } from './SceneConfetti/SceneConfetti';
 export type { SceneAuroraProps } from './SceneAurora/SceneAurora';
 export type { SceneStarWarpProps } from './SceneStarWarp/SceneStarWarp';
