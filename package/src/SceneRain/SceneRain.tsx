@@ -124,35 +124,40 @@ export function SceneRain({
     shade !== undefined ? getThemeColor(`${color}.${shade}`, theme) : getThemeColor(color, theme);
   const resolvedSplashColor = splashColor ? getThemeColor(splashColor, theme) : resolvedColor;
 
+  // Guard against pathological inputs: negative counts would throw in Array.from,
+  // and non-positive speed would produce Infinity/NaN durations and break CSS animations.
+  const safeSpeed = Math.max(0.05, speed);
+
   const drops = useMemo(() => {
     const rng = mulberry32(seed);
-    const cappedCount = Math.min(count, 150);
+    const cappedCount = Math.max(0, Math.min(count, 150));
     return Array.from({ length: cappedCount }, (_, i) => {
       const length = minLength + rng() * (maxLength - minLength);
       const x = rng() * 100;
       // Faster than snow — base 0.5s to 1.4s, modulated by speed
       const baseDuration = 0.5 + rng() * 0.9;
-      const duration = baseDuration / speed;
+      const duration = baseDuration / safeSpeed;
       const delay = -(rng() * duration);
       return { key: i, length, x, duration, delay };
     });
-  }, [count, minLength, maxLength, speed, seed]);
+  }, [count, minLength, maxLength, safeSpeed, seed]);
 
   const splashes = useMemo(() => {
     if (!splash) {
       return [];
     }
     const rng = mulberry32(seed + 9999);
-    return Array.from({ length: splashCount }, (_, i) => {
+    const cappedSplashCount = Math.max(0, Math.min(splashCount, 200));
+    return Array.from({ length: cappedSplashCount }, (_, i) => {
       const x = rng() * 100;
       const baseDuration = 0.8 + rng() * 1.2;
-      const duration = baseDuration / speed;
+      const duration = baseDuration / safeSpeed;
       const delay = -(rng() * duration);
       // Randomize between 50% and 150% of splashSize for visual variety
       const size = splashSize * (0.5 + rng());
       return { key: i, x, duration, delay, size };
     });
-  }, [splash, splashCount, splashSize, speed, seed]);
+  }, [splash, splashCount, splashSize, safeSpeed, seed]);
 
   return (
     <Box

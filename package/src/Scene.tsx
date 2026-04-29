@@ -177,30 +177,47 @@ export const Scene = factory<SceneFactory>((_props) => {
     onMousePositionRef.current = onMousePosition;
   }, [onMousePosition]);
 
-  // Lazy mode — pause animations and mouse tracking when off-screen
-  const [isVisible, setIsVisible] = useState(true);
+  // Lazy mode — pause animations and mouse tracking when off-screen.
+  // Visibility is tracked on a ref (no React re-renders) and `data-paused`
+  // is toggled directly on the DOM node so the CSS rule that stops every
+  // child animation kicks in without a render.
+  const isVisibleRef = useRef(true);
+  const wakeRafRef = useRef<(() => void) | null>(null);
   useEffect(() => {
+    const target = containerRef.current;
+
     if (!lazy) {
-      setIsVisible(true);
+      isVisibleRef.current = true;
+      target?.removeAttribute('data-paused');
       return;
     }
 
-    const target = containerRef.current;
     if (!target || typeof IntersectionObserver === 'undefined') {
       return;
     }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        for (const entry of entries) {
-          setIsVisible(entry.isIntersecting);
+        const visible = entries[0]?.isIntersecting ?? true;
+        const wasVisible = isVisibleRef.current;
+        isVisibleRef.current = visible;
+        if (visible) {
+          target.removeAttribute('data-paused');
+          if (!wasVisible) {
+            wakeRafRef.current?.();
+          }
+        } else {
+          target.setAttribute('data-paused', '');
         }
       },
       { threshold: lazyThreshold ?? 0 }
     );
 
     observer.observe(target);
-    return () => observer.disconnect();
+    return () => {
+      observer.disconnect();
+      target.removeAttribute('data-paused');
+    };
   }, [lazy, lazyThreshold]);
 
   // Track raw cursor position on the full document
@@ -230,26 +247,34 @@ export const Scene = factory<SceneFactory>((_props) => {
     return () => document.removeEventListener('pointermove', onPointerMove);
   }, [interactive]);
 
-  // LERP smoothing via requestAnimationFrame
+  // LERP smoothing via requestAnimationFrame.
+  // The loop self-suspends (does not reschedule) while `isVisibleRef.current`
+  // is false, and the IntersectionObserver wakes it back up via `wakeRafRef`.
   useEffect(() => {
-    if (!interactive || !isVisible) {
-      if (!interactive) {
-        setMouse(null);
-        hasReceivedInput.current = false;
-      }
+    if (!interactive) {
+      setMouse(null);
+      hasReceivedInput.current = false;
+      wakeRafRef.current = null;
       return;
     }
 
     const easing = interactiveEasing ?? 0.12;
     let frameId = 0;
     let active = true;
+    let scheduled = false;
 
     const animate = () => {
+      scheduled = false;
       if (!active) {
+        return;
+      }
+      if (!isVisibleRef.current) {
+        // Off-screen: bail without rescheduling so the rAF queue truly stops.
         return;
       }
 
       if (!hasReceivedInput.current) {
+        scheduled = true;
         frameId = requestAnimationFrame(animate);
         return;
       }
@@ -277,15 +302,25 @@ export const Scene = factory<SceneFactory>((_props) => {
         }
       }
 
+      scheduled = true;
       frameId = requestAnimationFrame(animate);
     };
 
-    frameId = requestAnimationFrame(animate);
+    const wake = () => {
+      if (!scheduled && active && isVisibleRef.current) {
+        scheduled = true;
+        frameId = requestAnimationFrame(animate);
+      }
+    };
+    wakeRafRef.current = wake;
+    wake();
+
     return () => {
       active = false;
       cancelAnimationFrame(frameId);
+      wakeRafRef.current = null;
     };
-  }, [interactive, interactiveEasing, isVisible]);
+  }, [interactive, interactiveEasing]);
 
   const mergeRefs = useMergedRef(ref as React.Ref<HTMLDivElement>, containerRef);
 
@@ -296,7 +331,7 @@ export const Scene = factory<SceneFactory>((_props) => {
         aria-hidden="true"
         {...getStyles('root')}
         {...others}
-        mod={[{ fullscreen, 'reduced-motion': reducedMotion, paused: lazy && !isVisible }, mod]}
+        mod={[{ fullscreen, 'reduced-motion': reducedMotion }, mod]}
       >
         {children}
       </Box>
