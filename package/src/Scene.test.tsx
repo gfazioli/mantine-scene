@@ -161,6 +161,26 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
+  it('renders Waves sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Waves count={3} />
+      </Scene>
+    );
+    // Waves renders one <svg> per layer
+    const svgs = container.querySelectorAll('svg');
+    expect(svgs.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it('renders Waves with array of colors', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Waves count={2} colors={['violet', 'pink']} position="top" />
+      </Scene>
+    );
+    expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
+  });
+
   it('fires Confetti onComplete in burst mode', async () => {
     jest.useFakeTimers();
     const onComplete = jest.fn();
@@ -188,11 +208,12 @@ describe('Scene', () => {
         <Scene.Snow />
         <Scene.Rain />
         <Scene.Confetti />
+        <Scene.Waves count={2} />
         <Scene.Aurora />
       </Scene>
     );
     const root = container.querySelector('[class]');
     const layers = root?.querySelectorAll(':scope > div');
-    expect(layers?.length).toBe(12);
+    expect(layers?.length).toBe(13);
   });
 });

@@ -128,6 +128,9 @@ const defaultLayers: Record<string, LayerConfig> = {
     opacity: 0.6,
     splash: false,
     splashCount: 20,
+    splashSize: 8,
+    splashOpacity: 0.7,
+    splashThickness: 1.5,
   },
   confetti: {
     enabled: false,
@@ -138,6 +141,22 @@ const defaultLayers: Record<string, LayerConfig> = {
     maxSize: 12,
     flutter: 60,
     opacity: 1,
+    origin: 'top' as const,
+    rise: 320,
+  },
+  waves: {
+    enabled: false,
+    count: 3,
+    color: '#228be6',
+    amplitude: 40,
+    wavelength: 480,
+    height: 240,
+    speed: 1,
+    direction: 'left' as const,
+    parallax: 1,
+    position: 'bottom' as const,
+    blur: 0,
+    opacity: 0.7,
   },
 };
 
@@ -154,6 +173,7 @@ const layerLabels: Record<string, string> = {
   starWarp: 'Star Warp',
   rain: 'Rain',
   confetti: 'Confetti',
+  waves: 'Waves',
 };
 
 const SWATCHES = [
@@ -776,13 +796,38 @@ function RainControls({
         onChange={(e) => onChange({ ...config, splash: e.currentTarget.checked })}
       />
       {config.splash && (
-        <SliderField
-          label="Splash Count"
-          value={config.splashCount}
-          onChange={(v) => onChange({ ...config, splashCount: v })}
-          min={0}
-          max={80}
-        />
+        <>
+          <SliderField
+            label="Splash Count"
+            value={config.splashCount}
+            onChange={(v) => onChange({ ...config, splashCount: v })}
+            min={0}
+            max={80}
+          />
+          <SliderField
+            label="Splash Size"
+            value={config.splashSize}
+            onChange={(v) => onChange({ ...config, splashSize: v })}
+            min={2}
+            max={30}
+          />
+          <SliderField
+            label="Splash Opacity"
+            value={config.splashOpacity}
+            onChange={(v) => onChange({ ...config, splashOpacity: v })}
+            min={0}
+            max={1}
+            step={0.01}
+          />
+          <SliderField
+            label="Splash Thickness"
+            value={config.splashThickness}
+            onChange={(v) => onChange({ ...config, splashThickness: v })}
+            min={0.5}
+            max={5}
+            step={0.5}
+          />
+        </>
       )}
     </Stack>
   );
@@ -849,6 +894,116 @@ function ConfettiControls({
         max={1}
         step={0.01}
       />
+      <SegmentedControl
+        size="xs"
+        data={['top', 'bottom']}
+        value={config.origin}
+        onChange={(v) => onChange({ ...config, origin: v })}
+      />
+      {config.origin === 'bottom' && (
+        <SliderField
+          label="Rise"
+          value={config.rise}
+          onChange={(v) => onChange({ ...config, rise: v })}
+          min={80}
+          max={800}
+          step={20}
+        />
+      )}
+    </Stack>
+  );
+}
+
+function WavesControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SliderField
+        label="Layers"
+        value={config.count}
+        onChange={(v) => onChange({ ...config, count: v })}
+        min={1}
+        max={8}
+      />
+      <ColorInput
+        size="xs"
+        label="Color"
+        value={config.color}
+        onChange={(v) => onChange({ ...config, color: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <SliderField
+        label="Amplitude"
+        value={config.amplitude}
+        onChange={(v) => onChange({ ...config, amplitude: v })}
+        min={5}
+        max={200}
+      />
+      <SliderField
+        label="Wavelength"
+        value={config.wavelength}
+        onChange={(v) => onChange({ ...config, wavelength: v })}
+        min={80}
+        max={1600}
+        step={40}
+      />
+      <SliderField
+        label="Height"
+        value={config.height}
+        onChange={(v) => onChange({ ...config, height: v })}
+        min={80}
+        max={500}
+        step={20}
+      />
+      <SliderField
+        label="Speed"
+        value={config.speed}
+        onChange={(v) => onChange({ ...config, speed: v })}
+        min={0.1}
+        max={5}
+        step={0.1}
+      />
+      <SegmentedControl
+        size="xs"
+        data={['left', 'right']}
+        value={config.direction}
+        onChange={(v) => onChange({ ...config, direction: v })}
+      />
+      <SliderField
+        label="Parallax"
+        value={config.parallax}
+        onChange={(v) => onChange({ ...config, parallax: v })}
+        min={-1}
+        max={2}
+        step={0.1}
+      />
+      <SegmentedControl
+        size="xs"
+        data={['bottom', 'top']}
+        value={config.position}
+        onChange={(v) => onChange({ ...config, position: v })}
+      />
+      <SliderField
+        label="Blur"
+        value={config.blur}
+        onChange={(v) => onChange({ ...config, blur: v })}
+        min={0}
+        max={30}
+      />
+      <SliderField
+        label="Opacity"
+        value={config.opacity}
+        onChange={(v) => onChange({ ...config, opacity: v })}
+        min={0}
+        max={1}
+        step={0.01}
+      />
     </Stack>
   );
 }
@@ -905,6 +1060,7 @@ const controlsMap: Record<
   starWarp: StarWarpControls,
   rain: RainControls,
   confetti: ConfettiControls,
+  waves: WavesControls,
 };
 
 export default function FullscreenPage() {
@@ -943,6 +1099,7 @@ export default function FullscreenPage() {
   const sw = layers.starWarp;
   const rn = layers.rain;
   const cf = layers.confetti;
+  const wv = layers.waves;
 
   return (
     <>
@@ -1055,6 +1212,9 @@ export default function FullscreenPage() {
             opacity={rn.opacity}
             splash={rn.splash}
             splashCount={rn.splashCount}
+            splashSize={rn.splashSize}
+            splashOpacity={rn.splashOpacity}
+            splashThickness={rn.splashThickness}
           />
         )}
         {cf.enabled && (
@@ -1066,6 +1226,23 @@ export default function FullscreenPage() {
             maxSize={cf.maxSize}
             flutter={cf.flutter}
             opacity={cf.opacity}
+            origin={cf.origin}
+            rise={cf.rise}
+          />
+        )}
+        {wv.enabled && (
+          <Scene.Waves
+            count={wv.count}
+            colors={wv.color}
+            amplitude={wv.amplitude}
+            wavelength={wv.wavelength}
+            height={wv.height}
+            speed={wv.speed}
+            direction={wv.direction}
+            parallax={wv.parallax}
+            position={wv.position}
+            blur={wv.blur}
+            opacity={wv.opacity}
           />
         )}
       </Scene>

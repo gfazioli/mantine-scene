@@ -23,6 +23,7 @@ import { SceneShootingStar } from './SceneShootingStar/SceneShootingStar';
 import { SceneSnow } from './SceneSnow/SceneSnow';
 import { SceneStarField } from './SceneStarField/SceneStarField';
 import { SceneStarWarp } from './SceneStarWarp/SceneStarWarp';
+import { SceneWaves } from './SceneWaves/SceneWaves';
 import classes from './Scene.module.css';
 
 export type SceneStylesNames =
@@ -38,7 +39,8 @@ export type SceneStylesNames =
   | 'rain'
   | 'confetti'
   | 'aurora'
-  | 'starWarp';
+  | 'starWarp'
+  | 'waves';
 
 export type SceneCssVariables = {
   root: '--scene-z-index';
@@ -108,6 +110,7 @@ export type SceneFactory = Factory<{
     Confetti: typeof SceneConfetti;
     Aurora: typeof SceneAurora;
     StarWarp: typeof SceneStarWarp;
+    Waves: typeof SceneWaves;
   };
 }>;
 
@@ -315,6 +318,7 @@ Scene.Rain = SceneRain;
 Scene.Confetti = SceneConfetti;
 Scene.Aurora = SceneAurora;
 Scene.StarWarp = SceneStarWarp;
+Scene.Waves = SceneWaves;
 
 export type { SceneGradientProps } from './SceneGradient/SceneGradient';
 export type { SceneDotGridProps } from './SceneDotGrid/SceneDotGrid';
@@ -325,6 +329,15 @@ export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';
 export type { SceneShootingStarProps } from './SceneShootingStar/SceneShootingStar';
 export type { SceneSnowProps } from './SceneSnow/SceneSnow';
 export type { SceneRainProps } from './SceneRain/SceneRain';
-export type { SceneConfettiProps, SceneConfettiShape } from './SceneConfetti/SceneConfetti';
+export type {
+  SceneConfettiOrigin,
+  SceneConfettiProps,
+  SceneConfettiShape,
+} from './SceneConfetti/SceneConfetti';
 export type { SceneAuroraProps } from './SceneAurora/SceneAurora';
 export type { SceneStarWarpProps } from './SceneStarWarp/SceneStarWarp';
+export type {
+  SceneWavesDirection,
+  SceneWavesPosition,
+  SceneWavesProps,
+} from './SceneWaves/SceneWaves';

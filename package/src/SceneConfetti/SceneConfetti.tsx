@@ -11,7 +11,9 @@ import { useSceneContext } from '../Scene.context';
 import { useResponsiveValue } from '../use-responsive-value';
 import classes from '../Scene.module.css';
 
-export type SceneConfettiShape = 'rectangle' | 'circle';
+export type SceneConfettiShape = 'rectangle' | 'circle' | 'triangle';
+
+export type SceneConfettiOrigin = 'top' | 'bottom';
 
 export interface SceneConfettiProps {
   /** Number of confetti pieces (recommended max ~200) — accepts a responsive object like `{ base: 60, md: 120 }`
@@ -25,9 +27,19 @@ export interface SceneConfettiProps {
   colors?: MantineColor[];
 
   /** Shape variants used for the pieces (each piece picks one at random)
-   *  @default ['rectangle', 'circle']
+   *  @default ['rectangle', 'circle', 'triangle']
    */
   shapes?: SceneConfettiShape[];
+
+  /** Where the pieces originate from. `'top'` (default) lets them drift down with gravity. `'bottom'` shoots them upward in a parabolic arc and lets gravity bring them back — the classic "confetti cannon" look.
+   *  @default 'top'
+   */
+  origin?: SceneConfettiOrigin;
+
+  /** Maximum rise distance in px when `origin` is `'bottom'`. Each piece gets a randomized rise between ~60% and 100% of this value.
+   *  @default 320
+   */
+  rise?: number;
 
   /** Minimum piece size in px
    *  @default 6
@@ -88,7 +100,9 @@ const DEFAULT_COLORS: MantineColor[] = [
   'violet',
   'pink',
 ];
-const DEFAULT_SHAPES: SceneConfettiShape[] = ['rectangle', 'circle'];
+const DEFAULT_SHAPES: SceneConfettiShape[] = ['rectangle', 'circle', 'triangle'];
+
+const TRIANGLE_CLIP_PATH = 'polygon(50% 0%, 0% 100%, 100% 100%)';
 
 export function SceneConfetti({
   count: countProp = 80,
@@ -100,6 +114,8 @@ export function SceneConfetti({
   speed = 1,
   flutter = 60,
   burst = false,
+  origin = 'top',
+  rise = 320,
   onComplete,
   opacity = 1,
   seed = 42,
@@ -129,6 +145,8 @@ export function SceneConfetti({
       const shapeIndex = Math.floor(rng() * resolvedShapes.length) % resolvedShapes.length;
       const drift = (rng() - 0.5) * flutter * 2;
       const rotation = (rng() - 0.5) * 720;
+      // Per-piece rise variation (only used when origin='bottom')
+      const pieceRise = rise * (0.6 + rng() * 0.4);
       return {
         key: i,
         size,
@@ -139,6 +157,7 @@ export function SceneConfetti({
         shape: resolvedShapes[shapeIndex],
         drift,
         rotation,
+        rise: pieceRise,
       };
     });
   }, [
@@ -150,6 +169,7 @@ export function SceneConfetti({
     flutter,
     seed,
     burst,
+    rise,
     resolvedColors,
     resolvedShapes,
   ]);
@@ -173,6 +193,23 @@ export function SceneConfetti({
     return () => window.clearTimeout(timer);
   }, [burst, pieces]);
 
+  const pieceClass = (() => {
+    if (origin === 'bottom') {
+      return burst ? classes.confettiPieceBurstUp : classes.confettiPieceUp;
+    }
+    return burst ? classes.confettiPieceBurst : classes.confettiPiece;
+  })();
+
+  const getShapeStyle = (shape: SceneConfettiShape, size: number): React.CSSProperties => {
+    if (shape === 'circle') {
+      return { height: `${size}px`, borderRadius: '50%' };
+    }
+    if (shape === 'triangle') {
+      return { height: `${size}px`, clipPath: TRIANGLE_CLIP_PATH };
+    }
+    return { height: `${size * 0.4}px`, borderRadius: '1px' };
+  };
+
   return (
     <Box
       {...getStyles('confetti', {
@@ -183,19 +220,19 @@ export function SceneConfetti({
       {pieces.map((piece) => (
         <Box
           key={piece.key}
-          className={burst ? classes.confettiPieceBurst : classes.confettiPiece}
+          className={pieceClass}
           style={
             {
               left: `${piece.x}%`,
               width: `${piece.size}px`,
-              height: `${piece.shape === 'circle' ? piece.size : piece.size * 0.4}px`,
               backgroundColor: piece.color,
-              borderRadius: piece.shape === 'circle' ? '50%' : '1px',
               opacity,
               '--scene-confetti-speed': `${piece.duration}s`,
               '--scene-confetti-drift': `${piece.drift}px`,
               '--scene-confetti-rotation': `${piece.rotation}deg`,
+              '--scene-confetti-rise': `${piece.rise}px`,
               animationDelay: `${piece.delay}s`,
+              ...getShapeStyle(piece.shape, piece.size),
             } as React.CSSProperties
           }
         />

@@ -16,3 +16,4 @@ export { snowConfigurator } from './SceneSnow.demo.configurator';
 export { starFieldConfigurator } from './SceneStarField.demo.configurator';
 export { starWarpConfigurator } from './SceneStarWarp.demo.configurator';
 export { usage } from './Scene.demo.usage';
+export { wavesConfigurator } from './SceneWaves.demo.configurator';

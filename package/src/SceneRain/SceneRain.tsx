@@ -70,6 +70,21 @@ export interface SceneRainProps {
   /** Splash color (defaults to the same as `color`) */
   splashColor?: MantineColor;
 
+  /** Base splash droplet size in px (the actual size is randomized between ~50% and 150% of this value).
+   *  @default 8
+   */
+  splashSize?: number;
+
+  /** Splash droplet opacity (0-1). Higher values produce a more visible, dramatic splash.
+   *  @default 0.7
+   */
+  splashOpacity?: number;
+
+  /** Splash ring thickness in px — controls how prominent the splash outline appears.
+   *  @default 1.5
+   */
+  splashThickness?: number;
+
   /** PRNG seed for deterministic raindrop positions
    *  @default 42
    */
@@ -95,6 +110,9 @@ export function SceneRain({
   splash = false,
   splashCount = 20,
   splashColor,
+  splashSize = 8,
+  splashOpacity = 0.7,
+  splashThickness = 1.5,
   seed = 42,
   className,
   style,
@@ -130,10 +148,11 @@ export function SceneRain({
       const baseDuration = 0.8 + rng() * 1.2;
       const duration = baseDuration / speed;
       const delay = -(rng() * duration);
-      const size = 4 + rng() * 6;
+      // Randomize between 50% and 150% of splashSize for visual variety
+      const size = splashSize * (0.5 + rng());
       return { key: i, x, duration, delay, size };
     });
-  }, [splash, splashCount, speed, seed]);
+  }, [splash, splashCount, splashSize, speed, seed]);
 
   return (
     <Box
@@ -168,10 +187,11 @@ export function SceneRain({
             {
               left: `${s.x}%`,
               width: `${s.size}px`,
-              height: `${s.size * 0.4}px`,
+              height: `${s.size * 0.45}px`,
               borderColor: resolvedSplashColor,
+              borderWidth: `${splashThickness}px ${splashThickness}px 0`,
               '--scene-rain-splash-speed': `${s.duration}s`,
-              '--scene-rain-splash-opacity': String(opacity),
+              '--scene-rain-splash-opacity': String(splashOpacity),
               animationDelay: `${s.delay}s`,
             } as React.CSSProperties
           }

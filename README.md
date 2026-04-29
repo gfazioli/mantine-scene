@@ -35,6 +35,9 @@ It requires **Mantine 9.x** and **React 19**.
 | `Scene.StarWarp` | Hyperspace warp-speed effect with configurable focal point and direction |
 | `Scene.ShootingStar` | Animated shooting star trails at configurable angles and intervals |
 | `Scene.Snow` | Falling snowflakes with horizontal drift and wind control |
+| `Scene.Rain` | Angled rain streaks with optional bottom-edge splash effect |
+| `Scene.Confetti` | Multi-shape confetti (rectangles, circles, triangles) with continuous or burst (`onComplete`) modes and configurable origin (`top`/`bottom`) |
+| `Scene.Waves` | Parallax SVG wave layers with configurable direction, parallax intensity, and seamless horizontal panning |
 | `Scene.Aurora` | Shimmering aurora borealis bands with wave animation |
 
 ## Features
@@ -42,8 +45,9 @@ It requires **Mantine 9.x** and **React 19**.
 - 🎨 **Theme Integration**: All color props accept Mantine theme colors (`MantineColor`)
 - 🧩 **Composable**: Freely combine any number of sub-components — layer order follows DOM order
 - ✨ **Rich Animations**: GPU-accelerated CSS animations (transform/opacity) with per-component controls
-- 🖱️ **Interactive Mode**: Enable mouse tracking — Glow, Gradient, and StarWarp react to cursor position with configurable LERP easing
-- 📱 **Responsive Props**: Key props (`count`, `size`, `blur`, `spacing`) accept Mantine responsive objects like `{ base: 50, md: 100 }`
+- 🖱️ **Interactive Mode**: Enable mouse tracking — Glow, Gradient, and StarWarp react to cursor position with configurable LERP easing. Use `onMousePosition` to pipe smoothed coordinates to external UI
+- 💤 **Lazy Mode**: Optional `lazy` prop pauses every child animation and the internal rAF loop when the scene leaves the viewport (via `IntersectionObserver`) — zero React re-renders
+- 📱 **Responsive Props**: Dimension props (`size`, `blur`, `spacing`) use Mantine's native `StyleProp<T>` with `InlineStyles` + media queries — zero re-renders on resize, same pattern as `SimpleGrid`
 - ♿ **Accessibility**: `aria-hidden="true"` by default; respects `prefers-reduced-motion` with configurable `reducedMotion` prop
 - 🖥️ **Fullscreen**: Set `fullscreen` to cover the entire viewport with `position: fixed`
 - 🎨 **Styles API**: Full Mantine Styles API support for all sub-components

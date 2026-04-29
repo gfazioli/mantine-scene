@@ -271,9 +271,11 @@ streaks. Customize `count`, `color`, streak `angle`
 (degrees), `thickness`, and `speed`. Min/max
 streak `length` are randomized per drop.
 
-Enable `splash` to render small splash droplets at
-the bottom edge — `splashCount` controls how many
-and `splashColor` overrides their color.
+Enable `splash` to render expanding splash rings at
+the bottom edge. Tune the effect with `splashCount`,
+`splashSize` (base diameter), `splashOpacity`, and
+`splashThickness` (ring width). `splashColor`
+overrides the default (which mirrors `color`).
 
 For a thunderstorm effect, combine `Scene.Rain` with
 a bright `Scene.Glow` to simulate a lightning flash.
@@ -285,11 +287,32 @@ a bright `Scene.Glow` to simulate a lightning flash.
 `Scene.Confetti` renders multi-colored falling
 confetti pieces with rotation and horizontal flutter.
 Each piece picks one shape from `shapes`
-(`'rectangle'` or `'circle'`) and one color from the
-`colors` palette (Mantine theme colors).
+(`'rectangle'`, `'circle'`, or `'triangle'`) and one
+color from the `colors` palette (Mantine theme
+colors).
 
 Tune `count`, `duration`, `flutter` (sway range in
 px), and the size range with `minSize`/`maxSize`.
+
+### Origin: top vs bottom
+
+Set `origin="bottom"` to flip the animation into a
+"confetti cannon" — pieces shoot upward in a
+parabolic arc, peak at `rise` pixels above the bottom
+edge, then fall back down. Pair it with `burst` for a
+celebratory one-shot blast triggered from a button.
+
+```tsx
+<Scene>
+  <Scene.Confetti
+    origin="bottom"
+    rise={400}
+    burst
+    count={120}
+    shapes={['rectangle', 'triangle']}
+  />
+</Scene>
+```
 
 ### Continuous mode
 
@@ -332,6 +355,53 @@ count, `position` (top/center/bottom), `blur`,
 and `opacity`.
 
 <Demo data={demos.auroraConfigurator} />
+
+## Waves
+
+`Scene.Waves` renders a stack of parallax SVG wave
+layers that pan horizontally for a soothing,
+ocean-like background. Each layer's path is generated
+deterministically from the `seed` and tiles seamlessly
+under a `translateX(-50%)` CSS animation — no
+`requestAnimationFrame`, no canvas, no React
+re-renders during the animation.
+
+Pass a single Mantine theme color to derive shades
+across layers automatically (back layers use lighter
+shades, front layers darker), or an explicit array
+to map a specific color per layer. Use `position`
+(`'top'` / `'bottom'`) to anchor the waves to either
+edge.
+
+Use `direction` (`'left'` / `'right'`) to flip the
+horizontal pan, and `parallax` to control the speed
+differential between foreground and background
+layers:
+
+- `parallax={0}` flattens parallax — all layers move
+  at the same speed
+- `parallax={1}` (default) is the standard depth effect
+- `parallax={2}` exaggerates the differential
+- Negative values invert the parallax (background
+  layers faster than foreground), creating a dreamy
+  reverse-depth feel
+
+```tsx
+<Scene>
+  <Scene.Waves
+    count={4}
+    colors="violet"
+    amplitude={50}
+    wavelength={520}
+    height={300}
+    direction="right"
+    parallax={1.5}
+    position="bottom"
+  />
+</Scene>
+```
+
+<Demo data={demos.wavesConfigurator} />
 
 ## Combined
 
