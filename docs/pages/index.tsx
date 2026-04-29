@@ -21,6 +21,8 @@ export default function HomePage() {
           'SceneStarField',
           'SceneShootingStar',
           'SceneSnow',
+          'SceneRain',
+          'SceneConfetti',
           'SceneAurora',
           'SceneStarWarp',
         ]}

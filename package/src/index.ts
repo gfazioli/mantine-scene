@@ -2,6 +2,8 @@ export { Scene } from './Scene';
 export type {
   SceneAuroraProps,
   SceneBaseProps,
+  SceneConfettiProps,
+  SceneConfettiShape,
   SceneCssVariables,
   SceneDotGridProps,
   SceneFactory,
@@ -11,6 +13,7 @@ export type {
   SceneMeshStop,
   SceneNoiseProps,
   SceneProps,
+  SceneRainProps,
   SceneShootingStarProps,
   SceneSnowProps,
   SceneStarFieldProps,

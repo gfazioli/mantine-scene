@@ -1,5 +1,5 @@
-import React from 'react';
-import { Box, Paper, Stack, Text } from '@mantine/core';
+import React, { useState } from 'react';
+import { Box, Button, Code, Group, Paper, Stack, Text } from '@mantine/core';
 import { Scene } from './Scene';
 
 export default {
@@ -207,5 +207,183 @@ export function CombinedEffects() {
         </Text>
       </Box>
     </Box>
+  );
+}
+
+export function Rain() {
+  return (
+    <Stack gap="xl" p="md">
+      <Text fw={500}>Scene.Rain — animated rain effect</Text>
+
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.Gradient
+            type="linear"
+            angle={180}
+            colors={['rgba(20, 30, 60, 0.6) 0%', 'rgba(0, 0, 0, 0.8) 100%']}
+          />
+          <Scene.Rain count={80} color="blue" angle={15} opacity={0.6} />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Default rain (angle 15°, blue)</Text>
+        </Box>
+      </Box>
+
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.Rain count={120} color="cyan" angle={-25} speed={1.5} splash splashCount={30} />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Heavier rain with wind & splash (angle -25°)</Text>
+        </Box>
+      </Box>
+
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.Glow color="rgba(255, 255, 255, 0.4)" size={600} blur={200} top="20%" left="50%" />
+          <Scene.Rain count={150} color="white" angle={10} thickness={1.5} splash />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Lightning + rain combo (Rain + Glow)</Text>
+        </Box>
+      </Box>
+    </Stack>
+  );
+}
+
+export function Confetti() {
+  const [bursts, setBursts] = useState(0);
+  const [completed, setCompleted] = useState(0);
+
+  return (
+    <Stack gap="xl" p="md">
+      <Text fw={500}>Scene.Confetti — celebratory animation</Text>
+
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.Confetti count={100} />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Continuous mode (default)</Text>
+        </Box>
+      </Box>
+
+      <Paper p="md" withBorder>
+        <Group justify="space-between" mb="md">
+          <Text fw={500}>Burst mode with onComplete</Text>
+          <Group gap="xs">
+            <Code>bursts triggered: {bursts}</Code>
+            <Code>completed: {completed}</Code>
+            <Button onClick={() => setBursts((n) => n + 1)}>Trigger burst</Button>
+          </Group>
+        </Group>
+
+        <Box pos="relative" h={300} bg="dark.9">
+          <Scene>
+            {bursts > 0 && (
+              <Scene.Confetti
+                key={bursts}
+                count={120}
+                burst
+                duration={3.5}
+                onComplete={() => setCompleted((n) => n + 1)}
+              />
+            )}
+          </Scene>
+          <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+            <Text c="white">
+              Click "Trigger burst" — onComplete fires when all confetti settles
+            </Text>
+          </Box>
+        </Box>
+      </Paper>
+
+      <Box pos="relative" h={300} bg="dark.9">
+        <Scene>
+          <Scene.Confetti
+            count={80}
+            colors={['cyan', 'violet', 'pink']}
+            shapes={['rectangle']}
+            minSize={4}
+            maxSize={8}
+            flutter={120}
+            duration={5}
+          />
+        </Scene>
+        <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+          <Text c="white">Custom palette + rectangles only + wide flutter</Text>
+        </Box>
+      </Box>
+    </Stack>
+  );
+}
+
+export function LazyMode() {
+  return (
+    <Stack gap="xl" p="md">
+      <Text fw={500}>
+        Scene <Code>lazy</Code> prop — pauses animations when scrolled out of view
+      </Text>
+      <Text size="sm" c="dimmed">
+        Open DevTools → Performance to verify the rAF loop / animations stop while the scene is
+        off-screen. Scroll the page up/down to enter and leave the viewport.
+      </Text>
+
+      <Box h={1200} />
+
+      <Paper p={0} withBorder style={{ overflow: 'hidden' }}>
+        <Box pos="relative" h={400} bg="dark.9">
+          <Scene lazy interactive>
+            <Scene.Gradient
+              type="radial"
+              colors={['rgba(120, 0, 255, 0.3) 0%', 'transparent 70%']}
+            />
+            <Scene.Snow count={60} />
+            <Scene.StarField count={120} />
+            <Scene.Glow color="violet" size={400} blur={140} top="50%" left="50%" />
+          </Scene>
+          <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+            <Text c="white">lazy + interactive scene with Snow, StarField, Glow</Text>
+            <Text c="dimmed" size="sm" mt="xs">
+              Scroll out → animations pause, mouse rAF loop stops. Scroll in → they resume.
+            </Text>
+          </Box>
+        </Box>
+      </Paper>
+
+      <Box h={1200} />
+    </Stack>
+  );
+}
+
+export function MousePositionCallback() {
+  const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
+
+  return (
+    <Stack gap="xl" p="md">
+      <Text fw={500}>
+        Scene <Code>onMousePosition</Code> — coordinate external UI with cursor tracking
+      </Text>
+
+      <Group>
+        <Code>x: {pos ? pos.x.toFixed(1) : '—'}</Code>
+        <Code>y: {pos ? pos.y.toFixed(1) : '—'}</Code>
+      </Group>
+
+      <Paper p={0} withBorder style={{ overflow: 'hidden' }}>
+        <Box pos="relative" h={400} bg="dark.9">
+          <Scene interactive onMousePosition={setPos}>
+            <Scene.Gradient
+              type="radial"
+              colors={['rgba(0, 200, 255, 0.2) 0%', 'transparent 70%']}
+            />
+            <Scene.Glow color="cyan" size={300} blur={120} top="50%" left="50%" />
+          </Scene>
+          <Box pos="relative" style={{ zIndex: 1 }} p="xl">
+            <Text c="white">Move the cursor inside the scene</Text>
+          </Box>
+        </Box>
+      </Paper>
+    </Stack>
   );
 }

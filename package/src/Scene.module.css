@@ -32,6 +32,15 @@
 }
 
 /* ============================================
+   Scene - Lazy paused state (off-screen)
+   ============================================ */
+.root[data-paused] *,
+.root[data-paused]::before,
+.root[data-paused]::after {
+  animation-play-state: paused !important;
+}
+
+/* ============================================
    Scene - Gradient layer
    ============================================ */
 .gradient {
@@ -354,6 +363,123 @@
   100% {
     top: 105%;
     transform: translateX(0);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Rain layer
+   ============================================ */
+.rain {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.rainDrop {
+  position: absolute;
+  top: -10%;
+  border-radius: 999px;
+  transform-origin: center top;
+  opacity: var(--scene-rain-opacity, 0.5);
+  animation: scene-rain-fall var(--scene-rain-speed, 1s) linear infinite;
+}
+
+@keyframes scene-rain-fall {
+  0% {
+    top: -10%;
+    opacity: 0;
+  }
+
+  10% {
+    opacity: var(--scene-rain-opacity, 0.5);
+  }
+
+  90% {
+    opacity: var(--scene-rain-opacity, 0.5);
+  }
+
+  100% {
+    top: 110%;
+    opacity: 0;
+  }
+}
+
+.rainSplash {
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  border-style: solid;
+  border-width: 1px 1px 0;
+  background: transparent;
+  opacity: 0;
+  animation: scene-rain-splash var(--scene-rain-splash-speed, 1s) ease-out infinite;
+}
+
+@keyframes scene-rain-splash {
+  0%,
+  85% {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+
+  90% {
+    transform: scale(0.6);
+    opacity: var(--scene-rain-splash-opacity, 0.6);
+  }
+
+  100% {
+    transform: scale(1.4);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Confetti layer
+   ============================================ */
+.confetti {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.confettiPiece,
+.confettiPieceBurst {
+  position: absolute;
+  top: -10%;
+  animation-name: scene-confetti-fall;
+  animation-duration: var(--scene-confetti-speed, 4s);
+  animation-timing-function: linear;
+}
+
+.confettiPiece {
+  animation-iteration-count: infinite;
+}
+
+.confettiPieceBurst {
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+@keyframes scene-confetti-fall {
+  0% {
+    top: -10%;
+    transform: translateX(0) rotate(0deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  50% {
+    transform: translateX(var(--scene-confetti-drift, 0px))
+      rotate(calc(var(--scene-confetti-rotation, 360deg) * 0.5));
+  }
+
+  100% {
+    top: 110%;
+    transform: translateX(0) rotate(var(--scene-confetti-rotation, 720deg));
     opacity: 0;
   }
 }

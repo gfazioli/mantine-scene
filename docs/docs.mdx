@@ -68,20 +68,63 @@ to the cursor position automatically:
 When the mouse leaves the scene, components fall back
 to their default position props.
 
+### onMousePosition callback
+
+When `interactive` is enabled, pass `onMousePosition`
+to receive every smoothed cursor update. The callback
+receives `{ x, y }` as percentages (0–100) relative
+to the scene container — useful for coordinating
+external UI elements with the scene's tracking.
+
+<Demo data={demos.mousePosition} />
+
+## Lazy mode
+
+Set `lazy` on the root `Scene` to pause all child
+animations and the internal mouse-tracking
+`requestAnimationFrame` loop when the scene leaves
+the viewport. Animations resume automatically when
+the scene re-enters.
+
+This uses `IntersectionObserver` under the hood and
+is opt-in (default `false`) to preserve backwards
+compatibility. Tune the visibility threshold via
+`lazyThreshold` (0–1).
+
+```tsx
+<Scene lazy lazyThreshold={0.1}>
+  <Scene.StarField count={120} />
+  <Scene.Glow color="violet" size={400} />
+</Scene>
+```
+
+When paused, the root receives a `data-paused`
+attribute and a CSS rule sets
+`animation-play-state: paused` on every child
+element — no React re-render or remount required.
+
+<Demo data={demos.lazy} />
+
 ## Responsive Props
 
-Some props accept responsive objects following
-Mantine's breakpoint convention. This is useful for
-reducing particle counts on mobile or adjusting sizes
-across viewports.
+Some props accept Mantine's `StyleProp<T>` —
+either a static value or a breakpoint object
+(e.g. `{ base: 30, md: 100 }`). CSS-derivable values
+(sizes, spacings) are emitted as scoped CSS variables
+with `@media` queries via Mantine's `InlineStyles`,
+so they update with **zero React re-renders** on
+viewport changes — the same pattern used by Mantine
+core's `SimpleGrid`.
 
 Supported responsive props:
 
-- **`Scene.Glow`** — `size`, `blur`
-- **`Scene.DotGrid`** — `spacing`
-- **`Scene.StarField`** — `count`
-- **`Scene.StarWarp`** — `count`
-- **`Scene.Snow`** — `count`
+- **`Scene.Glow`** — `size`, `blur` (CSS-driven, no re-render)
+- **`Scene.DotGrid`** — `spacing` (CSS-driven, no re-render)
+- **`Scene.StarField`** — `count` (resolved in JS — particles re-seed at breakpoints)
+- **`Scene.StarWarp`** — `count` (resolved in JS)
+- **`Scene.Snow`** — `count` (resolved in JS)
+- **`Scene.Rain`** — `count` (resolved in JS)
+- **`Scene.Confetti`** — `count` (resolved in JS)
 
 ```tsx
 import { Scene } from '@gfazioli/mantine-scene';
@@ -101,13 +144,19 @@ function Demo() {
 
       {/* Tighter dot grid on small screens */}
       <Scene.DotGrid color="gray" spacing={{ base: 16, md: 24 }} />
+
+      {/* Lighter rain on mobile */}
+      <Scene.Rain count={{ base: 40, md: 100 }} angle={15} />
     </Scene>
   );
 }
 ```
 
 Plain number values continue to work as before —
-responsive objects are entirely opt-in.
+responsive objects are entirely opt-in. The legacy
+`ResponsiveValue<T>` type re-export remains for
+backwards compatibility but is now an alias for
+`StyleProp<T>` and is marked as deprecated.
 
 <Demo data={demos.responsive} />
 
@@ -214,6 +263,63 @@ Use `wind` (-1 to 1) to bias the drift direction
 and `speed` as a multiplier on fall duration.
 
 <Demo data={demos.snowConfigurator} />
+
+## Rain
+
+`Scene.Rain` renders falling raindrops as angled
+streaks. Customize `count`, `color`, streak `angle`
+(degrees), `thickness`, and `speed`. Min/max
+streak `length` are randomized per drop.
+
+Enable `splash` to render small splash droplets at
+the bottom edge — `splashCount` controls how many
+and `splashColor` overrides their color.
+
+For a thunderstorm effect, combine `Scene.Rain` with
+a bright `Scene.Glow` to simulate a lightning flash.
+
+<Demo data={demos.rainConfigurator} />
+
+## Confetti
+
+`Scene.Confetti` renders multi-colored falling
+confetti pieces with rotation and horizontal flutter.
+Each piece picks one shape from `shapes`
+(`'rectangle'` or `'circle'`) and one color from the
+`colors` palette (Mantine theme colors).
+
+Tune `count`, `duration`, `flutter` (sway range in
+px), and the size range with `minSize`/`maxSize`.
+
+### Continuous mode
+
+By default `Scene.Confetti` loops continuously,
+emitting pieces in an infinite stream. Use the
+configurator below to tune `count`, sizes, `flutter`,
+and timing.
+
+<Demo data={demos.confettiConfigurator} />
+
+### Burst mode with onComplete
+
+Set `burst` to run a single one-shot animation
+instead of looping. Combine it with a React `key` to
+retrigger the burst on demand — the `onComplete`
+callback fires once the last piece has settled.
+
+```tsx
+<Scene>
+  <Scene.Confetti
+    key={trigger}
+    count={120}
+    burst
+    duration={3.5}
+    onComplete={() => console.log('settled')}
+  />
+</Scene>
+```
+
+<Demo data={demos.confettiBurst} />
 
 ## Aurora
 
