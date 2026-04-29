@@ -132,14 +132,19 @@ export function SceneConfetti({
   );
   const resolvedShapes = shapes.length > 0 ? shapes : DEFAULT_SHAPES;
 
+  // Guard against pathological inputs: negative counts would throw in Array.from,
+  // and non-positive speed would produce Infinity/NaN durations (invalid CSS animation
+  // values) and break burst completion timing (`delay + duration`).
+  const safeSpeed = Math.max(0.05, speed);
+
   const pieces = useMemo(() => {
     const rng = mulberry32(seed);
-    const cappedCount = Math.min(count, 200);
+    const cappedCount = Math.max(0, Math.min(count, 200));
     return Array.from({ length: cappedCount }, (_, i) => {
       const size = minSize + rng() * (maxSize - minSize);
       const x = rng() * 100;
       const baseDuration = duration * (0.7 + rng() * 0.6);
-      const pieceDuration = baseDuration / speed;
+      const pieceDuration = baseDuration / safeSpeed;
       const delay = burst ? rng() * 0.3 : -(rng() * pieceDuration);
       const colorIndex = Math.floor(rng() * resolvedColors.length) % resolvedColors.length;
       const shapeIndex = Math.floor(rng() * resolvedShapes.length) % resolvedShapes.length;
@@ -165,7 +170,7 @@ export function SceneConfetti({
     minSize,
     maxSize,
     duration,
-    speed,
+    safeSpeed,
     flutter,
     seed,
     burst,
