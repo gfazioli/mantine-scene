@@ -1,4 +1,3 @@
-import React, { useEffect, useMemo, useRef } from 'react';
 import {
   Box,
   getThemeColor,
@@ -6,6 +5,7 @@ import {
   type MantineColor,
   type StyleProp,
 } from '@mantine/core';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { mulberry32 } from '../prng';
 import { useSceneContext } from '../Scene.context';
 import { useResponsiveValue } from '../use-responsive-value';

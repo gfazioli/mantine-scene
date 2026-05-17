@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Box, Code, Group, Stack } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import React, { useState } from 'react';
 
 const code = `
 import { useState } from 'react';

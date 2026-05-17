@@ -1,7 +1,7 @@
-import React from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Box, Stack, Text } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import React from 'react';
 
 const code = `
 import { Scene } from '@gfazioli/mantine-scene';

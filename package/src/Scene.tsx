@@ -1,5 +1,3 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { useMergedRef } from '@mantine/hooks';
 import {
   Box,
   BoxProps,
@@ -10,6 +8,8 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
+import { useMergedRef } from '@mantine/hooks';
+import React, { useEffect, useRef, useState } from 'react';
 import { SceneProvider, type SceneMousePosition } from './Scene.context';
 import { SceneAurora } from './SceneAurora/SceneAurora';
 import { SceneConfetti } from './SceneConfetti/SceneConfetti';

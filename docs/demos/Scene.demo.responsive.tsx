@@ -1,7 +1,7 @@
-import React from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
 import { Badge, Box, Group, Text, useMatches } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import React from 'react';
 
 const code = `
 import { Badge, Box, Group, Text } from '@mantine/core';

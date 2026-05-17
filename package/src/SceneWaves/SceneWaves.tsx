@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
 import { Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
+import React, { useMemo } from 'react';
 import { mulberry32 } from '../prng';
 import { useSceneContext } from '../Scene.context';
 import classes from '../Scene.module.css';

@@ -1,6 +1,4 @@
-import React, { useEffect, useState } from 'react';
 import { Scene } from '@gfazioli/mantine-scene';
-import { IconAdjustments, IconMoon, IconSun, IconX } from '@tabler/icons-react';
 import {
   ActionIcon,
   Anchor,
@@ -21,6 +19,8 @@ import {
   useComputedColorScheme,
   useMantineColorScheme,
 } from '@mantine/core';
+import { IconAdjustments, IconMoon, IconSun, IconX } from '@tabler/icons-react';
+import React, { useEffect, useState } from 'react';
 
 interface LayerConfig {
   enabled: boolean;

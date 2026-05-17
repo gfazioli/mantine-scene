@@ -1,5 +1,5 @@
-import React from 'react';
 import { alpha, Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
+import React from 'react';
 import { useSceneContext } from '../Scene.context';
 import classes from '../Scene.module.css';
 

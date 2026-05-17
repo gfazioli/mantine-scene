@@ -1,5 +1,5 @@
-import React, { useMemo } from 'react';
 import { alpha, Box, getThemeColor, useMantineTheme, type MantineColor } from '@mantine/core';
+import React, { useMemo } from 'react';
 import { useSceneContext } from '../Scene.context';
 
 export interface SceneNoiseProps {
