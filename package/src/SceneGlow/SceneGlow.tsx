@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   Box,
   getBaseValue,
@@ -12,6 +11,7 @@ import {
   type MantineColor,
   type StyleProp,
 } from '@mantine/core';
+import React from 'react';
 import { useSceneContext } from '../Scene.context';
 import classes from '../Scene.module.css';
 
