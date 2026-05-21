@@ -20,7 +20,7 @@ function Demo() {
     <Box pos="relative" h={500} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-dark-9)' }}>
       <Scene>
         <Scene.Globe
-          size={500}
+          size={400}
           markers={[ROM, NYC, TYO, SFO, SYD, LHR].map((location) => ({ location, size: 0.06 }))}
           arcs={[
             { from: ROM, to: NYC },
@@ -61,7 +61,7 @@ function Demo() {
     >
       <Scene>
         <Scene.Globe
-          size={500}
+          size={400}
           markers={[ROM, NYC, TYO, SFO, SYD, LHR].map((location) => ({ location, size: 0.06 }))}
           arcs={[
             { from: ROM, to: NYC },

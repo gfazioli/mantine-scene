@@ -21,7 +21,7 @@ function Demo() {
     <Box pos="relative" h={500} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-dark-9)' }}>
       <Scene>
         <Scene.Globe
-          size={500}
+          size={400}
           markers={cities}
           markerColor="orange.5"
           baseColor="gray.7"
@@ -55,7 +55,7 @@ function Demo() {
     >
       <Scene>
         <Scene.Globe
-          size={500}
+          size={400}
           markers={cities}
           markerColor="orange.5"
           baseColor="gray.7"
