@@ -86,6 +86,15 @@ export const beamsConfigurator: MantineDemo = {
     },
     {
       type: 'number',
+      prop: 'radius',
+      initialValue: 999,
+      libraryValue: 999,
+      step: 10,
+      min: 0,
+      max: 999,
+    },
+    {
+      type: 'number',
       prop: 'opacity',
       initialValue: 0.35,
       libraryValue: 0.35,
