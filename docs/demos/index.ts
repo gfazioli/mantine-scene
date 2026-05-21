@@ -8,7 +8,6 @@ export { glowConfigurator } from './SceneGlow.demo.configurator';
 export { gradientConfigurator } from './SceneGradient.demo.configurator';
 export { lazy } from './Scene.demo.lazy';
 export { meshConfigurator } from './SceneMesh.demo.configurator';
-export { meteorShower } from './Scene.demo.meteorShower';
 export { mousePosition } from './Scene.demo.mousePosition';
 export { noiseConfigurator } from './SceneNoise.demo.configurator';
 export { radarConfigurator } from './SceneRadar.demo.configurator';
