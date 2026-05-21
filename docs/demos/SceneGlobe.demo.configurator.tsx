@@ -54,7 +54,16 @@ export const globeConfigurator: MantineDemo = {
       type: 'color',
       prop: 'baseColor',
       initialValue: 'gray',
-      libraryValue: 'gray.7',
+      libraryValue: 'gray.5',
+    },
+    {
+      type: 'number',
+      prop: 'mapBrightness',
+      initialValue: 12,
+      libraryValue: 12,
+      step: 1,
+      min: 1,
+      max: 30,
     },
     {
       type: 'color',

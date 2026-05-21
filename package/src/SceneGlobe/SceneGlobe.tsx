@@ -1,11 +1,4 @@
-import {
-  Box,
-  getThemeColor,
-  parseThemeColor,
-  useMantineColorScheme,
-  useMantineTheme,
-  type MantineColor,
-} from '@mantine/core';
+import { Box, useMantineColorScheme, useMantineTheme, type MantineColor } from '@mantine/core';
 import React, { useEffect, useRef } from 'react';
 import { useSceneContext } from '../Scene.context';
 import classes from '../Scene.module.css';
@@ -51,8 +44,8 @@ export interface SceneGlobeProps {
   /** Map of markers ([lat, lng]) plotted on the surface. */
   markers?: SceneGlobeMarker[];
 
-  /** Sphere base colour — Mantine theme color or any CSS color.
-   *  @default 'gray.7'
+  /** Sphere base colour — the colour of the continents. Mantine theme color or any CSS color.
+   *  @default 'gray.5'
    */
   baseColor?: MantineColor;
 
@@ -61,15 +54,30 @@ export interface SceneGlobeProps {
    */
   glowColor?: MantineColor;
 
-  /** Marker dot colour.
+  /** Colour used for the optional `markers` dots (lat/lng points).
    *  @default 'orange.5'
    */
   markerColor?: MantineColor;
 
-  /** Force dark/light theme. Defaults to auto-detection via `useMantineColorScheme`.
-   *  @default 'auto'
+  /** Cobe's `dark` flag — `1` increases visibility of the night side of the planet, `0` fades it out (cleaner planet silhouette). Set to `'auto'` to mirror the Mantine color scheme.
+   *  @default 0
    */
-  dark?: 'auto' | boolean;
+  dark?: 'auto' | boolean | 0 | 1;
+
+  /** How much detail / how many dots make up the continents — higher = denser map.
+   *  @default 16000
+   */
+  mapSamples?: number;
+
+  /** How bright the continent dots are against `baseColor`. Increase if the planet looks empty on dark themes.
+   *  @default 12
+   */
+  mapBrightness?: number;
+
+  /** Light diffusion across the sphere — controls how much the lit hemisphere bleeds into the dark side.
+   *  @default 1.2
+   */
+  diffuse?: number;
 
   /** Overall opacity (0..1).
    *  @default 0.9
@@ -119,18 +127,33 @@ function hexToRgbTuple(hex: string): [number, number, number] {
   return [1, 1, 1];
 }
 
+// cobe needs literal RGB tuples in 0..1 — Mantine 9's `parseThemeColor` /
+// `getThemeColor` resolve palette refs to CSS variables (`var(--mantine-color-gray-6)`),
+// which we can't parse offline. Resolve via direct `theme.colors[palette][shade]`
+// lookup instead, falling back to the raw string for standalone CSS colors.
 function resolveColorTuple(
   color: MantineColor,
   theme: ReturnType<typeof useMantineTheme>
 ): [number, number, number] {
-  try {
-    // parseThemeColor returns { value: '#hex', ... } for palette refs; fall back to direct theme color.
-    const parsed = parseThemeColor({ color, theme });
-    const value = parsed?.value ?? getThemeColor(color, theme);
-    return hexToRgbTuple(value);
-  } catch {
-    return hexToRgbTuple(getThemeColor(color, theme));
+  if (!color) {
+    return [1, 1, 1];
   }
+
+  // Already a CSS color literal (hex / rgb / rgba) — parse directly.
+  if (color.startsWith('#') || color.startsWith('rgb')) {
+    return hexToRgbTuple(color);
+  }
+
+  // Palette ref like 'gray.7' or bare palette like 'gray' (defaults to shade 6).
+  const [palette, shadeStr] = color.split('.');
+  const shade = shadeStr !== undefined ? parseInt(shadeStr, 10) : 6;
+  const swatch = theme.colors?.[palette]?.[shade];
+  if (swatch) {
+    return hexToRgbTuple(swatch);
+  }
+
+  // Unknown palette — give up and return mid-gray so cobe still renders something.
+  return [0.5, 0.5, 0.5];
 }
 
 export function SceneGlobe({
@@ -144,8 +167,11 @@ export function SceneGlobe({
   baseColor = 'gray.7',
   glowColor = 'blue.5',
   markerColor = 'orange.5',
-  dark = 'auto',
-  opacity = 0.9,
+  dark = 1,
+  mapSamples = 16000,
+  mapBrightness = 6,
+  diffuse = 3,
+  opacity = 1,
   className,
   style,
 }: SceneGlobeProps) {
@@ -155,12 +181,24 @@ export function SceneGlobe({
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const phiRef = useRef(phiInitial);
+  const thetaRef = useRef(theta);
   const pointerRef = useRef<{ startX: number; startPhi: number } | null>(null);
-  const isDarkRef = useRef<boolean>(dark === 'auto' ? colorScheme === 'dark' : Boolean(dark));
+  const resolveDark = (d: typeof dark, scheme: typeof colorScheme): 0 | 1 => {
+    if (d === 'auto') {
+      return scheme === 'dark' ? 1 : 0;
+    }
+    return d ? 1 : 0;
+  };
+  const isDarkRef = useRef<0 | 1>(resolveDark(dark, colorScheme));
 
   useEffect(() => {
-    isDarkRef.current = dark === 'auto' ? colorScheme === 'dark' : Boolean(dark);
+    isDarkRef.current = resolveDark(dark, colorScheme);
   }, [dark, colorScheme]);
+
+  // Keep theta tracking the prop so live slider changes apply without recreating the globe.
+  useEffect(() => {
+    thetaRef.current = theta;
+  }, [theta]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -171,10 +209,14 @@ export function SceneGlobe({
     const baseTuple = resolveColorTuple(baseColor, theme);
     const glowTuple = resolveColorTuple(glowColor, theme);
     const markerTuple = resolveColorTuple(markerColor, theme);
-    const pxRatio = typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1;
+    // cobe expects `width` / `height` in pixels at the SAME resolution as
+    // `devicePixelRatio` — see the official demo. On Retina (pxRatio=2), we
+    // pass size*2 to cobe and let canvas.style.* downscale to `size` px.
+    const pxRatio = typeof window !== 'undefined' ? Math.min(window.devicePixelRatio || 1, 2) : 1;
     const renderSize = size * pxRatio;
 
-    let globe: { destroy: () => void } | null = null;
+    let globe: { update: (opts: Record<string, any>) => void; destroy: () => void } | null = null;
+    let raf = 0;
     let cancelled = false;
 
     import('cobe')
@@ -183,18 +225,19 @@ export function SceneGlobe({
           return;
         }
         const createGlobe = mod.default;
-        // `onRender` is supported by cobe at runtime but missing from the public
-        // type definitions, so we widen via `as any` to keep the surface honest.
+        // cobe v2 dropped the `onRender` callback — the returned `globe.update`
+        // is what drives the animation. We run our own rAF loop and feed phi/theta
+        // each frame, including auto-rotate increments when no pointer drag.
         globe = createGlobe(canvasRef.current, {
           devicePixelRatio: pxRatio,
           width: renderSize,
           height: renderSize,
           phi: phiRef.current,
-          theta,
-          dark: isDarkRef.current ? 1 : 0,
-          diffuse: 1.2,
-          mapSamples: 16000,
-          mapBrightness: 6,
+          theta: thetaRef.current,
+          dark: isDarkRef.current,
+          diffuse,
+          mapSamples,
+          mapBrightness,
           baseColor: baseTuple,
           markerColor: markerTuple,
           glowColor: glowTuple,
@@ -202,26 +245,48 @@ export function SceneGlobe({
             location: m.location,
             size: m.size ?? 0.05,
           })),
-          onRender: (state: Record<string, any>) => {
-            state.phi = phiRef.current;
-            if (autoRotate && !pointerRef.current) {
-              phiRef.current += autoRotateSpeed;
-            }
-          },
-        } as any);
+        } as any) as { update: (opts: Record<string, any>) => void; destroy: () => void };
+
+        const tick = () => {
+          if (!globe || cancelled) {
+            return;
+          }
+          if (autoRotate && !pointerRef.current) {
+            phiRef.current += autoRotateSpeed;
+          }
+          globe.update({ phi: phiRef.current, theta: thetaRef.current });
+          raf = requestAnimationFrame(tick);
+        };
+        raf = requestAnimationFrame(tick);
       })
       .catch(() => {
         // cobe is an optional peer dependency. When missing, we silently
-        // render the empty canvas — surfacing a console warning here would
-        // pollute consumer logs for unrelated builds; the docs section
-        // explains the install requirement instead.
+        // render the empty canvas — the docs section explains the install
+        // requirement instead.
       });
 
     return () => {
       cancelled = true;
+      if (raf) {
+        cancelAnimationFrame(raf);
+      }
       globe?.destroy();
     };
-  }, [size, theta, autoRotate, autoRotateSpeed, baseColor, glowColor, markerColor, markers, theme]);
+    // theta is intentionally NOT in the deps — it's tracked through `thetaRef` so
+    // dragging the slider doesn't tear down the cobe instance on every change.
+  }, [
+    size,
+    autoRotate,
+    autoRotateSpeed,
+    baseColor,
+    glowColor,
+    markerColor,
+    markers,
+    theme,
+    mapSamples,
+    mapBrightness,
+    diffuse,
+  ]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!interactive) {
@@ -260,6 +325,10 @@ export function SceneGlobe({
       <canvas
         ref={canvasRef}
         className={classes.globeCanvas}
+        // Setting the intrinsic `width`/`height` attributes (not just the style)
+        // ensures cobe's internal coordinate system matches what we display.
+        width={size}
+        height={size}
         style={{
           width: `${size}px`,
           height: `${size}px`,
