@@ -281,7 +281,12 @@ export function SceneGlobe({
     startTheta: number;
     samples: PointerSample[];
   } | null>(null);
-  const inertiaRef = useRef<{ vPhi: number; vTheta: number } | null>(null);
+  // Per-frame velocity — single source of truth so inertia and autoRotate
+  // blend smoothly instead of "stopping then jumping back". When the user
+  // releases a drag, we seed this with the gesture velocity; on every frame
+  // it lerps toward the target velocity (autoRotateSpeed when on, else 0).
+  const vPhiRef = useRef(autoRotate ? autoRotateSpeed : 0);
+  const vThetaRef = useRef(0);
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
   useEffect(() => {
     mouseRef.current = mouse;
@@ -385,20 +390,9 @@ export function SceneGlobe({
 
           if (pointerRef.current) {
             // Drag in progress — phi/theta are updated by handlePointerMove.
-          } else if (inertiaRef.current && inertia) {
-            // Decaying momentum after a drag.
-            const decay =
-              typeof inertia === 'number' ? Math.max(0, Math.min(0.999, inertia)) : 0.92;
-            phiRef.current += inertiaRef.current.vPhi;
-            thetaRef.current = clampTheta(thetaRef.current + inertiaRef.current.vTheta);
-            inertiaRef.current.vPhi *= decay;
-            inertiaRef.current.vTheta *= decay;
-            if (
-              Math.abs(inertiaRef.current.vPhi) < 0.00005 &&
-              Math.abs(inertiaRef.current.vTheta) < 0.00005
-            ) {
-              inertiaRef.current = null;
-            }
+            // Keep the velocity refs in sync so when we let go there is no jump.
+            vPhiRef.current = 0;
+            vThetaRef.current = 0;
           } else if (followCursor && mouseRef.current) {
             // Cursor-driven rotation when Scene.interactive is on. mouse.x/y are 0-100.
             const targetPhi = ((mouseRef.current.x - 50) / 50) * Math.PI;
@@ -407,8 +401,21 @@ export function SceneGlobe({
             thetaRef.current = clampTheta(
               thetaRef.current + (targetTheta - thetaRef.current) * 0.05
             );
-          } else if (autoRotate) {
-            phiRef.current += autoRotateSpeed;
+          } else {
+            // Single integrator: vPhiRef lerps toward the autoRotate target each
+            // frame, so a release-velocity seed decays smoothly into the steady
+            // auto-rotation instead of stopping at zero and then jumping back.
+            const targetVPhi = autoRotate ? autoRotateSpeed : 0;
+            const decay =
+              inertia === false
+                ? 0
+                : typeof inertia === 'number'
+                  ? Math.max(0, Math.min(0.999, inertia))
+                  : 0.92;
+            vPhiRef.current = targetVPhi + (vPhiRef.current - targetVPhi) * decay;
+            vThetaRef.current *= decay;
+            phiRef.current += vPhiRef.current;
+            thetaRef.current = clampTheta(thetaRef.current + vThetaRef.current);
           }
 
           globe.update({ phi: phiRef.current, theta: thetaRef.current });
@@ -460,7 +467,9 @@ export function SceneGlobe({
     if (!interactive) {
       return;
     }
-    inertiaRef.current = null;
+    // Zero current velocity so previous inertia doesn't fight the drag.
+    vPhiRef.current = 0;
+    vThetaRef.current = 0;
     const now = performance.now();
     pointerRef.current = {
       startX: e.clientX,
@@ -500,22 +509,21 @@ export function SceneGlobe({
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (pointerRef.current && inertia) {
-      // Estimate release velocity from the average over the last ~120ms of samples,
-      // not just the very last delta — that single-frame delta is often near zero
-      // if the user paused before releasing, which made the previous inertia
-      // implementation feel "dead → twitch → dead" when the user expected a smooth glide.
+    if (pointerRef.current && inertia !== false) {
+      // Estimate release velocity from the most recent ~120ms of pointer
+      // samples — the average is steadier than the single last-frame delta,
+      // which is often ~0 if the user paused for a moment before releasing.
       const samples = pointerRef.current.samples;
       const first = samples[0];
       const last = samples[samples.length - 1];
       const dt = Math.max(1, last.t - first.t);
       const vPhiPerMs = (last.phi - first.phi) / dt;
       const vThetaPerMs = (last.theta - first.theta) / dt;
-      // Scale per-ms velocity into per-frame increments (~16ms target).
-      inertiaRef.current = {
-        vPhi: vPhiPerMs * 16,
-        vTheta: vThetaPerMs * 16,
-      };
+      // Scale per-ms velocity into per-frame increments (~16ms target). The
+      // integrator in the rAF loop will lerp from this seed toward
+      // autoRotateSpeed (or 0) — no discontinuity when momentum runs out.
+      vPhiRef.current = vPhiPerMs * 16;
+      vThetaRef.current = vThetaPerMs * 16;
     }
     pointerRef.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
