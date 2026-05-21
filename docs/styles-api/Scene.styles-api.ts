@@ -18,11 +18,8 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     starWarp: 'Star warp layer element (Scene.StarWarp)',
     waves: 'Waves layer element (Scene.Waves) — wraps the parallax SVG layers',
     radar: 'Radar layer element (Scene.Radar) — wraps the concentric pulses',
-    radarWave: 'Individual pulse ring inside Scene.Radar',
     beams: 'Beams layer element (Scene.Beams) — wraps the sweeping light columns/rows',
-    beam: 'Individual beam inside Scene.Beams',
     sparkles: 'Sparkles layer element (Scene.Sparkles) — wraps the twinkling dots',
-    sparkle: 'Individual twinkling dot inside Scene.Sparkles',
   },
 
   vars: {

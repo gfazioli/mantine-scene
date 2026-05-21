@@ -37,10 +37,10 @@ export interface SceneRadarProps {
    */
   duration?: number;
 
-  /** Maximum radius the ring grows to — accepts any CSS length (`'1200px'`, `'60vmax'`, …).
+  /** Final diameter the ring grows to at the end of its lifecycle — accepts any CSS length (`'1200px'`, `'60vmax'`, …).
    *  @default '1400px'
    */
-  maxRadius?: string;
+  size?: string;
 
   /** Ring color — Mantine theme color name or any CSS color.
    *  @default 'blue'
@@ -89,6 +89,35 @@ function getShapeClassName(
   }
 }
 
+// Splits "x y" while keeping whitespace inside parentheses intact, so values
+// like `calc(50% - 20px) 100%` parse correctly. Falls back to ['50%', '50%']
+// when only one token is present.
+function splitOriginPreservingParens(origin: string): [string, string] {
+  const tokens: string[] = [];
+  let depth = 0;
+  let current = '';
+  for (const char of origin.trim()) {
+    if (char === '(') {
+      depth++;
+      current += char;
+    } else if (char === ')') {
+      depth = Math.max(0, depth - 1);
+      current += char;
+    } else if (/\s/.test(char) && depth === 0) {
+      if (current.length > 0) {
+        tokens.push(current);
+        current = '';
+      }
+    } else {
+      current += char;
+    }
+  }
+  if (current.length > 0) {
+    tokens.push(current);
+  }
+  return [tokens[0] ?? '50%', tokens[1] ?? '50%'];
+}
+
 function getDefaultOrigin(shape: SceneRadarShape, arcDirection: SceneRadarArcDirection): string {
   if (shape === 'circle') {
     return '50% 50%';
@@ -113,7 +142,7 @@ export function SceneRadar({
   count = 4,
   interval = 1.5,
   duration = 6,
-  maxRadius = '1400px',
+  size = '1400px',
   color = 'blue',
   strokeWidth = 2,
   blur = 0,
@@ -126,8 +155,7 @@ export function SceneRadar({
 
   const [originX, originY] = useMemo(() => {
     const resolvedOrigin = origin ?? getDefaultOrigin(shape, arcDirection);
-    const parts = resolvedOrigin.split(/\s+/);
-    return [parts[0] ?? '50%', parts[1] ?? '50%'];
+    return splitOriginPreservingParens(resolvedOrigin);
   }, [origin, shape, arcDirection]);
 
   const resolvedColor = useMemo(() => getThemeColor(color, theme), [color, theme]);
@@ -145,7 +173,7 @@ export function SceneRadar({
         style: {
           '--scene-radar-origin-x': originX,
           '--scene-radar-origin-y': originY,
-          '--scene-radar-max-radius': maxRadius,
+          '--scene-radar-size': size,
           '--scene-radar-color': resolvedColor,
           '--scene-radar-stroke-width': `${strokeWidth}px`,
           '--scene-radar-duration': `${duration}s`,

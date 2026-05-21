@@ -725,8 +725,8 @@
   position: absolute;
   left: var(--scene-radar-origin-x, 50%);
   top: var(--scene-radar-origin-y, 100%);
-  width: var(--scene-radar-max-radius, 1400px);
-  height: var(--scene-radar-max-radius, 1400px);
+  width: var(--scene-radar-size, 1400px);
+  height: var(--scene-radar-size, 1400px);
   border: var(--scene-radar-stroke-width, 2px) solid var(--scene-radar-color, currentColor);
   border-radius: 50%;
   opacity: 0;
@@ -784,7 +784,6 @@
 .beam {
   position: absolute;
   filter: blur(var(--scene-beam-blur, 24px));
-  animation-name: scene-beam-sweep;
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   will-change: transform, opacity;
@@ -793,14 +792,16 @@
 .beams[data-direction='vertical'] > .beam {
   width: var(--scene-beam-width, 80px);
   height: 120%;
+  animation-name: scene-beam-sweep-x;
 }
 
 .beams[data-direction='horizontal'] > .beam {
   width: 120%;
   height: var(--scene-beam-width, 80px);
+  animation-name: scene-beam-sweep-y;
 }
 
-@keyframes scene-beam-sweep {
+@keyframes scene-beam-sweep-x {
   0% {
     transform: translate3d(-20%, 0, 0);
     opacity: 0;
@@ -816,6 +817,26 @@
 
   100% {
     transform: translate3d(120%, 0, 0);
+    opacity: 0;
+  }
+}
+
+@keyframes scene-beam-sweep-y {
+  0% {
+    transform: translate3d(0, -20%, 0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(0, 120%, 0);
     opacity: 0;
   }
 }
