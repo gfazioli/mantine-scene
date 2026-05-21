@@ -421,6 +421,22 @@ layers:
 
 <Demo data={demos.sparklesConfigurator} />
 
+## Globe
+
+`Scene.Globe` renders an interactive 3D globe powered by [cobe](https://github.com/shuding/cobe) (~10kB WebGL). Drag to rotate (when `interactive`), or let `autoRotate` spin it. Pass `markers` (`{ location: [lat, lng], size? }[]`) to plot points on the surface. Theme colours (`baseColor`, `glowColor`, `markerColor`) accept Mantine palette references and are converted to the RGB tuples cobe expects.
+
+> `cobe` is an **optional peer dependency** — install it explicitly only when you use `Scene.Globe`:
+>
+> ```bash
+> yarn add cobe
+> # or
+> npm install cobe
+> ```
+>
+> Without `cobe`, the component renders nothing and logs a dev-only warning instead of crashing.
+
+<Demo data={demos.globeConfigurator} />
+
 ## Combined
 
 All sub-components can be composed freely.

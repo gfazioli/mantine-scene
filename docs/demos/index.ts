@@ -4,6 +4,7 @@ export { combined } from './Scene.demo.combined';
 export { confettiBurst } from './Scene.demo.confettiBurst';
 export { confettiConfigurator } from './SceneConfetti.demo.configurator';
 export { dotGridConfigurator } from './SceneDotGrid.demo.configurator';
+export { globeConfigurator } from './SceneGlobe.demo.configurator';
 export { glowConfigurator } from './SceneGlow.demo.configurator';
 export { gradientConfigurator } from './SceneGradient.demo.configurator';
 export { lazy } from './Scene.demo.lazy';
