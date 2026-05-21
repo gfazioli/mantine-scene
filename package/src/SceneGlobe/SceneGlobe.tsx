@@ -80,7 +80,7 @@ export interface SceneGlobeProps {
    */
   dark?: 'auto' | boolean | 0 | 1;
 
-  /** How much detail / how many dots make up the continents — higher = denser map.
+  /** How many dots make up the continents — higher = denser, more "solid" looking map. Values above ~32000 can introduce sampling artifacts in cobe's shader, so keep it in `[4000, 32000]` for clean rendering.
    *  @default 16000
    */
   mapSamples?: number;
@@ -136,10 +136,10 @@ export interface SceneGlobeProps {
   /** Initial focus point [latitude, longitude] — the sphere is oriented so this point faces the viewer. Overrides `phi` / `theta` when set. */
   focus?: [number, number];
 
-  /** Continue spinning with momentum after the user releases a drag.
+  /** Continue spinning with momentum after the user releases a drag. Pass a number in `[0, 1)` to set the per-frame decay factor manually — `0.85` snaps fast, `0.97` glides for a long time, `0.92` (default) feels natural. `true` = `0.92`, `false` disables inertia.
    *  @default true
    */
-  inertia?: boolean;
+  inertia?: boolean | number;
 
   /** Which axes respond to pointer drag. `'x'` = longitude only (default), `'y'` = latitude only, `'both'` = drag in 2D.
    *  @default 'x'
@@ -272,16 +272,14 @@ export function SceneGlobe({
 
   const phiRef = useRef(focusedPhi);
   const thetaRef = useRef(focusedTheta);
+  // Ring buffer of recent (timestamp, phi, theta) samples for stable velocity estimation.
+  type PointerSample = { t: number; phi: number; theta: number };
   const pointerRef = useRef<{
     startX: number;
     startY: number;
     startPhi: number;
     startTheta: number;
-    lastX: number;
-    lastY: number;
-    lastT: number;
-    vPhi: number;
-    vTheta: number;
+    samples: PointerSample[];
   } | null>(null);
   const inertiaRef = useRef<{ vPhi: number; vTheta: number } | null>(null);
   const mouseRef = useRef<{ x: number; y: number } | null>(null);
@@ -389,13 +387,15 @@ export function SceneGlobe({
             // Drag in progress — phi/theta are updated by handlePointerMove.
           } else if (inertiaRef.current && inertia) {
             // Decaying momentum after a drag.
+            const decay =
+              typeof inertia === 'number' ? Math.max(0, Math.min(0.999, inertia)) : 0.92;
             phiRef.current += inertiaRef.current.vPhi;
             thetaRef.current = clampTheta(thetaRef.current + inertiaRef.current.vTheta);
-            inertiaRef.current.vPhi *= 0.95;
-            inertiaRef.current.vTheta *= 0.95;
+            inertiaRef.current.vPhi *= decay;
+            inertiaRef.current.vTheta *= decay;
             if (
-              Math.abs(inertiaRef.current.vPhi) < 0.0001 &&
-              Math.abs(inertiaRef.current.vTheta) < 0.0001
+              Math.abs(inertiaRef.current.vPhi) < 0.00005 &&
+              Math.abs(inertiaRef.current.vTheta) < 0.00005
             ) {
               inertiaRef.current = null;
             }
@@ -467,11 +467,7 @@ export function SceneGlobe({
       startY: e.clientY,
       startPhi: phiRef.current,
       startTheta: thetaRef.current,
-      lastX: e.clientX,
-      lastY: e.clientY,
-      lastT: now,
-      vPhi: 0,
-      vTheta: 0,
+      samples: [{ t: now, phi: phiRef.current, theta: thetaRef.current }],
     };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
@@ -490,25 +486,35 @@ export function SceneGlobe({
       ? Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, p.startTheta + dy / 200))
       : p.startTheta;
 
-    // Track velocity for inertia.
-    const now = performance.now();
-    const dt = Math.max(1, now - p.lastT);
-    p.vPhi = (nextPhi - phiRef.current) / dt;
-    p.vTheta = (nextTheta - thetaRef.current) / dt;
-    p.lastX = e.clientX;
-    p.lastY = e.clientY;
-    p.lastT = now;
-
     phiRef.current = nextPhi;
     thetaRef.current = nextTheta;
+
+    // Append to the rolling sample window; only keep the last 120ms so the
+    // release-velocity estimate reflects the *recent* gesture, not stale data.
+    const now = performance.now();
+    p.samples.push({ t: now, phi: nextPhi, theta: nextTheta });
+    const cutoff = now - 120;
+    while (p.samples.length > 2 && p.samples[0].t < cutoff) {
+      p.samples.shift();
+    }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (pointerRef.current && inertia) {
-      // Scale velocity (per-ms) into per-frame increments (~16ms) for the rAF loop.
+      // Estimate release velocity from the average over the last ~120ms of samples,
+      // not just the very last delta — that single-frame delta is often near zero
+      // if the user paused before releasing, which made the previous inertia
+      // implementation feel "dead → twitch → dead" when the user expected a smooth glide.
+      const samples = pointerRef.current.samples;
+      const first = samples[0];
+      const last = samples[samples.length - 1];
+      const dt = Math.max(1, last.t - first.t);
+      const vPhiPerMs = (last.phi - first.phi) / dt;
+      const vThetaPerMs = (last.theta - first.theta) / dt;
+      // Scale per-ms velocity into per-frame increments (~16ms target).
       inertiaRef.current = {
-        vPhi: pointerRef.current.vPhi * 16,
-        vTheta: pointerRef.current.vTheta * 16,
+        vPhi: vPhiPerMs * 16,
+        vTheta: vThetaPerMs * 16,
       };
     }
     pointerRef.current = null;
