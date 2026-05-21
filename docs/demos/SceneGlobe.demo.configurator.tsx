@@ -66,7 +66,7 @@ export const globeConfigurator: MantineDemo = {
       libraryValue: 16000,
       step: 2000,
       min: 4000,
-      max: 64000,
+      max: 32000,
     },
     {
       type: 'number',
@@ -112,12 +112,6 @@ export const globeConfigurator: MantineDemo = {
       max: 1,
     },
     {
-      type: 'color',
-      prop: 'markerColor',
-      initialValue: 'orange',
-      libraryValue: 'orange.5',
-    },
-    {
       type: 'boolean',
       prop: 'autoRotate',
       initialValue: true,
@@ -139,10 +133,13 @@ export const globeConfigurator: MantineDemo = {
       libraryValue: true,
     },
     {
-      type: 'boolean',
+      type: 'number',
       prop: 'inertia',
-      initialValue: true,
-      libraryValue: true,
+      initialValue: 0.92,
+      libraryValue: 0.92,
+      step: 0.01,
+      min: 0,
+      max: 0.99,
     },
     {
       type: 'select',
