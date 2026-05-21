@@ -207,11 +207,7 @@
 .starField {
   position: absolute;
   inset: 0;
-}
-
-.starFieldLayer {
-  position: absolute;
-  inset: 0;
+  pointer-events: none;
 }
 
 .starFieldDot {
@@ -219,27 +215,27 @@
   border-radius: 50%;
 }
 
-.starFieldTwinkle1 {
-  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
-}
-
-.starFieldTwinkle2 {
-  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
-  animation-delay: calc(var(--scene-starfield-duration) * 0.33);
-}
-
-.starFieldTwinkle3 {
-  animation: scene-starfield-twinkle var(--scene-starfield-duration) ease-in-out infinite alternate;
-  animation-delay: calc(var(--scene-starfield-duration) * 0.66);
+.starFieldDotTwinkle {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  animation-name: scene-starfield-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
 }
 
 @keyframes scene-starfield-twinkle {
-  0% {
-    opacity: 0.3;
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
   }
 
-  100% {
+  50% {
     opacity: 1;
+    transform: scale(1);
   }
 }
 
@@ -858,39 +854,4 @@
   transform: translate(-50%, -50%);
   display: block;
   aspect-ratio: 1 / 1;
-}
-
-/* ============================================
-   Scene - Sparkles layer
-   ============================================ */
-.sparkles {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.sparkle {
-  position: absolute;
-  background: var(--scene-sparkle-color, rgba(255, 255, 255, 0.9));
-  border-radius: 50%;
-  opacity: 0;
-  transform: scale(0.5);
-  animation-name: scene-sparkle-twinkle;
-  animation-timing-function: ease-in-out;
-  animation-iteration-count: infinite;
-  will-change: transform, opacity;
-}
-
-@keyframes scene-sparkle-twinkle {
-  0%,
-  100% {
-    opacity: 0;
-    transform: scale(0.5);
-  }
-
-  50% {
-    opacity: 1;
-    transform: scale(1);
-  }
 }

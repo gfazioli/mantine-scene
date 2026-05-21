@@ -90,6 +90,15 @@ export const starFieldConfigurator: MantineDemo = {
     },
     {
       type: 'number',
+      prop: 'density',
+      initialValue: 1,
+      libraryValue: 1,
+      step: 0.05,
+      min: 0,
+      max: 1,
+    },
+    {
+      type: 'number',
       prop: 'seed',
       initialValue: 42,
       libraryValue: 42,

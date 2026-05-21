@@ -19,7 +19,6 @@ export const SceneStylesApi: StylesApiData<SceneFactory> = {
     waves: 'Waves layer element (Scene.Waves) — wraps the parallax SVG layers',
     radar: 'Radar layer element (Scene.Radar) — wraps the concentric pulses',
     beams: 'Beams layer element (Scene.Beams) — wraps the sweeping light columns/rows',
-    sparkles: 'Sparkles layer element (Scene.Sparkles) — wraps the twinkling dots',
     globe: 'Globe layer element (Scene.Globe) — wraps the cobe canvas',
     globeCanvas: 'The `<canvas>` element rendered by cobe inside Scene.Globe',
   },
