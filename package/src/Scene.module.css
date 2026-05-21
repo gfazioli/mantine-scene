@@ -710,3 +710,196 @@
     opacity: 0;
   }
 }
+
+/* ============================================
+   Scene - Radar layer
+   ============================================ */
+.radar {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.radarWave {
+  position: absolute;
+  left: var(--scene-radar-origin-x, 50%);
+  top: var(--scene-radar-origin-y, 100%);
+  width: var(--scene-radar-max-radius, 1400px);
+  height: var(--scene-radar-max-radius, 1400px);
+  border: var(--scene-radar-stroke-width, 2px) solid var(--scene-radar-color, currentColor);
+  border-radius: 50%;
+  opacity: 0;
+  transform: translate(-50%, -50%) scale(0);
+  filter: blur(var(--scene-radar-blur, 0));
+  will-change: transform, opacity;
+}
+
+.radarWaveAnimated {
+  animation: scene-radar-pulse var(--scene-radar-duration, 6s) ease-out infinite;
+}
+
+.radarShapeArcUp {
+  clip-path: inset(0 0 50% 0);
+}
+
+.radarShapeArcDown {
+  clip-path: inset(50% 0 0 0);
+}
+
+.radarShapeArcLeft {
+  clip-path: inset(0 50% 0 0);
+}
+
+.radarShapeArcRight {
+  clip-path: inset(0 0 0 50%);
+}
+
+@keyframes scene-radar-pulse {
+  0% {
+    transform: translate(-50%, -50%) scale(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: var(--scene-radar-peak-opacity, 0.45);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Meteors layer
+   ============================================ */
+.meteors {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.meteor {
+  position: absolute;
+  width: var(--scene-meteor-size, 80px);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--scene-meteor-color, rgba(255, 255, 255, 0.7)) 50%,
+    transparent 100%
+  );
+  transform: rotate(var(--scene-meteor-angle, 215deg));
+  transform-origin: 0 0;
+  animation-name: scene-meteor-streak;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+@keyframes scene-meteor-streak {
+  0% {
+    transform: rotate(var(--scene-meteor-angle, 215deg)) translateX(0);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  90% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: rotate(var(--scene-meteor-angle, 215deg)) translateX(120vmax);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Beams layer
+   ============================================ */
+.beams {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.beam {
+  position: absolute;
+  filter: blur(var(--scene-beam-blur, 24px));
+  animation-name: scene-beam-sweep;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+.beams[data-direction='vertical'] > .beam {
+  width: var(--scene-beam-width, 80px);
+  height: 120%;
+}
+
+.beams[data-direction='horizontal'] > .beam {
+  width: 120%;
+  height: var(--scene-beam-width, 80px);
+}
+
+@keyframes scene-beam-sweep {
+  0% {
+    transform: translate3d(-20%, 0, 0);
+    opacity: 0;
+  }
+
+  20% {
+    opacity: 1;
+  }
+
+  80% {
+    opacity: 1;
+  }
+
+  100% {
+    transform: translate3d(120%, 0, 0);
+    opacity: 0;
+  }
+}
+
+/* ============================================
+   Scene - Sparkles layer
+   ============================================ */
+.sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.sparkle {
+  position: absolute;
+  background: var(--scene-sparkle-color, rgba(255, 255, 255, 0.9));
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0.5);
+  animation-name: scene-sparkle-twinkle;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  will-change: transform, opacity;
+}
+
+@keyframes scene-sparkle-twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}

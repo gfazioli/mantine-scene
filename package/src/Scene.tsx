@@ -12,15 +12,19 @@ import { useMergedRef } from '@mantine/hooks';
 import React, { useEffect, useRef, useState } from 'react';
 import { SceneProvider, type SceneMousePosition } from './Scene.context';
 import { SceneAurora } from './SceneAurora/SceneAurora';
+import { SceneBeams } from './SceneBeams/SceneBeams';
 import { SceneConfetti } from './SceneConfetti/SceneConfetti';
 import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
 import { SceneGlow } from './SceneGlow/SceneGlow';
 import { SceneGradient } from './SceneGradient/SceneGradient';
 import { SceneMesh } from './SceneMesh/SceneMesh';
+import { SceneMeteors } from './SceneMeteors/SceneMeteors';
 import { SceneNoise } from './SceneNoise/SceneNoise';
+import { SceneRadar } from './SceneRadar/SceneRadar';
 import { SceneRain } from './SceneRain/SceneRain';
 import { SceneShootingStar } from './SceneShootingStar/SceneShootingStar';
 import { SceneSnow } from './SceneSnow/SceneSnow';
+import { SceneSparkles } from './SceneSparkles/SceneSparkles';
 import { SceneStarField } from './SceneStarField/SceneStarField';
 import { SceneStarWarp } from './SceneStarWarp/SceneStarWarp';
 import { SceneWaves } from './SceneWaves/SceneWaves';
@@ -33,6 +37,14 @@ export type SceneStylesNames =
   | 'glow'
   | 'mesh'
   | 'noise'
+  | 'radar'
+  | 'radarWave'
+  | 'meteors'
+  | 'meteor'
+  | 'beams'
+  | 'beam'
+  | 'sparkles'
+  | 'sparkle'
   | 'starField'
   | 'shootingStar'
   | 'snow'
@@ -103,6 +115,10 @@ export type SceneFactory = Factory<{
     Glow: typeof SceneGlow;
     Mesh: typeof SceneMesh;
     Noise: typeof SceneNoise;
+    Radar: typeof SceneRadar;
+    Meteors: typeof SceneMeteors;
+    Beams: typeof SceneBeams;
+    Sparkles: typeof SceneSparkles;
     StarField: typeof SceneStarField;
     ShootingStar: typeof SceneShootingStar;
     Snow: typeof SceneSnow;
@@ -346,6 +362,10 @@ Scene.DotGrid = SceneDotGrid;
 Scene.Glow = SceneGlow;
 Scene.Mesh = SceneMesh;
 Scene.Noise = SceneNoise;
+Scene.Radar = SceneRadar;
+Scene.Meteors = SceneMeteors;
+Scene.Beams = SceneBeams;
+Scene.Sparkles = SceneSparkles;
 Scene.StarField = SceneStarField;
 Scene.ShootingStar = SceneShootingStar;
 Scene.Snow = SceneSnow;
@@ -360,6 +380,14 @@ export type { SceneDotGridProps } from './SceneDotGrid/SceneDotGrid';
 export type { SceneGlowProps } from './SceneGlow/SceneGlow';
 export type { SceneMeshProps, SceneMeshStop } from './SceneMesh/SceneMesh';
 export type { SceneNoiseProps } from './SceneNoise/SceneNoise';
+export type {
+  SceneRadarArcDirection,
+  SceneRadarProps,
+  SceneRadarShape,
+} from './SceneRadar/SceneRadar';
+export type { SceneMeteorsProps } from './SceneMeteors/SceneMeteors';
+export type { SceneBeamsDirection, SceneBeamsProps } from './SceneBeams/SceneBeams';
+export type { SceneSparklesProps } from './SceneSparkles/SceneSparkles';
 export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';
 export type { SceneShootingStarProps } from './SceneShootingStar/SceneShootingStar';
 export type { SceneSnowProps } from './SceneSnow/SceneSnow';
