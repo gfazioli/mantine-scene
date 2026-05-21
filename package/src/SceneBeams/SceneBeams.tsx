@@ -113,7 +113,10 @@ export function SceneBeams({
           key={b.key}
           className={classes.beam}
           style={{
-            background: `linear-gradient(${direction === 'vertical' ? '180deg' : '90deg'}, transparent 0%, ${b.color} 50%, transparent 100%)`,
+            // Gradient feathers the BEAM'S NARROW EDGES so the blur looks soft:
+            // vertical column → fade left↔right (90deg);
+            // horizontal row → fade top↔bottom (180deg).
+            background: `linear-gradient(${direction === 'vertical' ? '90deg' : '180deg'}, transparent 0%, ${b.color} 50%, transparent 100%)`,
             animationDuration: `${b.duration}s`,
             animationDelay: `${b.delay}s`,
             ...(direction === 'vertical'

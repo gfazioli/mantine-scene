@@ -181,6 +181,67 @@ describe('Scene', () => {
     expect(container.querySelectorAll('svg').length).toBeGreaterThanOrEqual(2);
   });
 
+  it('renders Waves with a single non-palette CSS color (regression: white was black)', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Waves count={2} colors="white" />
+      </Scene>
+    );
+    const paths = container.querySelectorAll('svg path');
+    expect(paths.length).toBeGreaterThanOrEqual(2);
+    paths.forEach((p) => {
+      const fill = p.getAttribute('fill') ?? '';
+      // Must not have leaked through as the invalid 'white.9' literal.
+      expect(fill).not.toMatch(/\.[0-9]+$/);
+      expect(fill.length).toBeGreaterThan(0);
+    });
+  });
+
+  it('renders Radar sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Radar count={3} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Radar with circle shape and custom origin', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Radar shape="circle" origin="calc(50% - 20px) 100%" count={2} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Beams sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Beams count={4} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Beams with single color (type widening regression)', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Beams count={2} colors="blue" />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
+  it('renders Sparkles sub-component', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Sparkles count={20} />
+      </Scene>
+    );
+    expect(container.querySelector('div div')).toBeTruthy();
+  });
+
   it('fires Confetti onComplete in burst mode', async () => {
     jest.useFakeTimers();
     const onComplete = jest.fn();
@@ -210,10 +271,13 @@ describe('Scene', () => {
         <Scene.Confetti />
         <Scene.Waves count={2} />
         <Scene.Aurora />
+        <Scene.Radar count={2} />
+        <Scene.Beams count={2} />
+        <Scene.Sparkles count={5} />
       </Scene>
     );
     const root = container.querySelector('[class]');
     const layers = root?.querySelectorAll(':scope > div');
-    expect(layers?.length).toBe(13);
+    expect(layers?.length).toBe(16);
   });
 });
