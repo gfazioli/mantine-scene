@@ -69,8 +69,13 @@ export interface SceneRadarProps {
   style?: React.CSSProperties;
 }
 
-function getShapeClassName(shape: SceneRadarShape, arcDirection: SceneRadarArcDirection): string | undefined {
-  if (shape === 'circle') return undefined;
+function getShapeClassName(
+  shape: SceneRadarShape,
+  arcDirection: SceneRadarArcDirection
+): string | undefined {
+  if (shape === 'circle') {
+    return undefined;
+  }
   switch (arcDirection) {
     case 'down':
       return classes.radarShapeArcDown;
@@ -85,7 +90,9 @@ function getShapeClassName(shape: SceneRadarShape, arcDirection: SceneRadarArcDi
 }
 
 function getDefaultOrigin(shape: SceneRadarShape, arcDirection: SceneRadarArcDirection): string {
-  if (shape === 'circle') return '50% 50%';
+  if (shape === 'circle') {
+    return '50% 50%';
+  }
   switch (arcDirection) {
     case 'down':
       return '50% 0%';
