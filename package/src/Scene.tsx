@@ -18,7 +18,6 @@ import { SceneDotGrid } from './SceneDotGrid/SceneDotGrid';
 import { SceneGlow } from './SceneGlow/SceneGlow';
 import { SceneGradient } from './SceneGradient/SceneGradient';
 import { SceneMesh } from './SceneMesh/SceneMesh';
-import { SceneMeteors } from './SceneMeteors/SceneMeteors';
 import { SceneNoise } from './SceneNoise/SceneNoise';
 import { SceneRadar } from './SceneRadar/SceneRadar';
 import { SceneRain } from './SceneRain/SceneRain';
@@ -39,8 +38,6 @@ export type SceneStylesNames =
   | 'noise'
   | 'radar'
   | 'radarWave'
-  | 'meteors'
-  | 'meteor'
   | 'beams'
   | 'beam'
   | 'sparkles'
@@ -116,7 +113,6 @@ export type SceneFactory = Factory<{
     Mesh: typeof SceneMesh;
     Noise: typeof SceneNoise;
     Radar: typeof SceneRadar;
-    Meteors: typeof SceneMeteors;
     Beams: typeof SceneBeams;
     Sparkles: typeof SceneSparkles;
     StarField: typeof SceneStarField;
@@ -363,7 +359,6 @@ Scene.Glow = SceneGlow;
 Scene.Mesh = SceneMesh;
 Scene.Noise = SceneNoise;
 Scene.Radar = SceneRadar;
-Scene.Meteors = SceneMeteors;
 Scene.Beams = SceneBeams;
 Scene.Sparkles = SceneSparkles;
 Scene.StarField = SceneStarField;
@@ -385,7 +380,6 @@ export type {
   SceneRadarProps,
   SceneRadarShape,
 } from './SceneRadar/SceneRadar';
-export type { SceneMeteorsProps } from './SceneMeteors/SceneMeteors';
 export type { SceneBeamsDirection, SceneBeamsProps } from './SceneBeams/SceneBeams';
 export type { SceneSparklesProps } from './SceneSparkles/SceneSparkles';
 export type { SceneStarFieldProps } from './SceneStarField/SceneStarField';

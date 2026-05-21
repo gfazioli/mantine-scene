@@ -8,8 +8,7 @@ export type SceneRadarShape = 'arc' | 'circle';
 export type SceneRadarArcDirection = 'up' | 'down' | 'left' | 'right';
 
 export interface SceneRadarProps {
-  /** Origin of the waves expressed as 'x y' (any CSS length).
-   *  @default '50% 100%'
+  /** Origin of the waves expressed as 'x y' (any CSS length). When omitted, defaults to the edge opposite `arcDirection` (so the arc opens into the viewport) for `shape='arc'`, and to `50% 50%` for `shape='circle'`.
    */
   origin?: string;
 
@@ -85,8 +84,23 @@ function getShapeClassName(shape: SceneRadarShape, arcDirection: SceneRadarArcDi
   }
 }
 
+function getDefaultOrigin(shape: SceneRadarShape, arcDirection: SceneRadarArcDirection): string {
+  if (shape === 'circle') return '50% 50%';
+  switch (arcDirection) {
+    case 'down':
+      return '50% 0%';
+    case 'left':
+      return '100% 50%';
+    case 'right':
+      return '0% 50%';
+    case 'up':
+    default:
+      return '50% 100%';
+  }
+}
+
 export function SceneRadar({
-  origin = '50% 100%',
+  origin,
   shape = 'arc',
   arcDirection = 'up',
   count = 4,
@@ -104,9 +118,10 @@ export function SceneRadar({
   const theme = useMantineTheme();
 
   const [originX, originY] = useMemo(() => {
-    const parts = origin.split(/\s+/);
+    const resolvedOrigin = origin ?? getDefaultOrigin(shape, arcDirection);
+    const parts = resolvedOrigin.split(/\s+/);
     return [parts[0] ?? '50%', parts[1] ?? '50%'];
-  }, [origin]);
+  }, [origin, shape, arcDirection]);
 
   const resolvedColor = useMemo(() => getThemeColor(color, theme), [color, theme]);
 
