@@ -772,55 +772,6 @@
 }
 
 /* ============================================
-   Scene - Meteors layer
-   ============================================ */
-.meteors {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-}
-
-.meteor {
-  position: absolute;
-  width: var(--scene-meteor-size, 80px);
-  height: 1px;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    var(--scene-meteor-color, rgba(255, 255, 255, 0.7)) 50%,
-    transparent 100%
-  );
-  transform: rotate(var(--scene-meteor-angle, 215deg));
-  transform-origin: 0 0;
-  animation-name: scene-meteor-streak;
-  animation-timing-function: linear;
-  animation-iteration-count: infinite;
-  opacity: 0;
-  will-change: transform, opacity;
-}
-
-@keyframes scene-meteor-streak {
-  0% {
-    transform: rotate(var(--scene-meteor-angle, 215deg)) translateX(0);
-    opacity: 0;
-  }
-
-  10% {
-    opacity: 1;
-  }
-
-  90% {
-    opacity: 1;
-  }
-
-  100% {
-    transform: rotate(var(--scene-meteor-angle, 215deg)) translateX(120vmax);
-    opacity: 0;
-  }
-}
-
-/* ============================================
    Scene - Beams layer
    ============================================ */
 .beams {

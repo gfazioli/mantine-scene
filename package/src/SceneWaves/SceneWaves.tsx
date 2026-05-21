@@ -121,12 +121,18 @@ function resolveLayerColor(
   if (Array.isArray(colors)) {
     return getThemeColor(colors[index % colors.length], theme);
   }
-  // Single color: derive shades from light (back) to vivid (front).
-  // Map index 0..layerCount-1 → shades 9..4 (back to front).
-  const shadeRange = [9, 8, 7, 6, 5, 4, 3, 2];
-  const shadeIndex = Math.min(shadeRange.length - 1, layerCount - 1 - index);
-  const shade = shadeRange[shadeIndex] ?? 5;
-  return getThemeColor(`${colors}.${shade}`, theme);
+  // Single color: derive shades only if it's a known Mantine palette name.
+  // Standalone CSS colors (white, black, #fff, rgb(...)) are returned as-is so the
+  // SVG fill stays valid — otherwise `${colors}.9` becomes an invalid string and
+  // the path falls back to currentColor (black on dark backgrounds).
+  const palettes = Object.keys(theme.colors ?? {});
+  if (palettes.includes(colors)) {
+    const shadeRange = [9, 8, 7, 6, 5, 4, 3, 2];
+    const shadeIndex = Math.min(shadeRange.length - 1, layerCount - 1 - index);
+    const shade = shadeRange[shadeIndex] ?? 5;
+    return getThemeColor(`${colors}.${shade}`, theme);
+  }
+  return getThemeColor(colors, theme);
 }
 
 export function SceneWaves({

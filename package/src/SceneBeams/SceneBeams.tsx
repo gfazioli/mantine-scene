@@ -37,10 +37,10 @@ export interface SceneBeamsProps {
    */
   blur?: number;
 
-  /** Colors cycled across beams. Mantine theme colors or any CSS colors.
+  /** Colors cycled across beams — Mantine theme colors or any CSS colors. Pass a single color to paint every beam the same shade, or an array to cycle.
    *  @default ['blue', 'grape', 'cyan']
    */
-  colors?: MantineColor[];
+  colors?: MantineColor | MantineColor[];
 
   /** Sweep axis. `'vertical'` paints columns that traverse left↔right; `'horizontal'` paints rows that traverse top↔bottom.
    *  @default 'vertical'
@@ -78,7 +78,8 @@ export function SceneBeams({
   const theme = useMantineTheme();
 
   const resolvedColors = useMemo(() => {
-    const list = colors && colors.length > 0 ? colors : DEFAULT_COLORS;
+    const normalized = Array.isArray(colors) ? colors : colors ? [colors] : [];
+    const list = normalized.length > 0 ? normalized : DEFAULT_COLORS;
     return list.map((c) => alpha(getThemeColor(c, theme), opacity));
   }, [colors, theme, opacity]);
 

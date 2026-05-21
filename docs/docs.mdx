@@ -253,6 +253,13 @@ appearances.
 
 <Demo data={demos.shootingStarConfigurator} />
 
+### Meteor shower preset
+
+Bump `count` and tighten the `minInterval`/`maxInterval` window to turn a quiet
+ambient sky into a steady meteor rain — same primitive, different cadence.
+
+<Demo data={demos.meteorShower} />
+
 ## Snow
 
 `Scene.Snow` renders falling snowflakes with
@@ -402,6 +409,24 @@ layers:
 ```
 
 <Demo data={demos.wavesConfigurator} />
+
+## Radar
+
+`Scene.Radar` emits concentric pulses from a configurable origin — the visual you reach for when the section's topic is **signal**, **connectivity**, **broadcast** or **radar sweep**. Set `shape='arc'` (default) for the Wi-Fi icon look, `shape='circle'` for a full ring. The opening of the arc is controlled by `arcDirection` (`up` / `down` / `left` / `right`). Each wave fades from `peakOpacity` to `0` as it travels from `origin` to `maxRadius`; multiple waves are emitted on a staggered cadence (`count` × `interval`).
+
+<Demo data={demos.radarConfigurator} />
+
+## Beams
+
+`Scene.Beams` paints sweeping light columns (or rows, with `direction='horizontal'`) — the "search-light" pattern from Magic UI landings. Colours cycle through the `colors` prop, each beam blurred for soft edges. Width, blur amount and sweep duration are independent so you can tune the look from subtle ambient to dramatic cinematic.
+
+<Demo data={demos.beamsConfigurator} />
+
+## Sparkles
+
+`Scene.Sparkles` scatters random twinkling dots across the scene. Each dot has a randomised size, duration and phase so the field "breathes" rather than pulsing in sync. Lower `density` (0..1) to thin the field responsively without changing `count`.
+
+<Demo data={demos.sparklesConfigurator} />
 
 ## Combined
 
