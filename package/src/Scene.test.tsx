@@ -242,6 +242,16 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
+  it('renders Globe sub-component (canvas placeholder when cobe absent or before mount)', () => {
+    const { container } = render(
+      <Scene>
+        <Scene.Globe size={300} />
+      </Scene>
+    );
+    // The canvas element renders synchronously; cobe init runs in useEffect.
+    expect(container.querySelector('canvas')).toBeTruthy();
+  });
+
   it('fires Confetti onComplete in burst mode', async () => {
     jest.useFakeTimers();
     const onComplete = jest.fn();

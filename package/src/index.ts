@@ -10,6 +10,8 @@ export type {
   SceneCssVariables,
   SceneDotGridProps,
   SceneFactory,
+  SceneGlobeMarker,
+  SceneGlobeProps,
   SceneGlowProps,
   SceneGradientProps,
   SceneMeshProps,
