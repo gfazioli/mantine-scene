@@ -25,7 +25,9 @@ import '@gfazioli/mantine-scene/styles.layer.css';
 `Scene` is a decorative background container that
 composes multiple visual layers: gradients, glow
 blobs, dot grids, mesh gradients, noise textures,
-star fields, shooting stars, snow, and auroras.
+star fields, shooting stars, snow, rain, confetti,
+auroras, parallax waves, Wi-Fi / radar pulses,
+sweeping beams, and even an interactive 3D globe.
 Place it behind your content to create rich,
 atmospheric backgrounds.
 
@@ -64,6 +66,8 @@ to the cursor position automatically:
 - **`Scene.Glow`** — blob position follows the mouse
 - **`Scene.Gradient`** — radial/conic gradient center
   follows the mouse
+- **`Scene.Globe`** — when `followCursor` is set on the
+  globe, the sphere rotates toward the cursor position
 
 When the mouse leaves the scene, components fall back
 to their default position props.

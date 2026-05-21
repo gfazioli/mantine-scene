@@ -39,13 +39,17 @@ It requires **Mantine 9.x** and **React 19**.
 | `Scene.Confetti` | Multi-shape confetti (rectangles, circles, triangles) with continuous or burst (`onComplete`) modes and configurable origin (`top`/`bottom`) |
 | `Scene.Waves` | Parallax SVG wave layers with configurable direction, parallax intensity, and seamless horizontal panning |
 | `Scene.Aurora` | Shimmering aurora borealis bands with wave animation |
+| `Scene.Radar` | Concentric Wi-Fi / radar pulses with arc or circle shape and smart-default origin |
+| `Scene.Beams` | Sweeping light columns or rows with cycled colours and configurable corner radius |
+| `Scene.Globe` | Interactive 3D dotted globe (powered by [cobe](https://github.com/shuding/cobe) — optional peer dep) with markers, arcs (flight paths), drag, inertia, follow-cursor, focus |
 
 ## Features
 
 - 🎨 **Theme Integration**: All color props accept Mantine theme colors (`MantineColor`)
 - 🧩 **Composable**: Freely combine any number of sub-components — layer order follows DOM order
 - ✨ **Rich Animations**: GPU-accelerated CSS animations (transform/opacity) with per-component controls
-- 🖱️ **Interactive Mode**: Enable mouse tracking — Glow, Gradient, and StarWarp react to cursor position with configurable LERP easing. Use `onMousePosition` to pipe smoothed coordinates to external UI
+- 🌍 **3D Globe**: Interactive WebGL globe with markers, arcs, drag, inertia, and follow-cursor — `cobe` ships as an optional peer dep so it never weighs on consumers who don't use it
+- 🖱️ **Interactive Mode**: Enable mouse tracking — Glow, Gradient, StarWarp and Globe react to cursor position with configurable LERP easing. Use `onMousePosition` to pipe smoothed coordinates to external UI
 - 💤 **Lazy Mode**: Optional `lazy` prop pauses every child animation and the internal rAF loop when the scene leaves the viewport (via `IntersectionObserver`) — zero React re-renders
 - 📱 **Responsive Props**: Dimension props (`size`, `blur`, `spacing`) use Mantine's native `StyleProp<T>` with `InlineStyles` + media queries — zero re-renders on resize, same pattern as `SimpleGrid`
 - ♿ **Accessibility**: `aria-hidden="true"` by default; respects `prefers-reduced-motion` with configurable `reducedMotion` prop
