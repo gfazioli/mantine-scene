@@ -389,10 +389,18 @@ export function SceneGlobe({
           }
 
           if (pointerRef.current) {
-            // Drag in progress — phi/theta are updated by handlePointerMove.
-            // Keep the velocity refs in sync so when we let go there is no jump.
-            vPhiRef.current = 0;
-            vThetaRef.current = 0;
+            // Drag in progress. Phi/theta are updated by handlePointerMove.
+            // Track velocity *live* from the rolling sample window so the
+            // moment the user releases we already have an accurate vPhi/vTheta
+            // — no separate handlePointerUp calculation, no "0 then ramp" feel.
+            const samples = pointerRef.current.samples;
+            if (samples.length >= 2) {
+              const first = samples[0];
+              const last = samples[samples.length - 1];
+              const dt = Math.max(1, last.t - first.t);
+              vPhiRef.current = ((last.phi - first.phi) / dt) * 16;
+              vThetaRef.current = ((last.theta - first.theta) / dt) * 16;
+            }
           } else if (followCursor && mouseRef.current) {
             // Cursor-driven rotation when Scene.interactive is on. mouse.x/y are 0-100.
             const targetPhi = ((mouseRef.current.x - 50) / 50) * Math.PI;
@@ -498,32 +506,24 @@ export function SceneGlobe({
     phiRef.current = nextPhi;
     thetaRef.current = nextTheta;
 
-    // Append to the rolling sample window; only keep the last 120ms so the
-    // release-velocity estimate reflects the *recent* gesture, not stale data.
+    // Tight rolling window (~60ms) so live velocity reflects very recent
+    // motion. A wider window over-averages and masks late-gesture velocity
+    // changes (e.g. user pausing before release).
     const now = performance.now();
     p.samples.push({ t: now, phi: nextPhi, theta: nextTheta });
-    const cutoff = now - 120;
+    const cutoff = now - 60;
     while (p.samples.length > 2 && p.samples[0].t < cutoff) {
       p.samples.shift();
     }
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
-    if (pointerRef.current && inertia !== false) {
-      // Estimate release velocity from the most recent ~120ms of pointer
-      // samples — the average is steadier than the single last-frame delta,
-      // which is often ~0 if the user paused for a moment before releasing.
-      const samples = pointerRef.current.samples;
-      const first = samples[0];
-      const last = samples[samples.length - 1];
-      const dt = Math.max(1, last.t - first.t);
-      const vPhiPerMs = (last.phi - first.phi) / dt;
-      const vThetaPerMs = (last.theta - first.theta) / dt;
-      // Scale per-ms velocity into per-frame increments (~16ms target). The
-      // integrator in the rAF loop will lerp from this seed toward
-      // autoRotateSpeed (or 0) — no discontinuity when momentum runs out.
-      vPhiRef.current = vPhiPerMs * 16;
-      vThetaRef.current = vThetaPerMs * 16;
+    // No special-case velocity capture here — the rAF loop already tracks
+    // it live during drag, so `vPhiRef`/`vThetaRef` carry the most recent
+    // motion forward into the integrator the moment the pointer is released.
+    if (inertia === false) {
+      vPhiRef.current = 0;
+      vThetaRef.current = 0;
     }
     pointerRef.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
