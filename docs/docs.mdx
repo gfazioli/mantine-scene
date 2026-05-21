@@ -415,12 +415,6 @@ layers:
 
 <Demo data={demos.beamsConfigurator} />
 
-## Sparkles
-
-`Scene.Sparkles` scatters random twinkling dots across the scene. Each dot has a randomised size, duration and phase so the field "breathes" rather than pulsing in sync. Lower `density` (0..1) to thin the field responsively without changing `count`.
-
-<Demo data={demos.sparklesConfigurator} />
-
 ## Globe
 
 `Scene.Globe` renders an interactive 3D globe powered by [cobe](https://github.com/shuding/cobe) (~10kB WebGL). Drag to rotate (when `interactive`), or let `autoRotate` spin it. Pass `markers` (`{ location: [lat, lng], size? }[]`) to plot points on the surface. Theme colours (`baseColor`, `glowColor`, `markerColor`) accept Mantine palette references and are converted to the RGB tuples cobe expects.

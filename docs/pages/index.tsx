@@ -28,7 +28,6 @@ export default function HomePage() {
           'SceneWaves',
           'SceneRadar',
           'SceneBeams',
-          'SceneSparkles',
           'SceneGlobe',
         ]}
         componentPrefix="Scene"

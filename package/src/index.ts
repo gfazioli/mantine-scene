@@ -24,7 +24,6 @@ export type {
   SceneRainProps,
   SceneShootingStarProps,
   SceneSnowProps,
-  SceneSparklesProps,
   SceneStarFieldProps,
   SceneStarWarpProps,
   SceneStylesNames,

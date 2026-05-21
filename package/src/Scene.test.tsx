@@ -233,15 +233,6 @@ describe('Scene', () => {
     expect(container.querySelector('div div')).toBeTruthy();
   });
 
-  it('renders Sparkles sub-component', () => {
-    const { container } = render(
-      <Scene>
-        <Scene.Sparkles count={20} />
-      </Scene>
-    );
-    expect(container.querySelector('div div')).toBeTruthy();
-  });
-
   it('renders Globe sub-component (canvas placeholder when cobe absent or before mount)', () => {
     const { container } = render(
       <Scene>
@@ -283,11 +274,10 @@ describe('Scene', () => {
         <Scene.Aurora />
         <Scene.Radar count={2} />
         <Scene.Beams count={2} />
-        <Scene.Sparkles count={5} />
       </Scene>
     );
     const root = container.querySelector('[class]');
     const layers = root?.querySelectorAll(':scope > div');
-    expect(layers?.length).toBe(16);
+    expect(layers?.length).toBe(15);
   });
 });

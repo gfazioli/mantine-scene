@@ -37,10 +37,21 @@ export interface SceneStarFieldProps {
    */
   twinkle?: boolean;
 
-  /** Twinkle animation duration in seconds
+  /** Central twinkle animation duration in seconds. When `minDuration`/`maxDuration` are not provided, the per-star duration is randomized in `[duration * 0.5, duration * 1.5]` so every star breathes at its own pace.
    *  @default 3
    */
   duration?: number;
+
+  /** Minimum per-star twinkle duration in seconds. Overrides the value derived from `duration`. */
+  minDuration?: number;
+
+  /** Maximum per-star twinkle duration in seconds. Overrides the value derived from `duration`. */
+  maxDuration?: number;
+
+  /** Density multiplier on `count` (0..1) — useful for responsive thinning without changing `count`.
+   *  @default 1
+   */
+  density?: number;
 
   /** PRNG seed for deterministic star positions
    *  @default 42
@@ -63,17 +74,34 @@ interface StarData {
   x: number;
   y: number;
   size: number;
+  duration: number;
+  delay: number;
 }
 
-function generateStars(count: number, seed: number, minSize: number, maxSize: number): StarData[] {
+const MAX_STARS = 500;
+
+function generateStars(
+  count: number,
+  seed: number,
+  minSize: number,
+  maxSize: number,
+  minDuration: number,
+  maxDuration: number
+): StarData[] {
   const rng = mulberry32(seed);
+  const spanSize = Math.max(0, maxSize - minSize);
+  const spanDuration = Math.max(0.1, maxDuration - minDuration);
   const stars: StarData[] = [];
 
   for (let i = 0; i < count; i++) {
     stars.push({
       x: rng() * 100,
       y: rng() * 100,
-      size: minSize + rng() * (maxSize - minSize),
+      size: minSize + rng() * spanSize,
+      duration: minDuration + rng() * spanDuration,
+      // Negative animation-delay starts every star at a different phase so the
+      // field "breathes" rather than pulsing in sync.
+      delay: -(rng() * (minDuration + spanDuration)),
     });
   }
 
@@ -87,6 +115,9 @@ export function SceneStarField({
   maxSize = 3,
   twinkle = true,
   duration = 3,
+  minDuration,
+  maxDuration,
+  density = 1,
   seed = 42,
   opacity = 1,
   className,
@@ -97,22 +128,24 @@ export function SceneStarField({
   const theme = useMantineTheme();
   const resolvedColor = getThemeColor(color, theme);
 
-  const starsPerLayer = Math.ceil(count / 3);
+  // Derive the per-star duration range from `duration` when min/max aren't passed.
+  // Legacy `duration={3}` now spreads stars across [1.5s, 4.5s] instead of locking
+  // them to three sync groups — the field reads more "alive" without breaking API.
+  const effectiveMinDuration = minDuration ?? duration * 0.5;
+  const effectiveMaxDuration = maxDuration ?? duration * 1.5;
 
-  const layers = useMemo(
-    () => [
-      generateStars(starsPerLayer, seed, minSize, maxSize),
-      generateStars(starsPerLayer, seed + 1000, minSize, maxSize),
-      generateStars(starsPerLayer, seed + 2000, minSize, maxSize),
-    ],
-    [starsPerLayer, seed, minSize, maxSize]
-  );
-
-  const twinkleClasses = [
-    classes.starFieldTwinkle1,
-    classes.starFieldTwinkle2,
-    classes.starFieldTwinkle3,
-  ];
+  const stars = useMemo(() => {
+    const safeDensity = Math.max(0, Math.min(1, density));
+    const effectiveCount = Math.max(0, Math.min(Math.floor(count * safeDensity), MAX_STARS));
+    return generateStars(
+      effectiveCount,
+      seed,
+      minSize,
+      maxSize,
+      effectiveMinDuration,
+      effectiveMaxDuration
+    );
+  }, [count, density, seed, minSize, maxSize, effectiveMinDuration, effectiveMaxDuration]);
 
   return (
     <Box
@@ -120,34 +153,24 @@ export function SceneStarField({
         className,
         style: {
           opacity,
-          '--scene-starfield-duration': `${duration}s`,
           ...style,
         } as React.CSSProperties,
       })}
     >
-      {layers.map((stars, layerIndex) => (
+      {stars.map((star, i) => (
         <Box
-          key={layerIndex}
-          className={
-            [classes.starFieldLayer, twinkle && twinkleClasses[layerIndex]]
-              .filter(Boolean)
-              .join(' ') || undefined
-          }
-        >
-          {stars.map((star, starIndex) => (
-            <Box
-              key={starIndex}
-              className={classes.starFieldDot}
-              style={{
-                left: `${star.x}%`,
-                top: `${star.y}%`,
-                width: `${star.size}px`,
-                height: `${star.size}px`,
-                backgroundColor: resolvedColor,
-              }}
-            />
-          ))}
-        </Box>
+          key={i}
+          className={twinkle ? classes.starFieldDotTwinkle : classes.starFieldDot}
+          style={{
+            left: `${star.x}%`,
+            top: `${star.y}%`,
+            width: `${star.size}px`,
+            height: `${star.size}px`,
+            backgroundColor: resolvedColor,
+            animationDuration: twinkle ? `${star.duration}s` : undefined,
+            animationDelay: twinkle ? `${star.delay}s` : undefined,
+          }}
+        />
       ))}
     </Box>
   );

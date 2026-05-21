@@ -22,7 +22,6 @@ generateDeclarations({
     getComponentPath('SceneWaves/SceneWaves.tsx'),
     getComponentPath('SceneRadar/SceneRadar.tsx'),
     getComponentPath('SceneBeams/SceneBeams.tsx'),
-    getComponentPath('SceneSparkles/SceneSparkles.tsx'),
     getComponentPath('SceneGlobe/SceneGlobe.tsx'),
   ],
   tsConfigPath: path.join(process.cwd(), 'tsconfig.json'),
