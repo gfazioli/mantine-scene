@@ -19,6 +19,9 @@ function Demo() {
 `;
 
 function Wrapper(props: any) {
+  const { dark, ...rest } = props;
+  // The configurator's select control returns strings; cobe wants 0/1.
+  const resolvedDark = dark === '1' ? 1 : 0;
   return (
     <Box
       pos="relative"
@@ -30,7 +33,7 @@ function Wrapper(props: any) {
       }}
     >
       <Scene>
-        <Scene.Globe {...props} />
+        <Scene.Globe {...rest} dark={resolvedDark} />
       </Scene>
     </Box>
   );
@@ -59,11 +62,30 @@ export const globeConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'mapBrightness',
-      initialValue: 12,
-      libraryValue: 12,
+      initialValue: 6,
+      libraryValue: 6,
       step: 1,
       min: 1,
       max: 30,
+    },
+    {
+      type: 'number',
+      prop: 'diffuse',
+      initialValue: 3,
+      libraryValue: 3,
+      step: 0.2,
+      min: 0,
+      max: 8,
+    },
+    {
+      type: 'select',
+      prop: 'dark',
+      initialValue: '1',
+      libraryValue: '1',
+      data: [
+        { value: '0', label: '0 — clean silhouette' },
+        { value: '1', label: '1 — visible night side' },
+      ],
     },
     {
       type: 'color',
@@ -99,6 +121,23 @@ export const globeConfigurator: MantineDemo = {
       libraryValue: true,
     },
     {
+      type: 'boolean',
+      prop: 'inertia',
+      initialValue: true,
+      libraryValue: true,
+    },
+    {
+      type: 'select',
+      prop: 'dragAxis',
+      initialValue: 'x',
+      libraryValue: 'x',
+      data: [
+        { value: 'x', label: 'x (longitude)' },
+        { value: 'y', label: 'y (latitude)' },
+        { value: 'both', label: 'both (2D drag)' },
+      ],
+    },
+    {
       type: 'number',
       prop: 'theta',
       initialValue: 0.3,
@@ -106,6 +145,15 @@ export const globeConfigurator: MantineDemo = {
       step: 0.05,
       min: -1,
       max: 1,
+    },
+    {
+      type: 'number',
+      prop: 'scale',
+      initialValue: 1,
+      libraryValue: 1,
+      step: 0.1,
+      min: 0.3,
+      max: 2.5,
     },
     {
       type: 'number',

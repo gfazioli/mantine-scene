@@ -437,6 +437,18 @@ layers:
 
 <Demo data={demos.globeConfigurator} />
 
+### Markers
+
+Pass an array of `{ location: [lat, lng], size?, color? }` to pin points on the surface. Mantine palette colours can be overridden per-marker for category encoding.
+
+<Demo data={demos.globeMarkers} />
+
+### Arcs (flight paths)
+
+`arcs={[{ from: [lat, lng], to: [lat, lng], color? }]}` draws curved 3D paths between two locations — the canonical "network topology" / "flight map" pattern. `arcHeight`, `arcWidth` and `arcColor` tune the look globally; each arc can override `color` individually.
+
+<Demo data={demos.globeArcs} />
+
 ## Combined
 
 All sub-components can be composed freely.

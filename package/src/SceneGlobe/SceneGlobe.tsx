@@ -8,6 +8,17 @@ export interface SceneGlobeMarker {
   location: [number, number];
   /** Marker dot size in cobe's normalised units. @default 0.05 */
   size?: number;
+  /** Optional per-marker colour override — falls back to the globe's `markerColor`. */
+  color?: MantineColor;
+}
+
+export interface SceneGlobeArc {
+  /** Start point [latitude, longitude] in degrees. */
+  from: [number, number];
+  /** End point [latitude, longitude] in degrees. */
+  to: [number, number];
+  /** Optional per-arc colour override — falls back to the globe's `arcColor`. */
+  color?: MantineColor;
 }
 
 export interface SceneGlobeProps {
@@ -75,12 +86,68 @@ export interface SceneGlobeProps {
   mapBrightness?: number;
 
   /** Light diffusion across the sphere — controls how much the lit hemisphere bleeds into the dark side.
-   *  @default 1.2
+   *  @default 3
    */
   diffuse?: number;
 
+  /** Ambient brightness of the texture *underneath* the lit continents. Raise for a fuller, less contrasty planet.
+   *  @default 0
+   */
+  mapBaseBrightness?: number;
+
+  /** Arcs (curved lines) drawn between two locations — perfect for flight paths / network topologies. */
+  arcs?: SceneGlobeArc[];
+
+  /** Default arc colour — overridden per-arc by `arc.color`.
+   *  @default 'blue.4'
+   */
+  arcColor?: MantineColor;
+
+  /** Arc stroke thickness multiplier.
+   *  @default 0.5
+   */
+  arcWidth?: number;
+
+  /** Peak height of each arc above the surface (in cobe's normalised units).
+   *  @default 0.3
+   */
+  arcHeight?: number;
+
+  /** How far each marker dot pops out of the surface (cobe units).
+   *  @default 0.05
+   */
+  markerElevation?: number;
+
+  /** Canvas-relative offset `[x, y]` in cobe units — shift the sphere off-centre. Useful for "half globe" hero layouts.
+   *  @default [0, 0]
+   */
+  offset?: [number, number];
+
+  /** Scale multiplier for the sphere — values >1 zoom in, <1 zoom out.
+   *  @default 1
+   */
+  scale?: number;
+
+  /** Initial focus point [latitude, longitude] — the sphere is oriented so this point faces the viewer. Overrides `phi` / `theta` when set. */
+  focus?: [number, number];
+
+  /** Continue spinning with momentum after the user releases a drag.
+   *  @default true
+   */
+  inertia?: boolean;
+
+  /** Which axes respond to pointer drag. `'x'` = longitude only (default), `'y'` = latitude only, `'both'` = drag in 2D.
+   *  @default 'x'
+   */
+  dragAxis?: 'x' | 'y' | 'both';
+
+  /** When the parent `Scene` has `interactive=true`, rotate the globe to follow the cursor instead of (or in addition to) auto-rotation. Drag still wins while the pointer is down.
+   *  @default false
+   */
+  followCursor?: boolean;
+
   /** Overall opacity (0..1).
-   *  @default 0.9
+   *  @default 1
    */
   opacity?: number;
 
@@ -171,18 +238,50 @@ export function SceneGlobe({
   mapSamples = 16000,
   mapBrightness = 6,
   diffuse = 3,
+  mapBaseBrightness = 0,
+  arcs,
+  arcColor = 'blue.4',
+  arcWidth = 0.5,
+  arcHeight = 0.3,
+  markerElevation = 0.05,
+  offset = [0, 0],
+  scale = 1,
+  focus,
+  inertia = true,
+  dragAxis = 'x',
+  followCursor = false,
   opacity = 1,
   className,
   style,
 }: SceneGlobeProps) {
-  const { getStyles } = useSceneContext();
+  const { getStyles, mouse } = useSceneContext();
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
-  const phiRef = useRef(phiInitial);
-  const thetaRef = useRef(theta);
-  const pointerRef = useRef<{ startX: number; startPhi: number } | null>(null);
+  // focus overrides the initial phi/theta — point the requested lat/lng at the viewer.
+  // theta = lat (radians); phi is the negative longitude so positive lng faces forward.
+  const focusedPhi = focus ? -(focus[1] * Math.PI) / 180 : phiInitial;
+  const focusedTheta = focus ? (focus[0] * Math.PI) / 180 : theta;
+
+  const phiRef = useRef(focusedPhi);
+  const thetaRef = useRef(focusedTheta);
+  const pointerRef = useRef<{
+    startX: number;
+    startY: number;
+    startPhi: number;
+    startTheta: number;
+    lastX: number;
+    lastY: number;
+    lastT: number;
+    vPhi: number;
+    vTheta: number;
+  } | null>(null);
+  const inertiaRef = useRef<{ vPhi: number; vTheta: number } | null>(null);
+  const mouseRef = useRef<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    mouseRef.current = mouse;
+  }, [mouse]);
   const resolveDark = (d: typeof dark, scheme: typeof colorScheme): 0 | 1 => {
     if (d === 'auto') {
       return scheme === 'dark' ? 1 : 0;
@@ -196,9 +295,12 @@ export function SceneGlobe({
   }, [dark, colorScheme]);
 
   // Keep theta tracking the prop so live slider changes apply without recreating the globe.
+  // When `focus` is set, the initial theta is derived from focus.lat and we don't fight the user's slider.
   useEffect(() => {
-    thetaRef.current = theta;
-  }, [theta]);
+    if (!focus) {
+      thetaRef.current = theta;
+    }
+  }, [theta, focus]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -209,6 +311,7 @@ export function SceneGlobe({
     const baseTuple = resolveColorTuple(baseColor, theme);
     const glowTuple = resolveColorTuple(glowColor, theme);
     const markerTuple = resolveColorTuple(markerColor, theme);
+    const arcTuple = resolveColorTuple(arcColor, theme);
     // cobe expects `width` / `height` in pixels at the SAME resolution as
     // `devicePixelRatio` — see the official demo. On Retina (pxRatio=2), we
     // pass size*2 to cobe and let canvas.style.* downscale to `size` px.
@@ -238,22 +341,62 @@ export function SceneGlobe({
           diffuse,
           mapSamples,
           mapBrightness,
+          mapBaseBrightness,
           baseColor: baseTuple,
           markerColor: markerTuple,
           glowColor: glowTuple,
+          arcColor: arcTuple,
+          arcWidth,
+          arcHeight,
+          markerElevation,
+          offset,
+          scale,
           markers: (markers ?? []).map((m) => ({
             location: m.location,
             size: m.size ?? 0.05,
+            color: m.color ? resolveColorTuple(m.color, theme) : undefined,
+          })),
+          arcs: (arcs ?? []).map((a) => ({
+            from: a.from,
+            to: a.to,
+            color: a.color ? resolveColorTuple(a.color, theme) : undefined,
           })),
         } as any) as { update: (opts: Record<string, any>) => void; destroy: () => void };
+
+        const clampTheta = (t: number) =>
+          Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, t));
 
         const tick = () => {
           if (!globe || cancelled) {
             return;
           }
-          if (autoRotate && !pointerRef.current) {
+
+          if (pointerRef.current) {
+            // Drag in progress — phi/theta are updated by handlePointerMove.
+          } else if (inertiaRef.current && inertia) {
+            // Decaying momentum after a drag.
+            phiRef.current += inertiaRef.current.vPhi;
+            thetaRef.current = clampTheta(thetaRef.current + inertiaRef.current.vTheta);
+            inertiaRef.current.vPhi *= 0.95;
+            inertiaRef.current.vTheta *= 0.95;
+            if (
+              Math.abs(inertiaRef.current.vPhi) < 0.0001 &&
+              Math.abs(inertiaRef.current.vTheta) < 0.0001
+            ) {
+              inertiaRef.current = null;
+            }
+          } else if (followCursor && mouseRef.current) {
+            // Cursor-driven rotation when Scene.interactive is on. mouse.x/y are 0-100.
+            const targetPhi = ((mouseRef.current.x - 50) / 50) * Math.PI;
+            const targetTheta = clampTheta(((mouseRef.current.y - 50) / 100) * Math.PI * 0.8);
+            phiRef.current += (targetPhi - phiRef.current) * 0.05;
+            thetaRef.current = clampTheta(
+              thetaRef.current + (targetTheta - thetaRef.current) * 0.05
+            );
+          } else if (autoRotate) {
             phiRef.current += autoRotateSpeed;
           }
+
           globe.update({ phi: phiRef.current, theta: thetaRef.current });
           raf = requestAnimationFrame(tick);
         };
@@ -281,18 +424,40 @@ export function SceneGlobe({
     baseColor,
     glowColor,
     markerColor,
+    arcColor,
     markers,
+    arcs,
     theme,
     mapSamples,
     mapBrightness,
+    mapBaseBrightness,
     diffuse,
+    arcWidth,
+    arcHeight,
+    markerElevation,
+    offset,
+    scale,
+    inertia,
+    followCursor,
   ]);
 
   const handlePointerDown = (e: React.PointerEvent<HTMLCanvasElement>) => {
     if (!interactive) {
       return;
     }
-    pointerRef.current = { startX: e.clientX, startPhi: phiRef.current };
+    inertiaRef.current = null;
+    const now = performance.now();
+    pointerRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startPhi: phiRef.current,
+      startTheta: thetaRef.current,
+      lastX: e.clientX,
+      lastY: e.clientY,
+      lastT: now,
+      vPhi: 0,
+      vTheta: 0,
+    };
     e.currentTarget.setPointerCapture(e.pointerId);
   };
 
@@ -300,11 +465,37 @@ export function SceneGlobe({
     if (!interactive || !pointerRef.current) {
       return;
     }
-    const dx = e.clientX - pointerRef.current.startX;
-    phiRef.current = pointerRef.current.startPhi + dx / 150;
+    const p = pointerRef.current;
+    const dx = e.clientX - p.startX;
+    const dy = e.clientY - p.startY;
+    const allowX = dragAxis !== 'y';
+    const allowY = dragAxis !== 'x';
+    const nextPhi = allowX ? p.startPhi + dx / 150 : p.startPhi;
+    const nextTheta = allowY
+      ? Math.max(-Math.PI / 2 + 0.05, Math.min(Math.PI / 2 - 0.05, p.startTheta + dy / 200))
+      : p.startTheta;
+
+    // Track velocity for inertia.
+    const now = performance.now();
+    const dt = Math.max(1, now - p.lastT);
+    p.vPhi = (nextPhi - phiRef.current) / dt;
+    p.vTheta = (nextTheta - thetaRef.current) / dt;
+    p.lastX = e.clientX;
+    p.lastY = e.clientY;
+    p.lastT = now;
+
+    phiRef.current = nextPhi;
+    thetaRef.current = nextTheta;
   };
 
   const handlePointerUp = (e: React.PointerEvent<HTMLCanvasElement>) => {
+    if (pointerRef.current && inertia) {
+      // Scale velocity (per-ms) into per-frame increments (~16ms) for the rAF loop.
+      inertiaRef.current = {
+        vPhi: pointerRef.current.vPhi * 16,
+        vTheta: pointerRef.current.vTheta * 16,
+      };
+    }
     pointerRef.current = null;
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId);
@@ -332,8 +523,9 @@ export function SceneGlobe({
         style={{
           width: `${size}px`,
           height: `${size}px`,
-          cursor: interactive ? 'grab' : 'default',
+          cursor: interactive ? (pointerRef.current ? 'grabbing' : 'grab') : 'default',
           pointerEvents: interactive ? 'auto' : 'none',
+          touchAction: dragAxis === 'both' ? 'none' : 'pan-y',
         }}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
