@@ -60,10 +60,15 @@ export interface SceneGlobeProps {
    */
   baseColor?: MantineColor;
 
-  /** Atmospheric glow colour around the sphere.
+  /** Atmospheric glow colour around the sphere. The alpha channel is ignored by cobe — use `glowIntensity` to fade or disable the glow instead.
    *  @default 'blue.5'
    */
   glowColor?: MantineColor;
+
+  /** Glow strength multiplier (0..1). `0` disables the glow entirely; `1` is the natural intensity of `glowColor`. Use this instead of alpha — cobe's WebGL shader doesn't read the alpha channel of the colour tuples.
+   *  @default 1
+   */
+  glowIntensity?: number;
 
   /** Colour used for the optional `markers` dots (lat/lng points).
    *  @default 'orange.5'
@@ -233,6 +238,7 @@ export function SceneGlobe({
   markers,
   baseColor = 'gray.7',
   glowColor = 'blue.5',
+  glowIntensity = 1,
   markerColor = 'orange.5',
   dark = 1,
   mapSamples = 16000,
@@ -309,7 +315,15 @@ export function SceneGlobe({
     }
 
     const baseTuple = resolveColorTuple(baseColor, theme);
-    const glowTuple = resolveColorTuple(glowColor, theme);
+    const glowBase = resolveColorTuple(glowColor, theme);
+    // Scale glowColor by `glowIntensity` to fake an alpha channel — cobe ignores
+    // the 4th element of the tuple. Multiplying the RGB by 0..1 fades the glow.
+    const intensity = Math.max(0, Math.min(1, glowIntensity));
+    const glowTuple: [number, number, number] = [
+      glowBase[0] * intensity,
+      glowBase[1] * intensity,
+      glowBase[2] * intensity,
+    ];
     const markerTuple = resolveColorTuple(markerColor, theme);
     const arcTuple = resolveColorTuple(arcColor, theme);
     // cobe expects `width` / `height` in pixels at the SAME resolution as
@@ -423,6 +437,7 @@ export function SceneGlobe({
     autoRotateSpeed,
     baseColor,
     glowColor,
+    glowIntensity,
     markerColor,
     arcColor,
     markers,
