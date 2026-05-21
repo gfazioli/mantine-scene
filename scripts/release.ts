@@ -140,8 +140,13 @@ async function release() {
 
   const revertVersion = await updateVersion(nextVersion);
 
+  const publishFlags = ['--access', 'public', '--tag', versionStage ? 'next' : 'latest'];
+  if (process.env.NPM_OTP) {
+    publishFlags.push('--otp', process.env.NPM_OTP);
+  }
+
   await run(
-    $`cd ./package && npm publish --access public --tag ${versionStage ? 'next' : 'latest'}`,
+    $`cd ./package && npm publish ${publishFlags}`,
     {
       info: 'Publishing the package to npm',
       success: 'The package has been published to npm',
