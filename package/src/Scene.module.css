@@ -784,6 +784,7 @@
 .beam {
   position: absolute;
   filter: blur(var(--scene-beam-blur, 24px));
+  border-radius: var(--scene-beam-radius, 999px);
   animation-timing-function: ease-in-out;
   animation-iteration-count: infinite;
   will-change: transform, opacity;

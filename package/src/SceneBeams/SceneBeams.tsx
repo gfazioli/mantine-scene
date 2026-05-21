@@ -37,6 +37,11 @@ export interface SceneBeamsProps {
    */
   blur?: number;
 
+  /** Corner radius applied to each beam — accepts a number in px or any CSS length. Pair with a small `width` to get pill / capsule beams, or set to `0` for hard-edged columns.
+   *  @default 999
+   */
+  radius?: number | string;
+
   /** Colors cycled across beams — Mantine theme colors or any CSS colors. Pass a single color to paint every beam the same shade, or an array to cycle.
    *  @default ['blue', 'grape', 'cyan']
    */
@@ -68,6 +73,7 @@ export function SceneBeams({
   width = 80,
   opacity = 0.35,
   blur = 24,
+  radius = 999,
   colors,
   direction = 'vertical',
   seed = 1,
@@ -96,6 +102,8 @@ export function SceneBeams({
     }));
   }, [count, minDuration, maxDuration, seed, resolvedColors]);
 
+  const resolvedRadius = typeof radius === 'number' ? `${radius}px` : radius;
+
   return (
     <Box
       {...getStyles('beams', {
@@ -103,6 +111,7 @@ export function SceneBeams({
         style: {
           '--scene-beam-width': `${width}px`,
           '--scene-beam-blur': `${blur}px`,
+          '--scene-beam-radius': resolvedRadius,
           ...style,
         } as React.CSSProperties,
       })}
@@ -113,10 +122,10 @@ export function SceneBeams({
           key={b.key}
           className={classes.beam}
           style={{
-            // Gradient feathers the BEAM'S NARROW EDGES so the blur looks soft:
-            // vertical column → fade left↔right (90deg);
-            // horizontal row → fade top↔bottom (180deg).
-            background: `linear-gradient(${direction === 'vertical' ? '90deg' : '180deg'}, transparent 0%, ${b.color} 50%, transparent 100%)`,
+            // Gradient runs along the beam's LONG axis so each beam fades in/out at
+            // its tips — combined with `radius` this yields the pill/capsule look.
+            // The narrow-edge blur is handled by `filter: blur(...)` on .beam.
+            background: `linear-gradient(${direction === 'vertical' ? '180deg' : '90deg'}, transparent 0%, ${b.color} 50%, transparent 100%)`,
             animationDuration: `${b.duration}s`,
             animationDelay: `${b.delay}s`,
             ...(direction === 'vertical'
