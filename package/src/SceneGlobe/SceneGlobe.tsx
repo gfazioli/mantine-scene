@@ -250,7 +250,7 @@ export function SceneGlobe({
   arcWidth = 0.5,
   arcHeight = 0.3,
   markerElevation = 0.05,
-  offset = [0, 0],
+  offset,
   scale = 1,
   focus,
   inertia = true,
@@ -264,6 +264,14 @@ export function SceneGlobe({
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
   const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  // Decompose `offset` into its scalar pair so an inline `[x, y]` literal
+  // from the parent doesn't trigger the rAF useEffect on every render —
+  // primitive deps are referentially stable; array literals are not, which
+  // previously destroyed/recreated the cobe instance every frame whenever
+  // the parent re-rendered (e.g. Scene.interactive bumping `mouse` state).
+  const offsetX = offset?.[0] ?? 0;
+  const offsetY = offset?.[1] ?? 0;
 
   // focus overrides the initial phi/theta — point the requested lat/lng at the viewer.
   // theta = lat (radians); phi is the negative longitude so positive lng faces forward.
@@ -291,6 +299,36 @@ export function SceneGlobe({
   useEffect(() => {
     mouseRef.current = mouse;
   }, [mouse]);
+
+  // Self-sufficient pointer tracking for `followCursor`: when the parent
+  // `Scene` is not `interactive`, the context `mouse` stays null and
+  // followCursor wouldn't fire. Listen for pointer events relative to the
+  // Scene container directly so the prop works on its own.
+  const localMouseRef = useRef<{ x: number; y: number } | null>(null);
+  useEffect(() => {
+    if (!followCursor || typeof window === 'undefined') {
+      localMouseRef.current = null;
+      return;
+    }
+    const onPointerMove = (e: PointerEvent) => {
+      const sceneRoot = canvasRef.current?.closest('[aria-hidden="true"]') as HTMLElement | null;
+      const rect = sceneRoot?.getBoundingClientRect();
+      if (!rect) {
+        return;
+      }
+      const x = ((e.clientX - rect.left) / rect.width) * 100;
+      const y = ((e.clientY - rect.top) / rect.height) * 100;
+      localMouseRef.current = {
+        x: Math.max(0, Math.min(100, x)),
+        y: Math.max(0, Math.min(100, y)),
+      };
+    };
+    document.addEventListener('pointermove', onPointerMove, { passive: true });
+    return () => {
+      document.removeEventListener('pointermove', onPointerMove);
+      localMouseRef.current = null;
+    };
+  }, [followCursor]);
   const resolveDark = (d: typeof dark, scheme: typeof colorScheme): 0 | 1 => {
     if (d === 'auto') {
       return scheme === 'dark' ? 1 : 0;
@@ -366,7 +404,7 @@ export function SceneGlobe({
           arcWidth,
           arcHeight,
           markerElevation,
-          offset,
+          offset: [offsetX, offsetY],
           scale,
           markers: (markers ?? []).map((m) => ({
             location: m.location,
@@ -410,13 +448,13 @@ export function SceneGlobe({
               vPhiRef.current = ((last.phi - first.phi) / dt) * 16;
               vThetaRef.current = ((last.theta - first.theta) / dt) * 16;
             }
-          } else if (followCursor && mouseRef.current) {
+          } else if (followCursor && (localMouseRef.current || mouseRef.current)) {
             // Cursor-driven rotation: additive bias on top of autoRotate.
-            // - Horizontal cursor position adds a fixed-magnitude phi velocity
-            //   (so cursor still drives motion even when autoRotate is off).
-            // - Vertical cursor position is lerped onto theta (tilt).
-            const xBias = (mouseRef.current.x - 50) / 50;
-            const yBias = (mouseRef.current.y - 50) / 50;
+            // Prefer the local listener (active whenever followCursor is on)
+            // and fall back to Scene's smoothed context mouse when available.
+            const source = localMouseRef.current ?? mouseRef.current!;
+            const xBias = (source.x - 50) / 50;
+            const yBias = (source.y - 50) / 50;
             const baseSpeed = autoRotate ? autoRotateSpeed : 0;
             // 0.015 rad/frame ≈ ~0.9 rad/sec ≈ one revolution in ~7s at full bias.
             const CURSOR_BIAS_MAGNITUDE = 0.015;
@@ -481,7 +519,8 @@ export function SceneGlobe({
     arcWidth,
     arcHeight,
     markerElevation,
-    offset,
+    offsetX,
+    offsetY,
     scale,
     inertia,
     followCursor,
