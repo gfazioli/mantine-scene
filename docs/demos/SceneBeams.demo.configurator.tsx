@@ -10,7 +10,7 @@ import { Box } from '@mantine/core';
 function Demo() {
   return (
     <Box pos="relative" h={400} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-dark-9)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Beams{{props}} />
       </Scene>
     </Box>
@@ -29,7 +29,7 @@ function Wrapper(props: any) {
         background: 'var(--mantine-color-dark-9)',
       }}
     >
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Beams {...props} />
       </Scene>
     </Box>

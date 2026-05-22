@@ -10,7 +10,7 @@ import { Scene } from '@gfazioli/mantine-scene';
 function Demo() {
   return (
     <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Gradient from="violet" fromOpacity={0.15}{{props}} />
         <Scene.Glow color="violet" size={400} blur={120} opacity={0.3} top="20%" left="30%" />
         <Scene.DotGrid color="gray" opacity={0.3} spacing={24} />

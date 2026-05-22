@@ -10,7 +10,7 @@ import { Box } from '@mantine/core';
 function Demo() {
   return (
     <Box pos="relative" h={350} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Glow{{props}} />
       </Scene>
     </Box>
@@ -29,7 +29,12 @@ function Wrapper({ top, left, driftX, driftY, interactive, interactiveEasing, ..
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene interactive={interactive} interactiveEasing={interactiveEasing}>
+      <Scene
+        lazy
+        lazyThreshold={0.1}
+        interactive={interactive}
+        interactiveEasing={interactiveEasing}
+      >
         <Scene.Glow
           top={`${top}%`}
           left={`${left}%`}

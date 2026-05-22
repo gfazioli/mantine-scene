@@ -10,7 +10,7 @@ import { Box } from '@mantine/core';
 function Demo() {
   return (
     <Box pos="relative" h={300} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Mesh{{props}}
           stops={[
             { color: 'violet', position: '20% 20%', spread: 50 },
@@ -35,7 +35,7 @@ function Wrapper(props: any) {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Mesh
           stops={[
             { color: 'violet', position: '20% 20%', spread: 50 },

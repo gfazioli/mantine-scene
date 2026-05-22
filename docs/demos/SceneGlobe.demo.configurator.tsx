@@ -10,7 +10,7 @@ import { Box } from '@mantine/core';
 function Demo() {
   return (
     <Box pos="relative" h={500} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-dark-9)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Globe{{props}} />
       </Scene>
     </Box>
@@ -32,7 +32,7 @@ function Wrapper(props: any) {
         background: 'var(--mantine-color-dark-9)',
       }}
     >
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Globe {...rest} dark={resolvedDark} />
       </Scene>
     </Box>
@@ -62,7 +62,7 @@ export const globeConfigurator: MantineDemo = {
     {
       type: 'number',
       prop: 'mapSamples',
-      initialValue: 16000,
+      initialValue: 8000,
       libraryValue: 16000,
       step: 2000,
       min: 4000,

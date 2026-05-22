@@ -228,6 +228,8 @@ seeded with the `seed` prop.
 Enable `twinkle` for a staggered opacity animation
 across three layers.
 
+[Open standalone view →](https://gfazioli.github.io/mantine-scene/components/star-field)
+
 <Demo data={demos.starFieldConfigurator} />
 
 ## StarWarp
@@ -241,6 +243,8 @@ Use `direction` to choose between flying away (`out`)
 or approaching (`in`). Move the focal point with
 `focalX` / `focalY` to shift the vanishing point.
 Enable `trail` for elongated streaks.
+
+[Open standalone view →](https://gfazioli.github.io/mantine-scene/components/star-warp)
 
 <Demo data={demos.starWarpConfigurator} />
 
@@ -297,6 +301,8 @@ colors).
 
 Tune `count`, `duration`, `flutter` (sway range in
 px), and the size range with `minSize`/`maxSize`.
+
+[Open standalone view →](https://gfazioli.github.io/mantine-scene/components/confetti)
 
 ### Origin: top vs bottom
 
@@ -436,6 +442,8 @@ layers:
 > **About colours and alpha:** cobe's WebGL shader ignores the alpha channel of `baseColor` / `glowColor` / `markerColor`. To fade the atmospheric glow use `glowIntensity` (0..1); for the continents and markers, pass a darker palette shade (`'gray.3'` vs `'gray.7'`) or a darker CSS color instead of an `rgba(..., 0.5)`.
 >
 > **About continent detail:** the planet is rendered as **dots** (cobe's Fibonacci-sphere sampling). Increase `mapSamples` (up to ~32000) for a denser, more "filled" look — above that, cobe's shader starts producing sampling artifacts.
+
+[Open standalone view →](https://gfazioli.github.io/mantine-scene/components/globe)
 
 <Demo data={demos.globeConfigurator} />
 

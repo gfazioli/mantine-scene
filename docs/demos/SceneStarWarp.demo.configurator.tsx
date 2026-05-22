@@ -9,7 +9,7 @@ import { Box } from '@mantine/core';
 function Demo() {
   return (
     <Box pos="relative" h={400} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.StarWarp{{props}} />
       </Scene>
     </Box>
@@ -28,7 +28,12 @@ function Wrapper({ focalX, focalY, interactive, interactiveEasing, ...props }: a
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene interactive={interactive} interactiveEasing={interactiveEasing}>
+      <Scene
+        lazy
+        lazyThreshold={0.1}
+        interactive={interactive}
+        interactiveEasing={interactiveEasing}
+      >
         <Scene.StarWarp focalX={`${focalX}%`} focalY={`${focalY}%`} {...props} />
       </Scene>
     </Box>

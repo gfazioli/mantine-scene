@@ -23,7 +23,7 @@ function Demo() {
       </Group>
 
       <Box pos="relative" h={280} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-        <Scene>
+        <Scene lazy lazyThreshold={0.1}>
           {bursts > 0 && (
             <Scene.Confetti
               key={bursts}
@@ -66,7 +66,7 @@ function Demo() {
           background: 'var(--mantine-color-body)',
         }}
       >
-        <Scene>
+        <Scene lazy lazyThreshold={0.1}>
           {bursts > 0 && (
             <Scene.Confetti
               key={bursts}

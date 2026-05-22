@@ -18,7 +18,7 @@ const LHR: [number, number] = [51.5074, -0.1278];
 function Demo() {
   return (
     <Box pos="relative" h={500} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-dark-9)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Globe
           size={400}
           markers={[ROM, NYC, TYO, SFO, SYD, LHR].map((location) => ({ location, size: 0.06 }))}
@@ -59,7 +59,7 @@ function Demo() {
         background: 'var(--mantine-color-dark-9)',
       }}
     >
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.Globe
           size={400}
           markers={[ROM, NYC, TYO, SFO, SYD, LHR].map((location) => ({ location, size: 0.06 }))}

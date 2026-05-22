@@ -10,7 +10,7 @@ import { Scene } from '@gfazioli/mantine-scene';
 function Demo() {
   return (
     <Box pos="relative" h={400} style={{ borderRadius: 'var(--mantine-radius-md)', overflow: 'hidden', background: 'var(--mantine-color-body)' }}>
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.StarField count={80} twinkle duration={4} opacity={0.6} />
         <Scene.Gradient from="violet" fromOpacity={0.12} />
         <Scene.DotGrid color="gray" opacity={0.15} spacing={28} fade="edges" />
@@ -47,7 +47,7 @@ function Demo() {
         background: 'var(--mantine-color-body)',
       }}
     >
-      <Scene>
+      <Scene lazy lazyThreshold={0.1}>
         <Scene.StarField count={80} twinkle duration={4} opacity={0.6} />
         <Scene.Gradient from="violet" fromOpacity={0.12} />
         <Scene.DotGrid color="gray" opacity={0.15} spacing={28} fade="edges" />

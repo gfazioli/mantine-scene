@@ -388,6 +388,15 @@ export function SceneGlobe({
             return;
           }
 
+          // Honour Scene's lazy mode: when the root has `data-paused` (set by
+          // IntersectionObserver when the Scene leaves the viewport), skip the
+          // WebGL update entirely. CSS animations stop via the global rule but
+          // our own rAF needs an explicit check.
+          if (canvasRef.current?.closest('[data-paused]')) {
+            raf = requestAnimationFrame(tick);
+            return;
+          }
+
           if (pointerRef.current) {
             // Drag in progress. Phi/theta are updated by handlePointerMove.
             // Track velocity *live* from the rolling sample window so the
@@ -402,15 +411,16 @@ export function SceneGlobe({
               vThetaRef.current = ((last.theta - first.theta) / dt) * 16;
             }
           } else if (followCursor && mouseRef.current) {
-            // Cursor-driven rotation: additive bias on top of autoRotate so the
-            // globe stays alive when the mouse is still. mouse.x/y are 0-100.
-            // - Horizontal cursor position modulates the rotation speed
-            //   (-1..1 multiplier on top of the base autoRotateSpeed).
+            // Cursor-driven rotation: additive bias on top of autoRotate.
+            // - Horizontal cursor position adds a fixed-magnitude phi velocity
+            //   (so cursor still drives motion even when autoRotate is off).
             // - Vertical cursor position is lerped onto theta (tilt).
             const xBias = (mouseRef.current.x - 50) / 50;
             const yBias = (mouseRef.current.y - 50) / 50;
             const baseSpeed = autoRotate ? autoRotateSpeed : 0;
-            phiRef.current += baseSpeed + xBias * autoRotateSpeed * 3;
+            // 0.015 rad/frame ≈ ~0.9 rad/sec ≈ one revolution in ~7s at full bias.
+            const CURSOR_BIAS_MAGNITUDE = 0.015;
+            phiRef.current += baseSpeed + xBias * CURSOR_BIAS_MAGNITUDE;
             const targetTheta = clampTheta(yBias * Math.PI * 0.35);
             thetaRef.current = clampTheta(
               thetaRef.current + (targetTheta - thetaRef.current) * 0.05
