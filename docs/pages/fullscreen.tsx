@@ -158,6 +158,45 @@ const defaultLayers: Record<string, LayerConfig> = {
     blur: 0,
     opacity: 0.7,
   },
+  radar: {
+    enabled: false,
+    shape: 'arc' as const,
+    arcDirection: 'up' as const,
+    color: '#fd7e14',
+    count: 4,
+    interval: 1.5,
+    duration: 6,
+    strokeWidth: 2,
+    blur: 0,
+    peakOpacity: 0.45,
+  },
+  beams: {
+    enabled: false,
+    direction: 'vertical' as const,
+    count: 8,
+    color: '#228be6',
+    width: 80,
+    radius: 999,
+    blur: 24,
+    opacity: 0.35,
+    minDuration: 4,
+    maxDuration: 12,
+  },
+  globe: {
+    enabled: false,
+    size: 400,
+    baseColor: '#495057',
+    glowColor: '#339af0',
+    markerColor: '#ff922b',
+    mapBrightness: 6,
+    diffuse: 3,
+    dark: 1 as const,
+    autoRotate: true,
+    autoRotateSpeed: 0.005,
+    interactive: true,
+    inertia: 0.92,
+    followCursor: false,
+  },
 };
 
 const layerLabels: Record<string, string> = {
@@ -174,6 +213,9 @@ const layerLabels: Record<string, string> = {
   rain: 'Rain',
   confetti: 'Confetti',
   waves: 'Waves',
+  radar: 'Radar',
+  beams: 'Beams',
+  globe: 'Globe',
 };
 
 const SWATCHES = [
@@ -1008,6 +1050,271 @@ function WavesControls({
   );
 }
 
+function RadarControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SegmentedControl
+        size="xs"
+        data={['arc', 'circle']}
+        value={config.shape}
+        onChange={(v) => onChange({ ...config, shape: v })}
+      />
+      <SegmentedControl
+        size="xs"
+        data={['up', 'down', 'left', 'right']}
+        value={config.arcDirection}
+        onChange={(v) => onChange({ ...config, arcDirection: v })}
+      />
+      <ColorInput
+        size="xs"
+        label="Color"
+        value={config.color}
+        onChange={(v) => onChange({ ...config, color: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <SliderField
+        label="Count"
+        value={config.count}
+        onChange={(v) => onChange({ ...config, count: v })}
+        min={1}
+        max={10}
+      />
+      <SliderField
+        label="Interval (s)"
+        value={config.interval}
+        onChange={(v) => onChange({ ...config, interval: v })}
+        min={0.2}
+        max={5}
+        step={0.1}
+      />
+      <SliderField
+        label="Duration (s)"
+        value={config.duration}
+        onChange={(v) => onChange({ ...config, duration: v })}
+        min={1}
+        max={20}
+        step={0.5}
+      />
+      <SliderField
+        label="Stroke Width"
+        value={config.strokeWidth}
+        onChange={(v) => onChange({ ...config, strokeWidth: v })}
+        min={1}
+        max={10}
+      />
+      <SliderField
+        label="Blur"
+        value={config.blur}
+        onChange={(v) => onChange({ ...config, blur: v })}
+        min={0}
+        max={30}
+      />
+      <SliderField
+        label="Peak Opacity"
+        value={config.peakOpacity}
+        onChange={(v) => onChange({ ...config, peakOpacity: v })}
+        min={0}
+        max={1}
+        step={0.05}
+      />
+    </Stack>
+  );
+}
+
+function BeamsControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SegmentedControl
+        size="xs"
+        data={['vertical', 'horizontal']}
+        value={config.direction}
+        onChange={(v) => onChange({ ...config, direction: v })}
+      />
+      <ColorInput
+        size="xs"
+        label="Color"
+        value={config.color}
+        onChange={(v) => onChange({ ...config, color: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <SliderField
+        label="Count"
+        value={config.count}
+        onChange={(v) => onChange({ ...config, count: v })}
+        min={1}
+        max={30}
+      />
+      <SliderField
+        label="Width"
+        value={config.width}
+        onChange={(v) => onChange({ ...config, width: v })}
+        min={10}
+        max={300}
+      />
+      <SliderField
+        label="Radius"
+        value={config.radius}
+        onChange={(v) => onChange({ ...config, radius: v })}
+        min={0}
+        max={999}
+        step={10}
+      />
+      <SliderField
+        label="Blur"
+        value={config.blur}
+        onChange={(v) => onChange({ ...config, blur: v })}
+        min={0}
+        max={80}
+      />
+      <SliderField
+        label="Opacity"
+        value={config.opacity}
+        onChange={(v) => onChange({ ...config, opacity: v })}
+        min={0}
+        max={1}
+        step={0.05}
+      />
+      <SliderField
+        label="Min Duration (s)"
+        value={config.minDuration}
+        onChange={(v) => onChange({ ...config, minDuration: v })}
+        min={1}
+        max={20}
+        step={0.5}
+      />
+      <SliderField
+        label="Max Duration (s)"
+        value={config.maxDuration}
+        onChange={(v) => onChange({ ...config, maxDuration: v })}
+        min={1}
+        max={30}
+        step={0.5}
+      />
+    </Stack>
+  );
+}
+
+function GlobeControls({
+  config,
+  onChange,
+}: {
+  config: LayerConfig;
+  onChange: (c: LayerConfig) => void;
+}) {
+  return (
+    <Stack gap="xs">
+      <SliderField
+        label="Size"
+        value={config.size}
+        onChange={(v) => onChange({ ...config, size: v })}
+        min={200}
+        max={800}
+        step={50}
+      />
+      <ColorInput
+        size="xs"
+        label="Base Color"
+        value={config.baseColor}
+        onChange={(v) => onChange({ ...config, baseColor: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <ColorInput
+        size="xs"
+        label="Glow Color"
+        value={config.glowColor}
+        onChange={(v) => onChange({ ...config, glowColor: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <ColorInput
+        size="xs"
+        label="Marker Color"
+        value={config.markerColor}
+        onChange={(v) => onChange({ ...config, markerColor: v })}
+        swatches={SWATCHES}
+        swatchesPerRow={7}
+      />
+      <SliderField
+        label="Map Brightness"
+        value={config.mapBrightness}
+        onChange={(v) => onChange({ ...config, mapBrightness: v })}
+        min={1}
+        max={20}
+      />
+      <SliderField
+        label="Diffuse"
+        value={config.diffuse}
+        onChange={(v) => onChange({ ...config, diffuse: v })}
+        min={0}
+        max={8}
+        step={0.2}
+      />
+      <SegmentedControl
+        size="xs"
+        data={[
+          { value: '0', label: 'Dark 0' },
+          { value: '1', label: 'Dark 1' },
+        ]}
+        value={String(config.dark)}
+        onChange={(v) => onChange({ ...config, dark: Number(v) as 0 | 1 })}
+      />
+      <Checkbox
+        size="xs"
+        label="Auto Rotate"
+        checked={config.autoRotate}
+        onChange={(e) => onChange({ ...config, autoRotate: e.currentTarget.checked })}
+      />
+      {config.autoRotate && (
+        <SliderField
+          label="Rotate Speed"
+          value={config.autoRotateSpeed}
+          onChange={(v) => onChange({ ...config, autoRotateSpeed: v })}
+          min={0}
+          max={0.05}
+          step={0.001}
+        />
+      )}
+      <Checkbox
+        size="xs"
+        label="Interactive (drag)"
+        checked={config.interactive}
+        onChange={(e) => onChange({ ...config, interactive: e.currentTarget.checked })}
+      />
+      {config.interactive && (
+        <SliderField
+          label="Inertia"
+          value={config.inertia}
+          onChange={(v) => onChange({ ...config, inertia: v })}
+          min={0}
+          max={0.99}
+          step={0.01}
+        />
+      )}
+      <Checkbox
+        size="xs"
+        label="Follow Cursor"
+        checked={config.followCursor}
+        onChange={(e) => onChange({ ...config, followCursor: e.currentTarget.checked })}
+      />
+    </Stack>
+  );
+}
+
 function MeshControls({
   config,
   onChange,
@@ -1061,6 +1368,9 @@ const controlsMap: Record<
   rain: RainControls,
   confetti: ConfettiControls,
   waves: WavesControls,
+  radar: RadarControls,
+  beams: BeamsControls,
+  globe: GlobeControls,
 };
 
 export default function FullscreenPage() {
@@ -1100,6 +1410,9 @@ export default function FullscreenPage() {
   const rn = layers.rain;
   const cf = layers.confetti;
   const wv = layers.waves;
+  const rd = layers.radar;
+  const bm = layers.beams;
+  const gb = layers.globe;
 
   return (
     <>
@@ -1243,6 +1556,48 @@ export default function FullscreenPage() {
             position={wv.position}
             blur={wv.blur}
             opacity={wv.opacity}
+          />
+        )}
+        {rd.enabled && (
+          <Scene.Radar
+            shape={rd.shape}
+            arcDirection={rd.arcDirection}
+            color={rd.color}
+            count={rd.count}
+            interval={rd.interval}
+            duration={rd.duration}
+            strokeWidth={rd.strokeWidth}
+            blur={rd.blur}
+            peakOpacity={rd.peakOpacity}
+          />
+        )}
+        {bm.enabled && (
+          <Scene.Beams
+            direction={bm.direction}
+            count={bm.count}
+            colors={bm.color}
+            width={bm.width}
+            radius={bm.radius}
+            blur={bm.blur}
+            opacity={bm.opacity}
+            minDuration={bm.minDuration}
+            maxDuration={bm.maxDuration}
+          />
+        )}
+        {gb.enabled && (
+          <Scene.Globe
+            size={gb.size}
+            baseColor={gb.baseColor}
+            glowColor={gb.glowColor}
+            markerColor={gb.markerColor}
+            mapBrightness={gb.mapBrightness}
+            diffuse={gb.diffuse}
+            dark={gb.dark}
+            autoRotate={gb.autoRotate}
+            autoRotateSpeed={gb.autoRotateSpeed}
+            interactive={gb.interactive}
+            inertia={gb.inertia}
+            followCursor={gb.followCursor}
           />
         )}
       </Scene>
