@@ -6,7 +6,7 @@ self.__BUILD_MANIFEST = {
     "static/chunks/0t-i9y7uasms7.js"
   ],
   "/fullscreen": [
-    "static/chunks/0lzihipw556zd.js"
+    "static/chunks/144.-x~d33l6..js"
   ],
   "__rewrites": {
     "afterFiles": [],
