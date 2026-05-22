@@ -153,6 +153,12 @@ export const globeConfigurator: MantineDemo = {
       ],
     },
     {
+      type: 'boolean',
+      prop: 'followCursor',
+      initialValue: false,
+      libraryValue: false,
+    },
+    {
       type: 'number',
       prop: 'theta',
       initialValue: 0.3,

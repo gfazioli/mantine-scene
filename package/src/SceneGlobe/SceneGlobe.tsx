@@ -146,7 +146,7 @@ export interface SceneGlobeProps {
    */
   dragAxis?: 'x' | 'y' | 'both';
 
-  /** When the parent `Scene` has `interactive=true`, rotate the globe to follow the cursor instead of (or in addition to) auto-rotation. Drag still wins while the pointer is down.
+  /** When the parent `Scene` has `interactive=true`, the cursor position biases the rotation **on top of** `autoRotate` rather than replacing it: horizontal cursor offset modulates the rotation speed (left = slower / reverse, right = faster), vertical offset lerps onto `theta` for a live tilt. Drag still wins while the pointer is down.
    *  @default false
    */
   followCursor?: boolean;
@@ -402,10 +402,16 @@ export function SceneGlobe({
               vThetaRef.current = ((last.theta - first.theta) / dt) * 16;
             }
           } else if (followCursor && mouseRef.current) {
-            // Cursor-driven rotation when Scene.interactive is on. mouse.x/y are 0-100.
-            const targetPhi = ((mouseRef.current.x - 50) / 50) * Math.PI;
-            const targetTheta = clampTheta(((mouseRef.current.y - 50) / 100) * Math.PI * 0.8);
-            phiRef.current += (targetPhi - phiRef.current) * 0.05;
+            // Cursor-driven rotation: additive bias on top of autoRotate so the
+            // globe stays alive when the mouse is still. mouse.x/y are 0-100.
+            // - Horizontal cursor position modulates the rotation speed
+            //   (-1..1 multiplier on top of the base autoRotateSpeed).
+            // - Vertical cursor position is lerped onto theta (tilt).
+            const xBias = (mouseRef.current.x - 50) / 50;
+            const yBias = (mouseRef.current.y - 50) / 50;
+            const baseSpeed = autoRotate ? autoRotateSpeed : 0;
+            phiRef.current += baseSpeed + xBias * autoRotateSpeed * 3;
+            const targetTheta = clampTheta(yBias * Math.PI * 0.35);
             thetaRef.current = clampTheta(
               thetaRef.current + (targetTheta - thetaRef.current) * 0.05
             );
