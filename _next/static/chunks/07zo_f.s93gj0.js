@@ -6,6 +6,6 @@ __turbopack_load_page_chunks__("/fullscreen", [
   "static/chunks/0naer56rp~298.js",
   "static/chunks/0_yn3__~j3lb9.js",
   "static/chunks/0lj73yu6clnd2.js",
-  "static/chunks/0icazmpz5zxor.js",
-  "static/chunks/turbopack-0i9gf40c3e4pe.js"
+  "static/chunks/0qvw12o3ot0xq.js",
+  "static/chunks/turbopack-11j0-v30ltzr7.js"
 ])

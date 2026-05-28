@@ -1,6 +1,6 @@
 self.__BUILD_MANIFEST = {
   "/": [
-    "static/chunks/0z-k9~uozyz01.js"
+    "static/chunks/0vizdm1p.jx8m.js"
   ],
   "/_error": [
     "static/chunks/0t-i9y7uasms7.js"
@@ -18,7 +18,7 @@ self.__BUILD_MANIFEST = {
     "static/chunks/0.y8d.n42bypb.js"
   ],
   "/fullscreen": [
-    "static/chunks/0sk795q27lpyx.js"
+    "static/chunks/07zo_f.s93gj0.js"
   ],
   "__rewrites": {
     "afterFiles": [],
