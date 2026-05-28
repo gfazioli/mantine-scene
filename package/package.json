@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/mantine-scene",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "description": "A composable decorative background component for React applications built with Mantine. Layer gradients, glow blobs, dot grids, mesh gradients, noise, star fields, shooting stars, snow, rain, confetti, parallax SVG waves, radar pulses, sweeping beams and an interactive 3D globe (cobe) to create rich atmospheric backgrounds — with viewport-aware lazy mode and interactive mouse tracking.",
   "homepage": "https://gfazioli.github.io/mantine-scene/",
   "packageManager": "yarn@4.0.1",
