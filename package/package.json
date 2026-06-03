@@ -55,17 +55,14 @@
     "./styles.layer.css": "./dist/styles.layer.css"
   },
   "repository": "https://github.com/gfazioli/mantine-scene.git",
+  "dependencies": {
+    "cobe": "^2.0.1"
+  },
   "peerDependencies": {
     "@mantine/core": ">=9.0.0",
     "@mantine/hooks": ">=9.0.0",
-    "cobe": ">=0.6.0",
     "react": "^18.x || ^19.x",
     "react-dom": "^18.x || ^19.x"
-  },
-  "peerDependenciesMeta": {
-    "cobe": {
-      "optional": true
-    }
   },
   "bugs": "https://github.com/gfazioli/mantine-scene/issues"
 }
