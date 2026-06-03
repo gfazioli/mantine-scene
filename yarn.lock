@@ -1558,15 +1558,13 @@ __metadata:
 "@gfazioli/mantine-scene@workspace:*, @gfazioli/mantine-scene@workspace:package":
   version: 0.0.0-use.local
   resolution: "@gfazioli/mantine-scene@workspace:package"
+  dependencies:
+    cobe: "npm:^2.0.1"
   peerDependencies:
     "@mantine/core": ">=9.0.0"
     "@mantine/hooks": ">=9.0.0"
-    cobe: ">=0.6.0"
     react: ^18.x || ^19.x
     react-dom: ^18.x || ^19.x
-  peerDependenciesMeta:
-    cobe:
-      optional: true
   languageName: unknown
   linkType: soft
 
