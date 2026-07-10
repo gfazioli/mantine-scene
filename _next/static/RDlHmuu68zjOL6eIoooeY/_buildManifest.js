@@ -1,24 +1,24 @@
 self.__BUILD_MANIFEST = {
   "/": [
-    "static/chunks/0wlha_ixacxyz.js"
+    "static/chunks/1ji1f79qxywgq.js"
   ],
   "/_error": [
-    "static/chunks/0-_btk74irxqg.js"
+    "static/chunks/163a27n60ddo7.js"
   ],
   "/components/confetti": [
-    "static/chunks/1g3__-0zb1-ss.js"
+    "static/chunks/0e63p_d6c3tp2.js"
   ],
   "/components/globe": [
-    "static/chunks/1m9klk2vymyj6.js"
+    "static/chunks/1vjix947q38y3.js"
   ],
   "/components/star-field": [
-    "static/chunks/0akno3k4vfej2.js"
+    "static/chunks/2z9mfkwx3btic.js"
   ],
   "/components/star-warp": [
-    "static/chunks/1eck41g8cjyki.js"
+    "static/chunks/314f0dxky5ipv.js"
   ],
   "/fullscreen": [
-    "static/chunks/24ggix_cr3dmf.js"
+    "static/chunks/1u5v8dnq5g_3e.js"
   ],
   "__rewrites": {
     "afterFiles": [],
